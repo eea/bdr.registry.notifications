@@ -16,7 +16,7 @@ class CycleAddForm(forms.ModelForm):
 
     def save(self, commit=True, *args, **kwargs):
         """ When a new reporting cycle is created, all the necessary
-            notifications are autmatically created.
+            email templates are autmatically created.
         """
         instance = super(CycleAddForm, self).save(commit=False, *args, **kwargs)
         if commit:
@@ -54,8 +54,7 @@ class CycleEmailTemplateTestForm(forms.Form):
         email = self.data['email'].strip()
         values = {}
         for param in emailtemplate.get_parameters():
-            value = self.data[param.lower()]
-            values[param] = value
+            values[param] = self.data[param.lower()]
 
         body_html = body_html.format(**values)
         body_text = body_html.format(**values)
