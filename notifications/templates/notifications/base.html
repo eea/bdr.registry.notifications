@@ -1,0 +1,61 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>{% block head_title %}{% endblock %}BDR Registries Notifications</title>
+	<!--[if lt IE 9]>
+		<script type="text/javascript" src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+	{% block head_extra %}{% endblock %}
+</head>
+<body>
+
+<header>
+	HEADER
+	<div class="clear"></div>
+</header>
+
+<div id="content">
+	{% with breadcrumbs=view.breadcrumbs %}
+		{% if breadcrumbs %}
+			<nav class="breadcrumbs">
+				<ul>
+					<li><a href="https://www.eionet.europa.eu/">Eionet</a></li>
+					{% for item in breadcrumbs %}
+					<li itemtype="http://data-vocabulary.org/Breadcrumb" itemscope="">
+						{% if item.url %}
+							<a href="{{ item.url }}" itemprop="url"><span itemprop="title">{{ item.title }}</span></a>
+						{% else %}
+							<span itemprop="title">{{ item.title }}</span>
+						{% endif %}
+					</li>
+					{% endfor %}
+				</ul>
+			</nav>
+		{% endif %}
+	{% endwith %}
+
+	{% if messages %}
+	<ul class="messages">
+		{% for message in messages %}
+		<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+			{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+			{{ message }}
+		</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+
+	{% block content %}{% endblock %}
+</div>
+
+<footer>
+	FOOTER
+</footer>
+
+</body>
+</html>

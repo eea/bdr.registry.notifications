@@ -1,0 +1,38 @@
+{% extends layout_template %}
+
+{% block head_title %}Trigger - Reporting cycle for year {{ object }} - {% endblock %}
+
+{% block content %}
+
+<h1>Trigger - Reporting cycle for year {{ object }}</h1>
+
+{% include 'notifications/cycle_actions.html' with object=object page='trigger' %}
+
+<p>Explanatory text here.</p>
+
+<h2>Send notifications</h2>
+
+<p>WIP</p>
+
+<h2>Sent emails - {{ object.stage }}</h2>
+
+<table class="brn-table">
+	<thead>
+		<tr>
+			<th>Group</th>
+			<th>To</th>
+			<th>Sent date</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in view.get_notifications %}
+			<tr>
+				<td>{{ item.group }}</td>
+				<td>{{ item.email }}</td>
+				<td>{{ item.sent_date }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends layout_template %}
+
+{% block head_title %}Trigger - {{ view.object.emailtemplate }} - Reporting cycle for year {{ view.object.cycle.year }} - {% endblock %}
+
+{% block content %}
+
+<h1>Trigger - {{ view.object.emailtemplate }}</h1>
+
+{% include 'notifications/emailtemplate_actions.html' with object=view.object page='trigger' %}
+
+<p>Explanatory text here.</p>
+
+<h2>Send notifications</h2>
+{% if view.object.is_triggered %}
+	<p>This stage has been triggered.</p>
+{% else %}
+	<p style="color:red;">Things to consider when implementing this:</p>
+	<ul style="color:red;">
+		<li>Fetch the list of emails and corresponding email template parameters based on the specific <strong>GROUP</strong>.</li>
+		<li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
+		<li>Don't send an email twice!</li>
+	</ul>
+{% endif %}
+
+<h2>Sent emails</h2>
+
+<table class="brn-table">
+	<thead>
+		<tr>
+			<th>To</th>
+			<th>Sent date</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in view.get_notifications %}
+			<tr>
+				<td>{{ item.email }}</td>
+				<td>{{ item.sent_date }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}

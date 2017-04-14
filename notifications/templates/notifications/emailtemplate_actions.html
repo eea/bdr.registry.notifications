@@ -1,0 +1,27 @@
+{% if object.can_edit or object.can_trigger %}
+    <div class="cycle-actions">
+        {% if page != 'view' %}
+            <a href="{% url 'notifications:emailtemplate_view' object.id %}">View</a>
+        {% endif %}
+        {% if object.can_edit and page != 'edit' %}
+            <a href="{% url 'notifications:emailtemplate_edit' object.id %}">Edit</a>
+        {% endif %}
+        {% if object.can_trigger and page != 'trigger' %}
+            <a href="{% url 'notifications:emailtemplate_trigger' object.id %}">Trigger</a>
+        {% endif %}
+        {% if page != 'test' %}
+            <a href="{% url 'notifications:emailtemplate_test' object.id %}">Test</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div class="cycle-stage">
+    Cycle stage: <strong>{{ object.cycle.stage }}</strong>.
+    {% with last_action=object.last_action %}
+        <strong>{{ last_action.get_history_type_display }}</strong>
+        on <strong>{{ last_action.history_date }}</strong>
+        by <strong>{{ last_action.history_user }}</strong>.
+    {% endwith %}
+</div>
+
+<div class="clear"></div>

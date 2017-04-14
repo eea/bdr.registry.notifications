@@ -1,0 +1,17 @@
+{% extends layout_template %}
+
+{% block head_title %}Add - Reporting cycle - {% endblock %}
+
+{% block content %}
+
+<h1>Add - Reporting cycle</h1>
+
+<p>Explanatory text here.</p>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Add" />
+</form>
+
+{% endblock %}

@@ -1,0 +1,62 @@
+[
+{
+  "model": "notifications.stage",
+  "pk": 1,
+  "fields": {
+    "title": "INITIATED",
+    "code": "initiated",
+    "can_edit": true,
+    "can_trigger": false
+  }
+},
+{
+  "model": "notifications.stage",
+  "pk": 2,
+  "fields": {
+    "title": "Invitations",
+    "code": "invitations",
+    "can_edit": true,
+    "can_trigger": true
+  }
+},
+{
+  "model": "notifications.stage",
+  "pk": 3,
+  "fields": {
+    "title": "Reminder",
+    "code": "reminder",
+    "can_edit": true,
+    "can_trigger": true
+  }
+},
+{
+  "model": "notifications.stage",
+  "pk": 4,
+  "fields": {
+    "title": "Deadline",
+    "code": "deadline",
+    "can_edit": true,
+    "can_trigger": true
+  }
+},
+{
+  "model": "notifications.stage",
+  "pk": 5,
+  "fields": {
+    "title": "After",
+    "code": "after",
+    "can_edit": true,
+    "can_trigger": true
+  }
+},
+{
+  "model": "notifications.stage",
+  "pk": 6,
+  "fields": {
+    "title": "CLOSED",
+    "code": "closed",
+    "can_edit": false,
+    "can_trigger": false
+  }
+}
+]

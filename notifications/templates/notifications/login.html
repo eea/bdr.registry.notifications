@@ -1,0 +1,29 @@
+{% extends layout_template %}
+
+{% block head_title %}Login - {% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+	<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+<h1>Login</h1>
+
+<form method="post" action="{% url 'notifications:login' %}">
+	{% csrf_token %}
+	<table>
+		<tr>
+			<td>{{ form.username.label_tag }}</td>
+			<td>{{ form.username }}</td>
+		</tr>
+		<tr>
+			<td>{{ form.password.label_tag }}</td>
+			<td>{{ form.password }}</td>
+		</tr>
+	</table>
+	<input type="hidden" name="next" value="{{ next }}" />
+	<button type="submit">Login</button>
+</form>
+
+{% endblock %}

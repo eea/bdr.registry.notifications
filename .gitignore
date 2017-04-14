@@ -1,0 +1,10 @@
+*.py[cod]
+*.so
+.DS_Store
+
+db.sqlite3
+.secret
+
+*.log
+localsettings.py
+localsettings_test.py
