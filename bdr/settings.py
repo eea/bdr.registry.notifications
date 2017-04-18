@@ -134,6 +134,21 @@ STATIC_URL = env('STATIC_URL', '/static/')
 
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar_bufnita': [
+            ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'Undo', 'Redo', 'RemoveFormat'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image', 'Flash', 'Table', 'Smiley', 'SpecialChar', 'HorizontalRule'],
+            ['TextColor', 'BGColor'],
+            ['Maximize', 'ShowBlocks', '-', 'Source'],
+        ],
+        'toolbar': 'bufnita',
+        'width': '100%',
+    },
+}
+
 
 # BDR specific
 

@@ -53,7 +53,7 @@ Development and deployment
 
 7. Load fixtures data into the database:
 
-        $ python manage.py loaddata notifications/fixtures/groups.json
+        $ python manage.py loaddata notifications/fixtures/stages.json
         $ python manage.py loaddata notifications/fixtures/companiesgroups.json
         $ python manage.py loaddata notifications/fixtures/emailtemplates.json
 

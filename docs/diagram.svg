@@ -1,0 +1,391 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' text-rendering='optimizeLegibility'   width='1440' height='500' viewbox='0 0 1440 500' >
+  <script type='text/ecmascript'>
+  <![CDATA[
+  function hghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','highlight');  }  }
+  function uhghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','scene'); }  } 
+  ]]>
+  </script> 
+
+<style type='text/css'>
+  text                { fill:#000000; font-family: Tahoma, 'Trebuchet MS', Dialog; font-size:11px; }
+  a text:hover        { text-shadow: 0 0 6px #d0ce00; }
+  text.highlight      { text-shadow: 0 0 4px #eac533; }
+  text.colType        { fill:#b3b3b3; }
+  text.relName        { fill:#b09c7c; }
+  path                { stroke:#5c554f; stroke-width:1.15; fill:none; }
+  path.virtual        { stroke:#b7642d; }
+  path.dotted         { stroke-dasharray:4,2; }
+  path.scene          { stroke-width:10; opacity:0;}
+  path.highlight      { stroke-width:5; stroke:#eac533; opacity:0.6;}
+  rect.table          { fill:#ffffff; stroke:#aaa; stroke-width:1;shape-rendering:crispEdges;filter:url(#shadow); }
+  line.delim          { stroke-width:1; shape-rendering:crispEdges; }
+  text.callout        { fill:#000000; font-family: Tahoma, 'Trebuchet MS', Dialog; font-size:11px; }
+  rect.callout        { fill:url(#calloutGradient); stroke:#bebdbd; stroke-width:0.5; filter: url(#shadow);}
+  rect.grp            { stroke:#b1b1b1; stroke-width:1.7; opacity:0.8; }
+</style>
+<defs>
+  <pattern id='layoutBgA' patternUnits='userSpaceOnUse'  width='10' height='20' x='0' y='0' viewBox='0 0 5 10'>  
+     <line x1='-2' y1='1' x2='7' y2='10' stroke='#efefef' stroke-width='.5'/>  
+     <line x1='-2' y1='6' x2='7' y2='15' stroke='#efefef' stroke-width='.5'/>  
+     <line x1='-2' y1='-4' x2='7' y2='5' stroke='#efefef' stroke-width='.5'/>  
+  </pattern>  
+  <radialGradient id='layoutBgB' gradientUnits='userSpaceOnUse' cx='50%' cy='50%' r='75%' fx='46%' fy='22%'>
+     <stop offset='0%' stop-opacity='.2' stop-color='#f5f5f5' />  
+     <stop offset='100%' stop-color='#efefef' />  
+  </radialGradient>
+  <pattern id='layoutBgTr' patternUnits='userSpaceOnUse'  width='300' height='300' x='0' y='0' viewBox='0 0 300 300'>  
+    <text x='-85' y='200' transform='rotate(-45)' style='font-family:Arial;font-size:78px;font-weight:bold;fill:#e7e7e7;'>&#84;&#82;&#73;&#65;&#76;</text> 
+    <text x='-130' y='230' transform='rotate(-45)' style='font-family:Arial;font-size:24px;font-weight:bold;fill:#e7e7e7;'>&#77;ove &#116;he m&#111;use &#111;ver &#116;ables</text> 
+    <text x='-85' y='250' transform='rotate(-45)' style='font-family:Arial;font-size:24px;font-weight:bold;fill:#e7e7e7;'>&#116;o re&#97;d &#116;he c&#111;mmen&#116;s</text> 
+  </pattern>  
+  <linearGradient id='groupUnderTitleLine' x1='0%' y1='0%' x2='100%' y2='0%' >
+          <stop offset='0%' stop-color='#999999' stop-opacity='0.7'/> 
+          <stop offset='100%' stop-color='#999999' stop-opacity='0' /> 
+   </linearGradient>
+  <radialGradient id='calloutGradient' cx='25%' cy='20%' r='80%' fx='10%' fy='10%'>
+	   <stop offset='0%' stop-color='#ffffff' />
+    <stop offset='100%' stop-color='#f8f6d1' />
+  </radialGradient>
+  <filter id='shadow' width='120%' height='120%'> 
+      <feOffset result='offOut' in='SourceGraphic' dx='1' dy='1' /> 
+      <feColorMatrix result='matrixOut' in='offOut' type='matrix' 
+      values='0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.3 0' /> 
+      <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' /> 
+      <feBlend in='SourceGraphic' in2='blurOut' mode='normal' /> 
+    </filter> 
+  <filter id='fkShadow' height='130%'> 
+    <feGaussianBlur in='SourceAlpha' stdDeviation='1.5'/> <!-- stdDeviation is how much to blur -->
+    <feOffset dx='1.2' dy='1.2' result='offsetblur'/> <!-- how much to offset -->
+    <feMerge>
+    <feMergeNode/> <!-- this contains the offset blurred image -->
+    <feMergeNode in='SourceGraphic'/> <!-- this contains the element that the filter is applied to -->
+    </feMerge>
+  </filter>
+  <radialGradient id='legendGradient' fx='5%' fy='5%' r='75%' spreadMethod='pad'>
+          <stop offset='0%' stop-color='#eefbf2' stop-opacity='1'/> 
+          <stop offset='100%' stop-color='#cff9cb' stop-opacity='1' /> 
+   </radialGradient>
+  <symbol id='calloutArrowDown' overflow='visible' >
+      <path d='M 0,0 L 7,11 L 15,0 z' style='fill:#f8f6d1;stroke:none; filter: url(#shadow);' />
+      <path d='M 0,0 L 7,11 L 15,0' style='stroke:#bebdbd; stroke-width:0.5;' />
+  </symbol>
+  <symbol id='calloutArrowUp' overflow='visible' >
+      <path d='M 0,15 L 7,3 L 15,15 z' style='fill:#ffffff; stroke:none; filter: url(#shadow);' />
+      <path d='M 0,15 L 7,3 L 15,15' style='stroke:#bebdbd; stroke-width:0.5;' />
+  </symbol>
+  <symbol id='pk' overflow='visible' >
+    <g transform='scale(0.99)'>
+     <path style='fill:#fffa7d;stroke:#765f03;stroke-width:0.6;stroke-linecap:round;stroke-linejoin:round;'
+        d='M 9.3678877,3.5695485 C 9.1030218,3.2729386 9.0796382,2.7628519 9.3396185,2.4517097 9.5449651,2.1956495 9.9040386,2.0980533 10.199638,2.2169415 10.533525,2.3415459 10.775153,2.706942 10.750675,3.0842709 10.737029,3.3980003 10.541153,3.699122 10.258248,3.8066067 9.966649,3.9250429 9.6169668,3.8418805 9.4008073,3.6062324 9.3894892,3.5943518 9.3785264,3.582104 9.3678886,3.5695487 z M 11.226617,6.9916004 C 11.888137,6.3548946 12.293488,5.4172188 12.311087,4.442353 12.378144,2.7379364 11.248678,1.0541269 9.7322318,0.44767357 8.3887112,-0.1280313 6.7865012,0.26822889 5.8918395,1.4007929 5.080823,2.3839145 4.9336815,3.8452096 5.3635544,5.101615 L 4.3670905,5.315913 C 4.0664984,5.3682645 4.0967703,5.6316724 4.2574957,5.8208829 L 4.9124,6.5655244 4.1543436,7.2512357 3.2136002,7.2163506 3.1674775,8.5586827 2.0406832,8.5086512 1.5965306,8.9299953 1.5471661,10.179833 0.75616674,10.195223 0.2112857,10.758575 0.15354288,11.735988 0.07199052,12.765553 c 0.36440953,0.238225 0.79006967,0.195492 1.44938278,-0.02675 L 6.3033562,8.1282037 6.8217102,8.6765688 C 6.9985465,8.8799427 7.3003699,8.7497574 7.358381,8.5016252 L 7.4938877,7.5084164 c 0.8537488,0.3985387 1.8303125,0.4711541 2.6851793,0.1427713 0.393927,-0.1407258 0.746858,-0.3701772 1.04755,-0.6595873 z'/>
+     <path d='M 6.8014948,6.3102123 0.15369063,13.024481 0.21560535,12.141962 6.0062342,6.2683782 z'
+        style='fill:#ffe5a5;fill-opacity:1;stroke:#854e31;stroke-width:0.06912433;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:3.00300009'/>
+    </g>
+  </symbol>
+  <symbol id='unq' overflow='visible' >
+    <g transform='scale(0.99)'>
+      <rect style='fill:#fbea8e;stroke:#7e4d31;stroke-width:0.71934468;stroke-linecap:round;stroke-linejoin:round;'
+         width='2.29' height='8.43' x='7.48' y='-0.76' ry='1.14' transform='matrix(0.701,0.713,-0.727,0.685,0,0)' />
+      <path style='fill:white;stroke:#858585;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;'
+         d='m 26.04,8.64 a 4.13,4.13 0 1 1 -8.26,0 4.13,4.13 0 1 1 8.26,0 z'
+         transform='matrix(1.025,0,0,0.987,-14.690,-3.862)' />
+      <text x='5.8' y='7.4' style='font-size:7px;fill:#8a8a8a;'>1</text>
+    </g>
+  </symbol>
+  <symbol id='idx' overflow='visible' >
+    <g transform='scale(0.99)'>
+      <rect style='fill:#fbea8e;stroke:#7e4d31;stroke-width:0.71934468;stroke-linecap:round;stroke-linejoin:round;'
+         width='2.29' height='8.43' x='7.48' y='-0.76' ry='1.14' transform='matrix(0.701,0.713,-0.727,0.685,0,0)' />
+      <path style='fill:white;stroke:#858585;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;'
+         d='m 26.04,8.64 a 4.13,4.13 0 1 1 -8.26,0 4.13,4.13 0 1 1 8.26,0 z'
+         transform='matrix(1.025,0,0,0.987,-14.690,-3.862)' />
+    </g>
+  </symbol>
+  <symbol id='fk' overflow='visible' >
+    <g transform='scale(0.87)'>
+      <path style='fill:#f3e1b7;stroke:#7e471f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+      d='M 12.48,0.33 7.07,0.89 9.067,2.974 0.329,11.731 1.073,12.597 9.811,3.841 11.77,5.78 z' />
+    </g>
+  </symbol>
+  <symbol id='ref' overflow='visible' >
+    <g transform='scale(0.87)'>
+      <path style='fill:#f3e1b7;stroke:#7e471f;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.10,12.70 5.31,12.15 3.40,10.06 11.82,1.32 11.11,0.45 2.68,9.19 0.80,7.24 z'/>
+    </g>
+  </symbol>
+  <symbol id='flag0' overflow='visible' >
+    <g transform='scale(0.92)'>
+      <path style='fill:#b7d0f6;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.12,12.67 0.16,7.22 C 2.59,7.22 4.13,8.78 9.22,4.22 5.68,4.98 2.53,4.50 0.09,1.80 z'/>
+    </g>
+  </symbol>
+  <symbol id='flag1' overflow='visible' >
+    <g transform='scale(0.92)'>
+      <path style='fill:#f4a393;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.12,12.67 0.16,7.22 C 2.59,7.22 4.13,8.78 9.22,4.22 5.68,4.98 2.53,4.50 0.09,1.80 z'/>
+    </g>
+  </symbol>
+  <symbol id='flag2' overflow='visible' >
+    <g transform='scale(0.92)'>
+      <path style='fill:#77ec8b;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0.12,12.67 0.16,7.22 C 2.59,7.22 4.13,8.78 9.22,4.22 5.68,4.98 2.53,4.50 0.09,1.80 z'/>
+    </g>
+  </symbol>
+  <symbol id='nn' overflow='visible' >
+  <path style='stroke:#9b3e50;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;'
+          d='M 0,0 3,3 M 0,3 3,0 z'/>
+  </symbol>
+  <symbol id='view' overflow='visible' >
+    <g transform='scale(0.99)'>
+     <line x1='12' y1='6' x2='19' y2='0' stroke='black' stroke-width='0.5' />
+     <line x1='0' y1='6' x2='7' y2='0' stroke='black' stroke-width='0.5' />
+     <circle cx='3' cy='6' r='3' fill='#f9ebbc' stroke='black' stroke-width='0.5'/>
+     <circle cx='10' cy='6' r='3' fill='#f9ebbc' stroke='black' stroke-width='0.5'/>
+    </g>
+  </symbol>
+  <marker id='arrow01' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 7.500,3.750 L 15.000,3.750 L 7.500,0.000 L 15.000,3.750 L 7.500,7.500' />
+  </marker>
+  <marker id='arrow1' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 7.500,3.750 L 15.000,3.750 L 7.500,0.000 L 15.000,3.750 L 7.500,7.500' />
+  </marker>
+  <marker id='foot01' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <circle cx='11.25' cy='3.75' r='2.50' style='fill:white;stroke:#5e554d;' />
+    <path d='M 3.75,0.00 L 3.75, 7.50 z' />
+  </marker>
+  <marker id='foot0p' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <circle cx='11.25' cy='3.75' r='2.50' style='fill:white;stroke:#5e554d;' />
+    <path d='M 0.00,0.00 L 7.50,3.75 L 0.00,7.50' />
+  </marker>
+  <marker id='foot1' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <path d='M 7.50,0.00 L 7.50, 7.50 z' />
+    <path d='M 3.75,0.00 L 3.75, 7.50 z' />
+  </marker>
+  <marker id='foot1p' viewBox='0 0 15.00 7.50' refX='7.50' refY='3.75' markerUnits='strokeWidth' markerWidth='15.00' markerHeight='7.50' orient='auto'>
+    <path d='M 0.00,3.75 L 15.00,3.75 z' />
+    <path d='M 7.50,0.00 L 7.50, 7.50 z' />
+    <path d='M 0.00,0.00 L 7.50,3.75 L 0.00,7.50' />
+  </marker>
+  <linearGradient id='tbg_c8f5bf' x1='0%' y1='0%' x2='0%' y2='100%' >
+     <stop offset='0%' stop-color='#e4f8e0' /> 
+     <stop offset='100%' stop-color='#c9eec1' /> 
+  </linearGradient>
+  <linearGradient id='tbg_bfd4f5' x1='0%' y1='0%' x2='0%' y2='100%' >
+     <stop offset='0%' stop-color='#e0e9f8' /> 
+     <stop offset='100%' stop-color='#c1d3ee' /> 
+  </linearGradient>
+</defs>
+
+<!-- ============= Desktop ============= -->
+<rect x='1' y='1' width='1438' height='498' rx='7' ry='7' style='fill:url(#layoutBgB); stroke:#333333; stroke-width:0.5;' />
+<rect x='1' y='1' width='1438' height='498' rx='7' ry='7' style='fill:url(#layoutBgTr);' />
+<rect x='1' y='1' width='1438' height='498' rx='7' ry='7' style='fill:url(#layoutBgA); stroke:#333333; stroke-width:0.5;' />
+
+<!-- ============= Legend ============= -->
+<g transform='translate(10,10)'>
+  <rect x='10' y='10' width='330' height='52' rx='6' ry='6' style='fill:url(#legendGradient);filter:url(#shadow);'/> 
+  <text x='65' y='33'>BDR Registries Notifications</text> 
+  <text x='65' y='49' style='fill:#aaaaaa; font-size:11px;'><tspan>Read table &amp; column comments as mouse-over tooltips.</tspan></text> 
+<g transform="scale(0.75,0.75) translate(10,7)" > <a xlink:href='http://www.dbschema.com'> <rect style="fill:#eb7f2c;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="40.04" y="59.44" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="54.83" y="59.57" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="40.35" y="71.62" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="54.68" y="71.75" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="13.48" y="19.67" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#eb7f2c;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="28.36" y="19.80" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="13.79" y="31.78" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="28.21" y="31.92" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="34.59" y="-9.62" ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="49.63" y="-9.46" ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="34.90" y="5.77"  ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <rect style="fill:#eb7f2c;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="49.47" y="5.93"  ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <title>Generated using DbSchema - www.dbschema.com</title> </a></g>
+</g>
+
+<g transform='translate(0,110)'>
+<!-- ============= Fk 'notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id' ============= -->
+<path id='notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id'  onmouseover="hghl(['notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id','bdr_registries_notifications.notifications_cycleemailtemplate.cycle_id','bdr_registries_notifications.notifications_cycle.id'])" onmouseout="uhghl(['notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id','bdr_registries_notifications.notifications_cycleemailtemplate.cycle_id','bdr_registries_notifications.notifications_cycle.id'])" transform='translate(7,0)' class='scene' d='M 525 120 L 660,120' >
+	<title>Fk notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id
+notifications_cycleemailtemplate ref notifications_cycle ( cycle_id -&gt; id )</title>
+</path>
+<path transform='translate(7,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 525 120 L 660,120' ></path>
+<text x='532' y='115' transform='rotate(0 532,115)' title='Fk notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id
+notifications_cycleemailtemplate ref notifications_cycle ( cycle_id -&gt; id )' class='relName'>cycle_id</text>
+<!-- ============= Fk 'notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id' ============= -->
+<path id='notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id'  onmouseover="hghl(['notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id','bdr_registries_notifications.notifications_cycleemailtemplate.emailtemplate_id','bdr_registries_notifications.notifications_emailtemplate.id'])" onmouseout="uhghl(['notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id','bdr_registries_notifications.notifications_cycleemailtemplate.emailtemplate_id','bdr_registries_notifications.notifications_emailtemplate.id'])" transform='translate(7,0)' class='scene' d='M 525 210 L 885,210' >
+	<title>Fk noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id
+notifications_cycleemailtemplate ref notifications_emailtemplate ( emailtemplate_id -&gt; id )</title>
+</path>
+<path transform='translate(7,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 525 210 L 885,210' ></path>
+<text x='532' y='205' transform='rotate(0 532,205)' title='Fk noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id
+notifications_cycleemailtemplate ref notifications_emailtemplate ( emailtemplate_id -&gt; id )' class='relName'>emailtemplate_id</text>
+<!-- ============= Fk 'notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027' ============= -->
+<path id='notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027'  onmouseover="hghl(['notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027','bdr_registries_notifications.notifications_cyclenotification.emailtemplate_id','bdr_registries_notifications.notifications_cycleemailtemplate.id'])" onmouseout="uhghl(['notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027','bdr_registries_notifications.notifications_cyclenotification.emailtemplate_id','bdr_registries_notifications.notifications_cycleemailtemplate.id'])" transform='translate(7,0)' class='scene' d='M 210 120 L 345,120' >
+	<title>Fk D63cbe26c8080293c682fe3ed1631027
+notifications_cyclenotification ref notifications_cycleemailtemplate ( emailtemplate_id -&gt; id )</title>
+</path>
+<path transform='translate(7,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 210 120 L 345,120' ></path>
+<text x='217' y='115' transform='rotate(0 217,115)' title='Fk D63cbe26c8080293c682fe3ed1631027
+notifications_cyclenotification ref notifications_cycleemailtemplate ( emailtemplate_id -&gt; id )' class='relName'>emailtemplate_id</text>
+<!-- ============= Fk 'notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id' ============= -->
+<path id='notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id'  onmouseover="hghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id','bdr_registries_notifications.notifications_cycle.stage_id','bdr_registries_notifications.notifications_stage.id'])" onmouseout="uhghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id','bdr_registries_notifications.notifications_cycle.stage_id','bdr_registries_notifications.notifications_stage.id'])" transform='translate(7,0)' class='scene' d='M 780 105 L 900,105' >
+	<title>Fk notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id
+notifications_cycle ref notifications_stage ( stage_id -&gt; id )</title>
+</path>
+<path transform='translate(7,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 780 105 L 900,105' ></path>
+<text x='787' y='100' transform='rotate(0 787,100)' title='Fk notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id
+notifications_cycle ref notifications_stage ( stage_id -&gt; id )' class='relName'>stage_id</text>
+<!-- ============= Fk 'notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id' ============= -->
+<path id='notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id'  onmouseover="hghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id','bdr_registries_notifications.notifications_emailtemplate.group_id','bdr_registries_notifications.notifications_companiesgroup.id'])" onmouseout="uhghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id','bdr_registries_notifications.notifications_emailtemplate.group_id','bdr_registries_notifications.notifications_companiesgroup.id'])" transform='translate(7,0)' class='scene' d='M 1050 225 L 1215,225' >
+	<title>Fk notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id
+notifications_emailtemplate ref notifications_companiesgroup ( group_id -&gt; id )</title>
+</path>
+<path transform='translate(7,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 1050 225 L 1215,225' ></path>
+<text x='1057' y='220' transform='rotate(0 1057,220)' title='Fk notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id
+notifications_emailtemplate ref notifications_companiesgroup ( group_id -&gt; id )' class='relName'>group_id</text>
+<!-- ============= Fk 'notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id' ============= -->
+<path id='notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id'  onmouseover="hghl(['notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id','bdr_registries_notifications.notifications_emailtemplate.stage_id','bdr_registries_notifications.notifications_stage.id'])" onmouseout="uhghl(['notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id','bdr_registries_notifications.notifications_emailtemplate.stage_id','bdr_registries_notifications.notifications_stage.id'])" transform='translate(7,0)' class='scene' d='M 930 195 L 930,165' >
+	<title>Fk notifications_emailt_stage_id_478a8198_fk_notifications_stage_id
+notifications_emailtemplate ref notifications_stage ( stage_id -&gt; id )</title>
+</path>
+<path transform='translate(7,0)' marker-start='url(#foot1p)' marker-end='url(#arrow1)'    d='M 930 195 L 930,165' ></path>
+<text x='932' y='190' transform='rotate(270 932,190)' title='Fk notifications_emailt_stage_id_478a8198_fk_notifications_stage_id
+notifications_emailtemplate ref notifications_stage ( stage_id -&gt; id )' class='relName'>stage_id</text>
+<!-- ============= Table 'notifications_cycleemailtemplate' ============= -->
+<rect class='table' x='360' y='98' width='165' height='150' rx='7' ry='7' style='stroke:none'/>
+<path d='M 360.00 124.00 L 360.00 105.00 Q 360.00 98.00 367.00 98.00 L 518.00 98.00 Q 525.00 98.00 525.00 105.00 L 525.00 124.00 L360.00 124.00 ' style='fill:url(#tbg_c8f5bf);stroke:1;stroke-opacity:0.1;' />
+<rect class='table' x='360' y='98' width='165' height='150' rx='7' ry='7' style='fill:none;stroke:#b1bfae'/>
+<line class='delim' x1='360.000000' y1='124.000000' x2='525.000000' y2='124.000000' style='stroke:#b1bfae'/>
+<line class='delim' x1='375.000000' y1='124.000000' x2='375.000000' y2='248.000000' style='stroke:#b1bfae'/>
+<line class='delim' x1='514.000000' y1='124.000000' x2='514.000000' y2='248.000000' style='stroke:#b1bfae'/>
+<a xlink:href='#notifications_cycleemailtemplate'><text x='362' y='116'>notifications_cycleemailtemplate</text><title>Table bdr_registries_notifications.notifications_cycleemailtemplate</title></a>
+  <use id='nn' x='362' y='132' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.id'><use id='pk' x='362' y='131' xlink:href='#pk'/><title>Pk pk_notifications_cycleemailtemplate ( id ) </title></a>
+<a xlink:href='#notifications_cycleemailtemplate.id'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.id' x='378' y='141' onmouseover="hghl(['notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027'])" onmouseout="uhghl(['notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027'])">id</text><title>id
+* int</title></a>
+<a xlink:href='#notifications_cycleemailtemplate.id'><use id='ref' x='514' y='131' xlink:href='#ref'/><title>Referred by notifications_cyclenotification ( emailtemplate_id -&gt; id ) </title></a>
+  <use id='nn' x='362' y='147' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.subject'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.subject' x='378' y='156'>subject</text><title>subject
+* varchar(256)</title></a>
+  <use id='nn' x='362' y='162' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.body_html'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.body_html' x='378' y='171'>body_html</text><title>body_html
+* longtext</title></a>
+  <a xlink:href='#notifications_cycleemailtemplate.body_text'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.body_text' x='378' y='186'>body_text</text><title>body_text
+longtext</title></a>
+  <use id='nn' x='362' y='192' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.is_triggered'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.is_triggered' x='378' y='201'>is_triggered</text><title>is_triggered
+* bit</title></a>
+  <use id='nn' x='362' y='207' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.cycle_id'><use id='idx' x='362' y='206' xlink:href='#idx'/><title>notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id ( cycle_id ) </title></a>
+<a xlink:href='#notifications_cycleemailtemplate.cycle_id'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.cycle_id' x='378' y='216' onmouseover="hghl(['notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id'])" onmouseout="uhghl(['notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id'])">cycle_id</text><title>cycle_id
+* int</title></a>
+<a xlink:href='#notifications_cycleemailtemplate.cycle_id'><use id='fk' x='514' y='206' xlink:href='#fk'/><title>References notifications_cycle ( cycle_id -&gt; id ) </title></a>
+  <use id='nn' x='362' y='222' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.emailtemplate_id'><use id='idx' x='362' y='221' xlink:href='#idx'/><title>noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id ( emailtemplate_id ) </title></a>
+<a xlink:href='#notifications_cycleemailtemplate.emailtemplate_id'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.emailtemplate_id' x='378' y='231' onmouseover="hghl(['notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id'])" onmouseout="uhghl(['notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id'])">emailtemplate_id</text><title>emailtemplate_id
+* int</title></a>
+<a xlink:href='#notifications_cycleemailtemplate.emailtemplate_id'><use id='fk' x='514' y='221' xlink:href='#fk'/><title>References notifications_emailtemplate ( emailtemplate_id -&gt; id ) </title></a>
+
+<!-- ============= Table 'notifications_companiesgroup' ============= -->
+<rect class='table' x='1230' y='173' width='165' height='90' rx='7' ry='7' style='stroke:none'/>
+<path d='M 1230.00 199.00 L 1230.00 180.00 Q 1230.00 173.00 1237.00 173.00 L 1388.00 173.00 Q 1395.00 173.00 1395.00 180.00 L 1395.00 199.00 L1230.00 199.00 ' style='fill:url(#tbg_bfd4f5);stroke:1;stroke-opacity:0.1;' />
+<rect class='table' x='1230' y='173' width='165' height='90' rx='7' ry='7' style='fill:none;stroke:#aeb5bf'/>
+<line class='delim' x1='1230.000000' y1='199.000000' x2='1395.000000' y2='199.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='1245.000000' y1='199.000000' x2='1245.000000' y2='263.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='1384.000000' y1='199.000000' x2='1384.000000' y2='263.000000' style='stroke:#aeb5bf'/>
+<a xlink:href='#notifications_companiesgroup'><text x='1238' y='191'>notifications_companiesgroup</text><title>Table bdr_registries_notifications.notifications_companiesgroup</title></a>
+  <use id='nn' x='1232' y='207' xlink:href='#nn'/><a xlink:href='#notifications_companiesgroup.id'><use id='pk' x='1232' y='206' xlink:href='#pk'/><title>Pk pk_notifications_companiesgroup ( id ) </title></a>
+<a xlink:href='#notifications_companiesgroup.id'><text id='bdr_registries_notifications.notifications_companiesgroup.id' x='1248' y='216' onmouseover="hghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id'])" onmouseout="uhghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id'])">id</text><title>id
+* int</title></a>
+<a xlink:href='#notifications_companiesgroup.id'><use id='ref' x='1384' y='206' xlink:href='#ref'/><title>Referred by notifications_emailtemplate ( group_id -&gt; id ) </title></a>
+  <use id='nn' x='1232' y='222' xlink:href='#nn'/><a xlink:href='#notifications_companiesgroup.title'><text id='bdr_registries_notifications.notifications_companiesgroup.title' x='1248' y='231'>title</text><title>title
+* varchar(256)</title></a>
+  <use id='nn' x='1232' y='237' xlink:href='#nn'/><a xlink:href='#notifications_companiesgroup.code'><use id='unq' x='1232' y='236' xlink:href='#unq'/><title>Unq code ( code ) </title></a>
+<a xlink:href='#notifications_companiesgroup.code'><text id='bdr_registries_notifications.notifications_companiesgroup.code' x='1248' y='246'>code</text><title>code
+* varchar(100)</title></a>
+
+<!-- ============= Table 'notifications_cyclenotification' ============= -->
+<rect class='table' x='45' y='98' width='165' height='150' rx='7' ry='7' style='stroke:none'/>
+<path d='M 45.00 124.00 L 45.00 105.00 Q 45.00 98.00 52.00 98.00 L 203.00 98.00 Q 210.00 98.00 210.00 105.00 L 210.00 124.00 L45.00 124.00 ' style='fill:url(#tbg_c8f5bf);stroke:1;stroke-opacity:0.1;' />
+<rect class='table' x='45' y='98' width='165' height='150' rx='7' ry='7' style='fill:none;stroke:#b1bfae'/>
+<line class='delim' x1='45.000000' y1='124.000000' x2='210.000000' y2='124.000000' style='stroke:#b1bfae'/>
+<line class='delim' x1='60.000000' y1='124.000000' x2='60.000000' y2='248.000000' style='stroke:#b1bfae'/>
+<line class='delim' x1='199.000000' y1='124.000000' x2='199.000000' y2='248.000000' style='stroke:#b1bfae'/>
+<a xlink:href='#notifications_cyclenotification'><text x='54' y='116'>notifications_cyclenotification</text><title>Table bdr_registries_notifications.notifications_cyclenotification</title></a>
+  <use id='nn' x='47' y='132' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.id'><use id='pk' x='47' y='131' xlink:href='#pk'/><title>Pk pk_notifications_cyclenotification ( id ) </title></a>
+<a xlink:href='#notifications_cyclenotification.id'><text id='bdr_registries_notifications.notifications_cyclenotification.id' x='63' y='141'>id</text><title>id
+* int</title></a>
+  <use id='nn' x='47' y='147' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.subject'><text id='bdr_registries_notifications.notifications_cyclenotification.subject' x='63' y='156'>subject</text><title>subject
+* varchar(256)</title></a>
+  <use id='nn' x='47' y='162' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.email'><use id='unq' x='47' y='161' xlink:href='#unq'/><title>Unq notifications_cyclenotification_email_7f989a45_uniq ( email, emailtemplate_id ) notifications_cyclenotification_0c83f57c ( email ) </title></a>
+<a xlink:href='#notifications_cyclenotification.email'><text id='bdr_registries_notifications.notifications_cyclenotification.email' x='63' y='171'>email</text><title>email
+* varchar(128)</title></a>
+  <use id='nn' x='47' y='177' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.body_html'><text id='bdr_registries_notifications.notifications_cyclenotification.body_html' x='63' y='186'>body_html</text><title>body_html
+* longtext</title></a>
+  <use id='nn' x='47' y='192' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.body_text'><text id='bdr_registries_notifications.notifications_cyclenotification.body_text' x='63' y='201'>body_text</text><title>body_text
+* longtext</title></a>
+  <use id='nn' x='47' y='207' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.sent_date'><use id='idx' x='47' y='206' xlink:href='#idx'/><title>notifications_cyclenotification_adc78145 ( sent_date ) </title></a>
+<a xlink:href='#notifications_cyclenotification.sent_date'><text id='bdr_registries_notifications.notifications_cyclenotification.sent_date' x='63' y='216'>sent_date</text><title>sent_date
+* datetime</title></a>
+  <use id='nn' x='47' y='222' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.emailtemplate_id'><use id='unq' x='47' y='221' xlink:href='#unq'/><title>Unq notifications_cyclenotification_email_7f989a45_uniq ( email, emailtemplate_id ) D63cbe26c8080293c682fe3ed1631027 ( emailtemplate_id ) </title></a>
+<a xlink:href='#notifications_cyclenotification.emailtemplate_id'><text id='bdr_registries_notifications.notifications_cyclenotification.emailtemplate_id' x='63' y='231' onmouseover="hghl(['notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027'])" onmouseout="uhghl(['notifications_cyclenotification_D63cbe26c8080293c682fe3ed1631027'])">emailtemplate_id</text><title>emailtemplate_id
+* int</title></a>
+<a xlink:href='#notifications_cyclenotification.emailtemplate_id'><use id='fk' x='199' y='221' xlink:href='#fk'/><title>References notifications_cycleemailtemplate ( emailtemplate_id -&gt; id ) </title></a>
+
+<!-- ============= Table 'notifications_cycle' ============= -->
+<rect class='table' x='675' y='83' width='105' height='105' rx='7' ry='7' style='stroke:none'/>
+<path d='M 675.00 109.00 L 675.00 90.00 Q 675.00 83.00 682.00 83.00 L 773.00 83.00 Q 780.00 83.00 780.00 90.00 L 780.00 109.00 L675.00 109.00 ' style='fill:url(#tbg_bfd4f5);stroke:1;stroke-opacity:0.1;' />
+<rect class='table' x='675' y='83' width='105' height='105' rx='7' ry='7' style='fill:none;stroke:#aeb5bf'/>
+<line class='delim' x1='675.000000' y1='109.000000' x2='780.000000' y2='109.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='690.000000' y1='109.000000' x2='690.000000' y2='188.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='769.000000' y1='109.000000' x2='769.000000' y2='188.000000' style='stroke:#aeb5bf'/>
+<a xlink:href='#notifications_cycle'><text x='680' y='101'>notifications_cycle</text><title>Table bdr_registries_notifications.notifications_cycle</title></a>
+  <use id='nn' x='677' y='117' xlink:href='#nn'/><a xlink:href='#notifications_cycle.id'><use id='pk' x='677' y='116' xlink:href='#pk'/><title>Pk pk_notifications_cycle ( id ) </title></a>
+<a xlink:href='#notifications_cycle.id'><text id='bdr_registries_notifications.notifications_cycle.id' x='693' y='126' onmouseover="hghl(['notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id'])" onmouseout="uhghl(['notifications_cycleemailtemplate_notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id'])">id</text><title>id
+* int</title></a>
+<a xlink:href='#notifications_cycle.id'><use id='ref' x='769' y='116' xlink:href='#ref'/><title>Referred by notifications_cycleemailtemplate ( cycle_id -&gt; id ) </title></a>
+  <use id='nn' x='677' y='132' xlink:href='#nn'/><a xlink:href='#notifications_cycle.year'><use id='unq' x='677' y='131' xlink:href='#unq'/><title>Unq year ( year ) </title></a>
+<a xlink:href='#notifications_cycle.year'><text id='bdr_registries_notifications.notifications_cycle.year' x='693' y='141'>year</text><title>year
+* smallint</title></a>
+  <use id='nn' x='677' y='147' xlink:href='#nn'/><a xlink:href='#notifications_cycle.closing_date'><text id='bdr_registries_notifications.notifications_cycle.closing_date' x='693' y='156'>closing_date</text><title>closing_date
+* date</title></a>
+  <use id='nn' x='677' y='162' xlink:href='#nn'/><a xlink:href='#notifications_cycle.stage_id'><use id='idx' x='677' y='161' xlink:href='#idx'/><title>notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id ( stage_id ) </title></a>
+<a xlink:href='#notifications_cycle.stage_id'><text id='bdr_registries_notifications.notifications_cycle.stage_id' x='693' y='171' onmouseover="hghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id'])" onmouseout="uhghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id'])">stage_id</text><title>stage_id
+* int</title></a>
+<a xlink:href='#notifications_cycle.stage_id'><use id='fk' x='769' y='161' xlink:href='#fk'/><title>References notifications_stage ( stage_id -&gt; id ) </title></a>
+
+<!-- ============= Table 'notifications_emailtemplate' ============= -->
+<rect class='table' x='900' y='203' width='150' height='135' rx='7' ry='7' style='stroke:none'/>
+<path d='M 900.00 229.00 L 900.00 210.00 Q 900.00 203.00 907.00 203.00 L 1043.00 203.00 Q 1050.00 203.00 1050.00 210.00 L 1050.00 229.00 L900.00 229.00 ' style='fill:url(#tbg_bfd4f5);stroke:1;stroke-opacity:0.1;' />
+<rect class='table' x='900' y='203' width='150' height='135' rx='7' ry='7' style='fill:none;stroke:#aeb5bf'/>
+<line class='delim' x1='900.000000' y1='229.000000' x2='1050.000000' y2='229.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='915.000000' y1='229.000000' x2='915.000000' y2='338.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='1039.000000' y1='229.000000' x2='1039.000000' y2='338.000000' style='stroke:#aeb5bf'/>
+<a xlink:href='#notifications_emailtemplate'><text x='907' y='221'>notifications_emailtemplate</text><title>Table bdr_registries_notifications.notifications_emailtemplate</title></a>
+  <use id='nn' x='902' y='237' xlink:href='#nn'/><a xlink:href='#notifications_emailtemplate.id'><use id='pk' x='902' y='236' xlink:href='#pk'/><title>Pk pk_notifications_emailtemplate ( id ) </title></a>
+<a xlink:href='#notifications_emailtemplate.id'><text id='bdr_registries_notifications.notifications_emailtemplate.id' x='918' y='246' onmouseover="hghl(['notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id'])" onmouseout="uhghl(['notifications_cycleemailtemplate_noti_emailtemplate_id_f86cc66b_fk_notifications_emailtemplate_id'])">id</text><title>id
+* int</title></a>
+<a xlink:href='#notifications_emailtemplate.id'><use id='ref' x='1039' y='236' xlink:href='#ref'/><title>Referred by notifications_cycleemailtemplate ( emailtemplate_id -&gt; id ) </title></a>
+  <use id='nn' x='902' y='252' xlink:href='#nn'/><a xlink:href='#notifications_emailtemplate.subject'><text id='bdr_registries_notifications.notifications_emailtemplate.subject' x='918' y='261'>subject</text><title>subject
+* varchar(256)</title></a>
+  <use id='nn' x='902' y='267' xlink:href='#nn'/><a xlink:href='#notifications_emailtemplate.body_html'><text id='bdr_registries_notifications.notifications_emailtemplate.body_html' x='918' y='276'>body_html</text><title>body_html
+* longtext</title></a>
+  <a xlink:href='#notifications_emailtemplate.body_text'><text id='bdr_registries_notifications.notifications_emailtemplate.body_text' x='918' y='291'>body_text</text><title>body_text
+longtext</title></a>
+  <use id='nn' x='902' y='297' xlink:href='#nn'/><a xlink:href='#notifications_emailtemplate.group_id'><use id='unq' x='902' y='296' xlink:href='#unq'/><title>Unq notifications_emailtemplate_group_id_037dd5ee_uniq ( group_id, stage_id ) </title></a>
+<a xlink:href='#notifications_emailtemplate.group_id'><text id='bdr_registries_notifications.notifications_emailtemplate.group_id' x='918' y='306' onmouseover="hghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id'])" onmouseout="uhghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id'])">group_id</text><title>group_id
+* int</title></a>
+<a xlink:href='#notifications_emailtemplate.group_id'><use id='fk' x='1039' y='296' xlink:href='#fk'/><title>References notifications_companiesgroup ( group_id -&gt; id ) </title></a>
+  <use id='nn' x='902' y='312' xlink:href='#nn'/><a xlink:href='#notifications_emailtemplate.stage_id'><use id='unq' x='902' y='311' xlink:href='#unq'/><title>Unq notifications_emailtemplate_group_id_037dd5ee_uniq ( group_id, stage_id ) notifications_emailt_stage_id_478a8198_fk_notifications_stage_id ( stage_id ) </title></a>
+<a xlink:href='#notifications_emailtemplate.stage_id'><text id='bdr_registries_notifications.notifications_emailtemplate.stage_id' x='918' y='321' onmouseover="hghl(['notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id'])" onmouseout="uhghl(['notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id'])">stage_id</text><title>stage_id
+* int</title></a>
+<a xlink:href='#notifications_emailtemplate.stage_id'><use id='fk' x='1039' y='311' xlink:href='#fk'/><title>References notifications_stage ( stage_id -&gt; id ) </title></a>
+
+<!-- ============= Table 'notifications_stage' ============= -->
+<rect class='table' x='915' y='38' width='105' height='120' rx='7' ry='7' style='stroke:none'/>
+<path d='M 915.00 64.00 L 915.00 45.00 Q 915.00 38.00 922.00 38.00 L 1013.00 38.00 Q 1020.00 38.00 1020.00 45.00 L 1020.00 64.00 L915.00 64.00 ' style='fill:url(#tbg_bfd4f5);stroke:1;stroke-opacity:0.1;' />
+<rect class='table' x='915' y='38' width='105' height='120' rx='7' ry='7' style='fill:none;stroke:#aeb5bf'/>
+<line class='delim' x1='915.000000' y1='64.000000' x2='1020.000000' y2='64.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='930.000000' y1='64.000000' x2='930.000000' y2='158.000000' style='stroke:#aeb5bf'/>
+<line class='delim' x1='1009.000000' y1='64.000000' x2='1009.000000' y2='158.000000' style='stroke:#aeb5bf'/>
+<a xlink:href='#notifications_stage'><text x='919' y='56'>notifications_stage</text><title>Table bdr_registries_notifications.notifications_stage</title></a>
+  <use id='nn' x='917' y='72' xlink:href='#nn'/><a xlink:href='#notifications_stage.title'><text id='bdr_registries_notifications.notifications_stage.title' x='933' y='81'>title</text><title>title
+* varchar(64)</title></a>
+  <use id='nn' x='917' y='87' xlink:href='#nn'/><a xlink:href='#notifications_stage.code'><use id='unq' x='917' y='86' xlink:href='#unq'/><title>Unq code ( code ) </title></a>
+<a xlink:href='#notifications_stage.code'><text id='bdr_registries_notifications.notifications_stage.code' x='933' y='96'>code</text><title>code
+* varchar(64)</title></a>
+  <use id='nn' x='917' y='102' xlink:href='#nn'/><a xlink:href='#notifications_stage.can_edit'><text id='bdr_registries_notifications.notifications_stage.can_edit' x='933' y='111'>can_edit</text><title>can_edit
+* bit</title></a>
+  <use id='nn' x='917' y='117' xlink:href='#nn'/><a xlink:href='#notifications_stage.id'><use id='pk' x='917' y='116' xlink:href='#pk'/><title>Pk pk_notifications_stage ( id ) </title></a>
+<a xlink:href='#notifications_stage.id'><text id='bdr_registries_notifications.notifications_stage.id' x='933' y='126' onmouseover="hghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id','notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id'])" onmouseout="uhghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id','notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id'])">id</text><title>id
+* int</title></a>
+<a xlink:href='#notifications_stage.id'><use id='ref' x='1009' y='116' xlink:href='#ref'/><title>Referred by notifications_cycle ( stage_id -&gt; id ) 
+Referred by notifications_emailtemplate ( stage_id -&gt; id ) </title></a>
+  <use id='nn' x='917' y='132' xlink:href='#nn'/><a xlink:href='#notifications_stage.can_trigger'><text id='bdr_registries_notifications.notifications_stage.can_trigger' x='933' y='141'>can_trigger</text><title>can_trigger
+* bit</title></a>
+
+</g></svg>
