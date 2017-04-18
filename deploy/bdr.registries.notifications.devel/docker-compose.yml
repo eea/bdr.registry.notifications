@@ -19,7 +19,7 @@ services:
   app:
     image: eeacms/bdr.registries.notifications:latest
     ports:
-    - "5000:8888"
+    - "5000:12301"
     depends_on:
     - mysql
     env_file:

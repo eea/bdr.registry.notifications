@@ -31,7 +31,7 @@ fi
 
 exec gunicorn bdr.wsgi:application \
   --name bdr_registries_notifications \
-  --bind 0.0.0.0:8888 \
+  --bind 0.0.0.0:$APP_HTTP_PORT \
   --workers 3 \
   --access-logfile - \
   --error-logfile -
