@@ -19,7 +19,16 @@ if ! mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "use $DATABASES_NAME;"; th
 fi
 
 python manage.py migrate &&
-python manage.py collectstatic --noinput &&
+python manage.py collectstatic --noinput
+
+if [ ! -e .skip-loaddata ]; then
+  touch .skip-loaddata
+  echo "Loading fixtures"
+  python manage.py loaddata notifications/fixtures/stages.json
+  python manage.py loaddata notifications/fixtures/companiesgroups.json
+  python manage.py loaddata notifications/fixtures/emailtemplates.json
+fi
+
 exec gunicorn bdr.wsgi:application \
   --name bdr_registries_notifications \
   --bind 0.0.0.0:8888 \
