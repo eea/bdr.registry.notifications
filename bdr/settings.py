@@ -130,6 +130,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+STATIC_ROOT = env('STATIC_ROOT', os.path.join(BASE_DIR, 'static/'))
+
 STATIC_URL = env('STATIC_URL', '/static/')
 
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'

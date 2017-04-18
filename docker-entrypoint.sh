@@ -20,9 +20,8 @@ fi
 
 python manage.py migrate &&
 python manage.py collectstatic --noinput &&
-python manage.py fetchtemplates &&
 exec gunicorn bdr.wsgi:application \
-  --name gemet \
+  --name bdr_registries_notifications \
   --bind 0.0.0.0:8888 \
   --workers 3 \
   --access-logfile - \

@@ -15,4 +15,3 @@ WORKDIR $WORK_DIR
 RUN pip install -r requirements-docker.txt
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
-CMD ["run"]
