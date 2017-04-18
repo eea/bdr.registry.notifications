@@ -1,7 +1,12 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
+from django.contrib import admin
+
 
 from . import views
+
+
+admin.autodiscover()
 
 
 app_name = 'notifications'
@@ -42,4 +47,6 @@ urlpatterns = [
     url(r'^notifications/emailtemplate/(?P<pk>\d+)/test/$',
         views.CycleEmailTemplateTest.as_view(),
         name='emailtemplate_test'),
+
+    url(r'^notifications/admin/', include(admin.site.urls)),
 ]

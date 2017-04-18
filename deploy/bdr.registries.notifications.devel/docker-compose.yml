@@ -19,7 +19,7 @@ services:
   app:
     image: eeacms/bdr.registries.notifications:latest
     ports:
-    - "5000:12301"
+    - "12301:12301"
     depends_on:
     - mysql
     env_file:
@@ -29,6 +29,7 @@ services:
       TZ: Europe/Copenhagen
     volumes:
     - appdata:/var/local/bdr.registries.notifications/static
+    - ../../notifications:/var/local/bdr.registries.notifications/notifications
     entrypoint: /usr/bin/tail
     command:  -f /dev/null
 
