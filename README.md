@@ -11,10 +11,11 @@ Development and deployment
 --------------------------
 
 1. Create a virtual environment:
-
-        $ virtualenv bdr
-        $ cd bdr
-        $ source bin/activate
+    ```
+    $ virtualenv bdr
+    $ cd bdr
+    $ source bin/activate
+    ```
 
 2. Clone the repository:
 
