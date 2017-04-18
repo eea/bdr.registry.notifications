@@ -11,10 +11,10 @@ admin.autodiscover()
 
 app_name = 'notifications'
 urlpatterns = [
-    url(r'^accounts/login/?$',
+    url(r'^notifications/accounts/login/?$',
         auth_views.login, {'template_name': 'notifications/login.html'},
         name='login'),
-    url(r'^accounts/logout/?$',
+    url(r'^notifications/accounts/logout/?$',
         views.logout_view,
         name='logout'),
 
