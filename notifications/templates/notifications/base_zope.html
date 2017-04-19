@@ -71,7 +71,7 @@
 				<ul>
 					<li><a href="{% url 'notifications:dashboard' %}">{% trans 'Dashboard' %}</a></li>
 					{% if user.is_superuser %}
-						<li><a href="{% url 'notifications:dashboard' %}admin/" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
+						<li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
 					{% endif %}
 				</ul>
 			{% endif %}

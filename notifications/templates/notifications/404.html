@@ -1,0 +1,9 @@
+{% extends layout_template %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+	<h1>Error (404)</h1>
+	<p>We can't find the page you're looking for.</p>
+	<p>You might try retyping the URL and trying again. Or we could take you back to the <a href="{% url 'notifications:dashboard' 'en' %}">dashboard</a>.</p>
+{% endblock %}

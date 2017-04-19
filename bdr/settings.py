@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import sys
 from getenv import env
+import ldap
+
+from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #custom
+    'frame',
     'ckeditor',
     'simple_history',
     'notifications.apps.NotificationsConfig',
@@ -54,7 +58,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #custom
+    'frame.middleware.RequestMiddleware',
+    'frame.middleware.UserMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware'
 ]
 
 ROOT_URLCONF = 'bdr.urls'
@@ -150,6 +157,33 @@ CKEDITOR_CONFIGS = {
         'width': '100%',
     },
 }
+
+
+# Authentication
+# Keep ModelBackend around for per-user permissions and maybe a local
+# superuser.
+AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'frame.backends.FrameUserBackend',
+)
+
+AUTH_LDAP_SERVER_URI = env('AUTH_LDAP_SERVER_URI', '')
+AUTH_LDAP_BIND_DN = env('AUTH_LDAP_BIND_DN', '')
+AUTH_LDAP_BIND_PASSWORD = env('AUTH_LDAP_BIND_PASSWORD', '')
+AUTH_LDAP_BASE_DN = env('AUTH_LDAP_BASE_DN', '')
+AUTH_LDAP_USER_SEARCH = LDAPSearch(AUTH_LDAP_BASE_DN,
+                                  ldap.SCOPE_SUBTREE,
+                                  '(uid=%(user)s)')
+AUTH_LDAP_USER_ATTR_MAP = env('AUTH_LDAP_USER_ATTR_MAP', {
+   'first_name': 'givenName',
+   'last_name': 'sn',
+   'email': 'mail',
+})
+
+FRAME_URL = env('FRAME_URL', '')
+FRAME_VERIFY_SSL = env('FRAME_VERIFY_SSL', False)
+FRAME_COOKIES = env('FRAME_COOKIES', [])
 
 
 # BDR specific
