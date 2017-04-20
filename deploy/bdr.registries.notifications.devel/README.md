@@ -41,12 +41,12 @@ Start as service:
 
 or in debug mode:
 
-    $ python manage.py runserver 0.0.0.0:8888
+    $ python manage.py runserver 0.0.0.0:$APP_HTTP_PORT
 
 
 ### 1.4. Test app
 
-To access the app, type in your browser http://localhost:5000/notifications/.
+To access the app, type in your browser http://localhost:APP_HTTP_PORT/notifications/.
 
 
 

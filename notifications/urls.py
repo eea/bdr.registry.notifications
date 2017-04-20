@@ -14,7 +14,7 @@ urlpatterns = [
         views.logout_view,
         name='logout'),
 
-    url(r'^dashboard/$',
+    url(r'^$',
         views.DashboardView.as_view(),
         name='dashboard'),
 

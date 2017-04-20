@@ -13,9 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import sys
 from getenv import env
-import ldap
 
-from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -145,7 +143,7 @@ CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar_bufnita': [
+        'toolbar_bdr': [
             ['Format', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'Undo', 'Redo', 'RemoveFormat'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
             ['Link', 'Unlink', 'Anchor'],
@@ -153,7 +151,7 @@ CKEDITOR_CONFIGS = {
             ['TextColor', 'BGColor'],
             ['Maximize', 'ShowBlocks', '-', 'Source'],
         ],
-        'toolbar': 'bufnita',
+        'toolbar': 'bdr',
         'width': '100%',
     },
 }
@@ -163,23 +161,9 @@ CKEDITOR_CONFIGS = {
 # Keep ModelBackend around for per-user permissions and maybe a local
 # superuser.
 AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
     'frame.backends.FrameUserBackend',
 )
-
-AUTH_LDAP_SERVER_URI = env('AUTH_LDAP_SERVER_URI', '')
-AUTH_LDAP_BIND_DN = env('AUTH_LDAP_BIND_DN', '')
-AUTH_LDAP_BIND_PASSWORD = env('AUTH_LDAP_BIND_PASSWORD', '')
-AUTH_LDAP_BASE_DN = env('AUTH_LDAP_BASE_DN', '')
-AUTH_LDAP_USER_SEARCH = LDAPSearch(AUTH_LDAP_BASE_DN,
-                                  ldap.SCOPE_SUBTREE,
-                                  '(uid=%(user)s)')
-AUTH_LDAP_USER_ATTR_MAP = env('AUTH_LDAP_USER_ATTR_MAP', {
-   'first_name': 'givenName',
-   'last_name': 'sn',
-   'email': 'mail',
-})
 
 FRAME_URL = env('FRAME_URL', '')
 FRAME_VERIFY_SSL = env('FRAME_VERIFY_SSL', False)
