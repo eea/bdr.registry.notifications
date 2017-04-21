@@ -37,7 +37,7 @@ class CycleEmailTemplateEditForm(forms.ModelForm):
 
     class Meta:
         model = CycleEmailTemplate
-        fields = ['subject', 'body_html', 'body_text']
+        fields = ['subject', 'body_html']
         exclude = ('id', 'cycle', 'emailtemplate')
 
 
@@ -49,7 +49,6 @@ class CycleEmailTemplateTestForm(forms.Form):
         # send email using the self.cleaned_data dictionary
         subject = emailtemplate.subject
         body_html = emailtemplate.body_html
-        body_text = emailtemplate.body_text
 
         email = self.data['email'].strip()
         values = {}
@@ -57,11 +56,10 @@ class CycleEmailTemplateTestForm(forms.Form):
             values[param] = self.data[param.lower()]
 
         body_html = body_html.format(**values)
-        body_text = body_html.format(**values)
 
         send_mail(
             subject,
-            body_text,
+            body_html,
             'FROM@example.com',
             [email],
             fail_silently=False,

@@ -3,9 +3,9 @@
   <script type='text/ecmascript'>
   <![CDATA[
   function hghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','highlight');  }  }
-  function uhghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','scene'); }  } 
+  function uhghl(el) { for ( var i in el ){ document.getElementById(el[i]).setAttribute('class','scene'); }  }
   ]]>
-  </script> 
+  </script>
 
 <style type='text/css'>
   text                { fill:#000000; font-family: Tahoma, 'Trebuchet MS', Dialog; font-size:11px; }
@@ -25,36 +25,36 @@
   rect.grp            { stroke:#b1b1b1; stroke-width:1.7; opacity:0.8; }
 </style>
 <defs>
-  <pattern id='layoutBgA' patternUnits='userSpaceOnUse'  width='10' height='20' x='0' y='0' viewBox='0 0 5 10'>  
-     <line x1='-2' y1='1' x2='7' y2='10' stroke='#efefef' stroke-width='.5'/>  
-     <line x1='-2' y1='6' x2='7' y2='15' stroke='#efefef' stroke-width='.5'/>  
-     <line x1='-2' y1='-4' x2='7' y2='5' stroke='#efefef' stroke-width='.5'/>  
-  </pattern>  
+  <pattern id='layoutBgA' patternUnits='userSpaceOnUse'  width='10' height='20' x='0' y='0' viewBox='0 0 5 10'>
+     <line x1='-2' y1='1' x2='7' y2='10' stroke='#efefef' stroke-width='.5'/>
+     <line x1='-2' y1='6' x2='7' y2='15' stroke='#efefef' stroke-width='.5'/>
+     <line x1='-2' y1='-4' x2='7' y2='5' stroke='#efefef' stroke-width='.5'/>
+  </pattern>
   <radialGradient id='layoutBgB' gradientUnits='userSpaceOnUse' cx='50%' cy='50%' r='75%' fx='46%' fy='22%'>
-     <stop offset='0%' stop-opacity='.2' stop-color='#f5f5f5' />  
-     <stop offset='100%' stop-color='#efefef' />  
+     <stop offset='0%' stop-opacity='.2' stop-color='#f5f5f5' />
+     <stop offset='100%' stop-color='#efefef' />
   </radialGradient>
-  <pattern id='layoutBgTr' patternUnits='userSpaceOnUse'  width='300' height='300' x='0' y='0' viewBox='0 0 300 300'>  
-    <text x='-85' y='200' transform='rotate(-45)' style='font-family:Arial;font-size:78px;font-weight:bold;fill:#e7e7e7;'>&#84;&#82;&#73;&#65;&#76;</text> 
-    <text x='-130' y='230' transform='rotate(-45)' style='font-family:Arial;font-size:24px;font-weight:bold;fill:#e7e7e7;'>&#77;ove &#116;he m&#111;use &#111;ver &#116;ables</text> 
-    <text x='-85' y='250' transform='rotate(-45)' style='font-family:Arial;font-size:24px;font-weight:bold;fill:#e7e7e7;'>&#116;o re&#97;d &#116;he c&#111;mmen&#116;s</text> 
-  </pattern>  
+  <pattern id='layoutBgTr' patternUnits='userSpaceOnUse'  width='300' height='300' x='0' y='0' viewBox='0 0 300 300'>
+    <text x='-85' y='200' transform='rotate(-45)' style='font-family:Arial;font-size:78px;font-weight:bold;fill:#e7e7e7;'>&#84;&#82;&#73;&#65;&#76;</text>
+    <text x='-130' y='230' transform='rotate(-45)' style='font-family:Arial;font-size:24px;font-weight:bold;fill:#e7e7e7;'>&#77;ove &#116;he m&#111;use &#111;ver &#116;ables</text>
+    <text x='-85' y='250' transform='rotate(-45)' style='font-family:Arial;font-size:24px;font-weight:bold;fill:#e7e7e7;'>&#116;o re&#97;d &#116;he c&#111;mmen&#116;s</text>
+  </pattern>
   <linearGradient id='groupUnderTitleLine' x1='0%' y1='0%' x2='100%' y2='0%' >
-          <stop offset='0%' stop-color='#999999' stop-opacity='0.7'/> 
-          <stop offset='100%' stop-color='#999999' stop-opacity='0' /> 
+          <stop offset='0%' stop-color='#999999' stop-opacity='0.7'/>
+          <stop offset='100%' stop-color='#999999' stop-opacity='0' />
    </linearGradient>
   <radialGradient id='calloutGradient' cx='25%' cy='20%' r='80%' fx='10%' fy='10%'>
 	   <stop offset='0%' stop-color='#ffffff' />
     <stop offset='100%' stop-color='#f8f6d1' />
   </radialGradient>
-  <filter id='shadow' width='120%' height='120%'> 
-      <feOffset result='offOut' in='SourceGraphic' dx='1' dy='1' /> 
-      <feColorMatrix result='matrixOut' in='offOut' type='matrix' 
-      values='0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.3 0' /> 
-      <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' /> 
-      <feBlend in='SourceGraphic' in2='blurOut' mode='normal' /> 
-    </filter> 
-  <filter id='fkShadow' height='130%'> 
+  <filter id='shadow' width='120%' height='120%'>
+      <feOffset result='offOut' in='SourceGraphic' dx='1' dy='1' />
+      <feColorMatrix result='matrixOut' in='offOut' type='matrix'
+      values='0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.1 0 0 0 0 0 0.3 0' />
+      <feGaussianBlur result='blurOut' in='matrixOut' stdDeviation='3' />
+      <feBlend in='SourceGraphic' in2='blurOut' mode='normal' />
+    </filter>
+  <filter id='fkShadow' height='130%'>
     <feGaussianBlur in='SourceAlpha' stdDeviation='1.5'/> <!-- stdDeviation is how much to blur -->
     <feOffset dx='1.2' dy='1.2' result='offsetblur'/> <!-- how much to offset -->
     <feMerge>
@@ -63,8 +63,8 @@
     </feMerge>
   </filter>
   <radialGradient id='legendGradient' fx='5%' fy='5%' r='75%' spreadMethod='pad'>
-          <stop offset='0%' stop-color='#eefbf2' stop-opacity='1'/> 
-          <stop offset='100%' stop-color='#cff9cb' stop-opacity='1' /> 
+          <stop offset='0%' stop-color='#eefbf2' stop-opacity='1'/>
+          <stop offset='100%' stop-color='#cff9cb' stop-opacity='1' />
    </radialGradient>
   <symbol id='calloutArrowDown' overflow='visible' >
       <path d='M 0,0 L 7,11 L 15,0 z' style='fill:#f8f6d1;stroke:none; filter: url(#shadow);' />
@@ -170,12 +170,12 @@
     <path d='M 0.00,0.00 L 7.50,3.75 L 0.00,7.50' />
   </marker>
   <linearGradient id='tbg_c8f5bf' x1='0%' y1='0%' x2='0%' y2='100%' >
-     <stop offset='0%' stop-color='#e4f8e0' /> 
-     <stop offset='100%' stop-color='#c9eec1' /> 
+     <stop offset='0%' stop-color='#e4f8e0' />
+     <stop offset='100%' stop-color='#c9eec1' />
   </linearGradient>
   <linearGradient id='tbg_bfd4f5' x1='0%' y1='0%' x2='0%' y2='100%' >
-     <stop offset='0%' stop-color='#e0e9f8' /> 
-     <stop offset='100%' stop-color='#c1d3ee' /> 
+     <stop offset='0%' stop-color='#e0e9f8' />
+     <stop offset='100%' stop-color='#c1d3ee' />
   </linearGradient>
 </defs>
 
@@ -186,9 +186,9 @@
 
 <!-- ============= Legend ============= -->
 <g transform='translate(10,10)'>
-  <rect x='10' y='10' width='330' height='52' rx='6' ry='6' style='fill:url(#legendGradient);filter:url(#shadow);'/> 
-  <text x='65' y='33'>BDR Registries Notifications</text> 
-  <text x='65' y='49' style='fill:#aaaaaa; font-size:11px;'><tspan>Read table &amp; column comments as mouse-over tooltips.</tspan></text> 
+  <rect x='10' y='10' width='330' height='52' rx='6' ry='6' style='fill:url(#legendGradient);filter:url(#shadow);'/>
+  <text x='65' y='33'>BDR Registries Notifications</text>
+  <text x='65' y='49' style='fill:#aaaaaa; font-size:11px;'><tspan>Read table &amp; column comments as mouse-over tooltips.</tspan></text>
 <g transform="scale(0.75,0.75) translate(10,7)" > <a xlink:href='http://www.dbschema.com'> <rect style="fill:#eb7f2c;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="40.04" y="59.44" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="54.83" y="59.57" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="40.35" y="71.62" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.27" height="11.26" x="54.68" y="71.75" ry="3.14" transform="matrix(0.90187511,-0.43199686,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="13.48" y="19.67" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#eb7f2c;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="28.36" y="19.80" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="13.79" y="31.78" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.35" height="11.20" x="28.21" y="31.92" ry="3.12" transform="matrix(0.84723158,0.53122372,0,1,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="34.59" y="-9.62" ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="49.63" y="-9.46" ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <rect style="fill:#2c49eb;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="34.90" y="5.77"  ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <rect style="fill:#eb7f2c;stroke:none;shape-rendering:geometricPrecision;" width="13.49" height="14.24" x="49.47" y="5.93"  ry="3.97" transform="matrix(0.85815392,0.51339249,-0.91732703,0.39813455,0,0)" /> <title>Generated using DbSchema - www.dbschema.com</title> </a></g>
 </g>
 
@@ -257,8 +257,6 @@ notifications_emailtemplate ref notifications_stage ( stage_id -&gt; id )' class
 * varchar(256)</title></a>
   <use id='nn' x='362' y='162' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.body_html'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.body_html' x='378' y='171'>body_html</text><title>body_html
 * longtext</title></a>
-  <a xlink:href='#notifications_cycleemailtemplate.body_text'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.body_text' x='378' y='186'>body_text</text><title>body_text
-longtext</title></a>
   <use id='nn' x='362' y='192' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.is_triggered'><text id='bdr_registries_notifications.notifications_cycleemailtemplate.is_triggered' x='378' y='201'>is_triggered</text><title>is_triggered
 * bit</title></a>
   <use id='nn' x='362' y='207' xlink:href='#nn'/><a xlink:href='#notifications_cycleemailtemplate.cycle_id'><use id='idx' x='362' y='206' xlink:href='#idx'/><title>notifications_cyclee_cycle_id_23ad986f_fk_notifications_cycle_id ( cycle_id ) </title></a>
@@ -306,8 +304,6 @@ longtext</title></a>
 * varchar(128)</title></a>
   <use id='nn' x='47' y='177' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.body_html'><text id='bdr_registries_notifications.notifications_cyclenotification.body_html' x='63' y='186'>body_html</text><title>body_html
 * longtext</title></a>
-  <use id='nn' x='47' y='192' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.body_text'><text id='bdr_registries_notifications.notifications_cyclenotification.body_text' x='63' y='201'>body_text</text><title>body_text
-* longtext</title></a>
   <use id='nn' x='47' y='207' xlink:href='#nn'/><a xlink:href='#notifications_cyclenotification.sent_date'><use id='idx' x='47' y='206' xlink:href='#idx'/><title>notifications_cyclenotification_adc78145 ( sent_date ) </title></a>
 <a xlink:href='#notifications_cyclenotification.sent_date'><text id='bdr_registries_notifications.notifications_cyclenotification.sent_date' x='63' y='216'>sent_date</text><title>sent_date
 * datetime</title></a>
@@ -354,8 +350,6 @@ longtext</title></a>
 * varchar(256)</title></a>
   <use id='nn' x='902' y='267' xlink:href='#nn'/><a xlink:href='#notifications_emailtemplate.body_html'><text id='bdr_registries_notifications.notifications_emailtemplate.body_html' x='918' y='276'>body_html</text><title>body_html
 * longtext</title></a>
-  <a xlink:href='#notifications_emailtemplate.body_text'><text id='bdr_registries_notifications.notifications_emailtemplate.body_text' x='918' y='291'>body_text</text><title>body_text
-longtext</title></a>
   <use id='nn' x='902' y='297' xlink:href='#nn'/><a xlink:href='#notifications_emailtemplate.group_id'><use id='unq' x='902' y='296' xlink:href='#unq'/><title>Unq notifications_emailtemplate_group_id_037dd5ee_uniq ( group_id, stage_id ) </title></a>
 <a xlink:href='#notifications_emailtemplate.group_id'><text id='bdr_registries_notifications.notifications_emailtemplate.group_id' x='918' y='306' onmouseover="hghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id'])" onmouseout="uhghl(['notifications_emailtemplate_notificatio_group_id_09447bc3_fk_notifications_companiesgroup_id'])">group_id</text><title>group_id
 * int</title></a>
@@ -383,7 +377,7 @@ longtext</title></a>
   <use id='nn' x='917' y='117' xlink:href='#nn'/><a xlink:href='#notifications_stage.id'><use id='pk' x='917' y='116' xlink:href='#pk'/><title>Pk pk_notifications_stage ( id ) </title></a>
 <a xlink:href='#notifications_stage.id'><text id='bdr_registries_notifications.notifications_stage.id' x='933' y='126' onmouseover="hghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id','notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id'])" onmouseout="uhghl(['notifications_cycle_notifications_cycle_stage_id_0bcbb56b_fk_notifications_stage_id','notifications_emailtemplate_notifications_emailt_stage_id_478a8198_fk_notifications_stage_id'])">id</text><title>id
 * int</title></a>
-<a xlink:href='#notifications_stage.id'><use id='ref' x='1009' y='116' xlink:href='#ref'/><title>Referred by notifications_cycle ( stage_id -&gt; id ) 
+<a xlink:href='#notifications_stage.id'><use id='ref' x='1009' y='116' xlink:href='#ref'/><title>Referred by notifications_cycle ( stage_id -&gt; id )
 Referred by notifications_emailtemplate ( stage_id -&gt; id ) </title></a>
   <use id='nn' x='917' y='132' xlink:href='#nn'/><a xlink:href='#notifications_stage.can_trigger'><text id='bdr_registries_notifications.notifications_stage.can_trigger' x='933' y='141'>can_trigger</text><title>can_trigger
 * bit</title></a>

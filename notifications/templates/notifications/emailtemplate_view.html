@@ -26,10 +26,7 @@
 	{% endif %}
 {% endwith %}
 
-<h2>Body HTML</h2>
+<h2>Body</h2>
 <div class="preview-body">{{ view.object.body_html|safe }}</div>
-
-<h2>Body TEXT/PLAIN</h2>
-<div class="preview-body">{{ view.object.body_text }}</div>
 
 {% endblock %}

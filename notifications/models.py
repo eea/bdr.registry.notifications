@@ -71,8 +71,7 @@ class EmailTemplate(models.Model):
         unique_together = ('group', 'stage')
 
     subject = models.CharField(max_length=256)
-    body_html = RichTextField()
-    body_text = models.TextField(blank=True, null=True, default='')
+    body_html = RichTextField(verbose_name='Body')
     group = models.ForeignKey(CompaniesGroup)
     stage = models.ForeignKey(Stage, default=STAGE_INITIATED,
                               limit_choices_to=Q(can_trigger=True))
@@ -127,9 +126,6 @@ class Cycle(models.Model):
                 body_html=(emailtemplate
                            .body_html
                            .format(year=year, closing_date=closing_date)),
-                body_text=(emailtemplate
-                           .body_text
-                           .format(year=year, closing_date=closing_date))
             )
             cycle_emailtemplate.save()
 
@@ -143,8 +139,7 @@ class CycleEmailTemplate(models.Model):
         verbose_name_plural = '> Cycles email templates'
 
     subject = models.CharField(max_length=256)
-    body_html = RichTextField()
-    body_text = models.TextField(blank=True, null=True, default='')
+    body_html = RichTextField(verbose_name='Body')
     cycle = models.ForeignKey(Cycle)
     emailtemplate = models.ForeignKey(EmailTemplate)
     is_triggered = models.BooleanField(default=False)
@@ -190,7 +185,6 @@ class CycleNotification(models.Model):
     subject = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True)
     body_html = models.TextField()
-    body_text = models.TextField()
     sent_date = models.DateTimeField(db_index=True,
                                      default=timezone.now)
     emailtemplate = models.ForeignKey(CycleEmailTemplate)

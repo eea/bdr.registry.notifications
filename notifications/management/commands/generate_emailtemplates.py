@@ -17,8 +17,7 @@ class Command(BaseCommand):
                     stage=stage,
                     group=group,
                     subject='subject',
-                    body_html='<p>WIP</p>',
-                    body_text=''
+                    body_html='<p>WIP</p>'
                 )
                 base_email_template.save()
 
