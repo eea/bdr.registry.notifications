@@ -17,7 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^notifications/admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
 
-    url(r'^notifications/', include('notifications.urls')),
+    url(r'^', include('notifications.urls')),
 ]
