@@ -170,6 +170,42 @@ FRAME_VERIFY_SSL = env('FRAME_VERIFY_SSL', False)
 FRAME_COOKIES = env('FRAME_COOKIES', [])
 
 
+# Logging
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'notifications.registries': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
+
+
 # BDR specific
 
 EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
@@ -180,6 +216,14 @@ BDR_SERVER_URL = env('BDR_SERVER_URL', 'http://localhost')
 BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
 
 USE_ZOPE_LAYOUT = env('USE_ZOPE_LAYOUT', True)
+
+
+BDRREGISTRY_URL = env('BDRREGISTRY_URL', '')
+BDRREGISTRY_USERNAME = env('BDRREGISTRY_USERNAME', '')
+BDRREGISTRY_PASSWORD = env('BDRREGISTRY_PASSWORD', '')
+
+FGASESREGISTRY_URL = env('FGASESREGISTRY_URL', '')
+FGASESREGISTRY_TOKEN = env('FGASESREGISTRY_TOKEN', '')
 
 
 try:

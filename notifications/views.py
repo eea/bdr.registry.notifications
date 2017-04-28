@@ -17,6 +17,7 @@ from braces import views as braces_views
 from .models import Cycle, CycleEmailTemplate, CycleNotification, STAGE_CLOSED
 from .forms import (CycleAddForm, CycleEditForm,
                     CycleEmailTemplateEditForm, CycleEmailTemplateTestForm)
+from .registries import BDRRegistry, FGasesRegistry
 
 
 Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
@@ -151,6 +152,14 @@ class CycleTrigger(NotificationsBaseView, generic.DetailView):
                 .filter(emailtemplate__cycle=self.object,
                         emailtemplate__emailtemplate__stage=self.object.stage)
                 .order_by('-sent_date'))
+
+    def test_get_companies(self):
+        bdr = BDRRegistry()
+        fgases = FGasesRegistry()
+        return {
+            bdr.name: bdr.get_companies(),
+            fgases.name: fgases.get_companies()
+        }
 
 
 class CycleEmailTemplateBase(NotificationsBaseView):
