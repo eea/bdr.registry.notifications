@@ -172,7 +172,6 @@ FRAME_COOKIES = env('FRAME_COOKIES', [])
 
 # Logging
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -207,6 +206,8 @@ LOGGING = {
 
 
 # BDR specific
+
+APP_REVERSE_PROXY = env('APP_REVERSE_PROXY', False)
 
 EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = env('EMAIL_HOST', 'localhost')
