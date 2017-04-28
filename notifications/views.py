@@ -32,7 +32,7 @@ def logout_view(request):
 class NotificationsBaseView(braces_views.StaffuserRequiredMixin,
                             SuccessMessageMixin):
 
-    login_url = '/notifications/accounts/login'
+    login_url = '/accounts/login'
 
     def breadcrumbs(self):
         return [

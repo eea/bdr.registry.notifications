@@ -1,5 +1,6 @@
-import requests
 import logging
+import requests
+from requests.exceptions import RequestException
 
 from django.conf import settings
 
@@ -43,6 +44,7 @@ class BaseRegistry(object):
 
         url = self.get_url(path)
         r = None
+
         try:
             r = request(url,
                         params=params,
@@ -76,6 +78,7 @@ class BDRRegistry(BaseRegistry):
         super(BDRRegistry, self).__init__('BDRRegistry',
                                           entrypoint=entrypoint,
                                           auth=auth)
+        self.cookies = None
 
     def do_login(self):
         """ Login to registry using the credentials from auth.
@@ -97,19 +100,19 @@ class BDRRegistry(BaseRegistry):
             'next': '/'
         }
         try:
-            resp = client.post(url, data=data, headers=dict(Referer=url))
+            r = client.post(url, data=data, headers=dict(Referer=url))
         except RequestException as e:
             logger.warning('Unable to login to {} ({})'.format(self.name, e))
         else:
-            if resp.status_code == 200:
-                cookies = resp.request.headers.get('Cookie').split(';')
-                for cookie in cookies:
+            if r.status_code == 200:
+                cookies = {}
+                for cookie in r.request.headers.get('Cookie').split(';'):
                     cookie = cookie.strip()
                     session = cookie.split('sessionid=')
                     if len(session) == 2:
                         sessionid = session[-1]
-                        self.cookies = dict(sessionid=sessionid)
-                        cookies = self.cookies
+                        cookies = dict(sessionid=sessionid)
+                        break
         return cookies
 
     def do_request(self, path, method='get', params=None, data=None,
@@ -117,18 +120,19 @@ class BDRRegistry(BaseRegistry):
         """ Handler for BDR API calls - the authorization is done
             using an user and a password.
         """
-        if not cookies:
-            cookies = self.do_login()
+        if self.cookies is None:
+            self.cookies = self.do_login()
+
         return super(BDRRegistry, self).do_request(path,
                                                    method=method,
                                                    params=params,
                                                    data=data,
                                                    headers=headers,
-                                                   cookies=cookies,
+                                                   cookies=self.cookies,
                                                    auth=auth)
 
     def get_companies(self):
-        r = self.do_request('/management/companies/export/json', 'post')
+        r = self.do_request('/management/companies/export/json')
         if r:
             return r.json()
 
