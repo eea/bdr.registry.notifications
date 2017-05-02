@@ -1,6 +1,7 @@
 import logging
 import requests
 from requests.exceptions import RequestException
+from memoize import memoize
 
 from django.conf import settings
 
@@ -13,7 +14,7 @@ class BaseRegistry(object):
     """ Base class for both registries.
     """
 
-    def __init__(self, name, entrypoint, auth=None, token=None, timeout=5):
+    def __init__(self, name, entrypoint, auth=None, token=None, timeout=20):
         self.name = name
         self.entrypoint = entrypoint
         self.auth = auth
@@ -22,6 +23,11 @@ class BaseRegistry(object):
 
     def __str__(self):
         return '{} @ {}'.format(self.name, self.entrypoint)
+
+    def __repr__(self):
+        """ Overwrite default for memcache key generation.
+        """
+        return '{}.{}'.format(self.__module__, self.__class__.__name__)
 
     def get_url(self, path):
         return '{}{}'.format(self.entrypoint, path)
@@ -43,10 +49,10 @@ class BaseRegistry(object):
             request = requests.post
 
         url = self.get_url(path)
-        r = None
+        response = None
 
         try:
-            r = request(url,
+            response = request(url,
                         params=params,
                         data=data,
                         headers=headers,
@@ -57,12 +63,12 @@ class BaseRegistry(object):
         except Exception as e:
             logger.warning('Error contacting {} ({})'.format(self.name, e))
         else:
-            if r.status_code != requests.codes.ok:
+            if response.status_code != requests.codes.ok:
                 logger.warning('Retrieved a {} status code when contacting'
-                               ' {}\'s url: {} '.format(r.status_code,
+                               ' {}\'s url: {} '.format(response.status_code,
                                                         self.name,
                                                         url))
-        return r
+        return response
 
 
 class BDRRegistry(BaseRegistry):
@@ -100,13 +106,13 @@ class BDRRegistry(BaseRegistry):
             'next': '/'
         }
         try:
-            r = client.post(url, data=data, headers=dict(Referer=url))
+            response = client.post(url, data=data, headers=dict(Referer=url))
         except RequestException as e:
             logger.warning('Unable to login to {} ({})'.format(self.name, e))
         else:
-            if r.status_code == 200:
+            if response.status_code == 200:
                 cookies = {}
-                for cookie in r.request.headers.get('Cookie').split(';'):
+                for cookie in response.request.headers.get('Cookie').split(';'):
                     cookie = cookie.strip()
                     session = cookie.split('sessionid=')
                     if len(session) == 2:
@@ -131,10 +137,17 @@ class BDRRegistry(BaseRegistry):
                                                    cookies=self.cookies,
                                                    auth=auth)
 
+    @memoize(timeout=3600)
     def get_companies(self):
-        r = self.do_request('/management/companies/export/json')
-        if r:
-            return r.json()
+        response = self.do_request('/management/companies/export/json')
+        if response:
+            return response.json()
+
+    @memoize(timeout=3600)
+    def get_persons(self):
+        response = self.do_request('/management/persons/export/json/')
+        if response:
+            return response.json()
 
 
 class FGasesRegistry(BaseRegistry):
@@ -162,7 +175,50 @@ class FGasesRegistry(BaseRegistry):
                                                    cookies=cookies,
                                                    auth=auth)
 
+    @memoize(timeout=3600)
     def get_companies(self):
-        r = self.do_request('/undertaking/list')
-        if r:
-            return r.json()
+        """ Gets the list with all companies. Each company has
+            the following fields:
+             - website
+             - status
+             - domain
+             - vat
+             - users
+             - undertaking_type
+             - date_updated
+             - country_code_orig
+             - company_id
+             - date_created
+             - phone
+             - businessprofile
+             - country_code
+             - address
+                - city
+                - street
+                - number
+                - zipcode
+                - country
+                    - code
+                    - type
+                    - United Kingdom,
+             - types
+             - name
+        """
+        response = self.do_request('/undertaking/list')
+        if response:
+            return response.json()
+
+    @memoize(timeout=3600)
+    def get_persons(self):
+        """ Gets the list with all persons. Each person has
+            the following fields:
+            - username
+            - companyname
+            - country -- company's country
+            - contact_firstname
+            - contact_lastname
+            - contact_email
+        """
+        response = self.do_request('/misc/user/export/json')
+        if response:
+            return response.json()

@@ -153,14 +153,6 @@ class CycleTrigger(NotificationsBaseView, generic.DetailView):
                         emailtemplate__emailtemplate__stage=self.object.stage)
                 .order_by('-sent_date'))
 
-    def test_get_companies(self):
-        bdr = BDRRegistry()
-        fgases = FGasesRegistry()
-        return {
-            bdr.name: bdr.get_companies(),
-            fgases.name: fgases.get_companies()
-        }
-
 
 class CycleEmailTemplateBase(NotificationsBaseView):
     model = CycleEmailTemplate
@@ -243,3 +235,41 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     def form_valid(self, form):
         form.send_email(self.object)
         return super(CycleEmailTemplateTest, self).form_valid(form)
+
+
+class CompaniesView(NotificationsBaseView, generic.TemplateView):
+    template_name = 'notifications/companies.html'
+
+    def breadcrumbs(self):
+        breadcrumbs = super(CompaniesView, self).breadcrumbs()
+        breadcrumbs.extend([
+            Breadcrumb(
+                reverse('notifications:companies'),
+                'Companies'),
+        ])
+        return breadcrumbs
+
+    def fgases_get_companies(self):
+        return FGasesRegistry().get_companies()
+
+    def bdr_get_companies(self):
+        return BDRRegistry().get_companies()
+
+
+class PersonsView(NotificationsBaseView, generic.TemplateView):
+    template_name = 'notifications/persons.html'
+
+    def breadcrumbs(self):
+        breadcrumbs = super(PersonsView, self).breadcrumbs()
+        breadcrumbs.extend([
+            Breadcrumb(
+                reverse('notifications:persons'),
+                'Persons'),
+        ])
+        return breadcrumbs
+
+    def fgases_get_persons(self):
+        return FGasesRegistry().get_persons()
+
+    def bdr_get_persons(self):
+        return BDRRegistry().get_persons()

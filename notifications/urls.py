@@ -43,4 +43,11 @@ urlpatterns = [
     url(r'^emailtemplate/(?P<pk>\d+)/test/$',
         views.CycleEmailTemplateTest.as_view(),
         name='emailtemplate_test'),
+
+    url(r'^companies/$',
+        views.CompaniesView.as_view(),
+        name='companies'),
+    url(r'^persons/$',
+        views.PersonsView.as_view(),
+        name='persons'),
 ]

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'frame',
     'ckeditor',
     'simple_history',
+    'memoize',
     'notifications.apps.NotificationsConfig',
 ]
 

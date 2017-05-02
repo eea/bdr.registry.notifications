@@ -1,0 +1,34 @@
+{% extends layout_template %}
+
+{% block content %}
+
+<h1>Persons</h1>
+
+<p>Please find below the persons fetched from FGases and BDR registries.</p>
+
+<h2>FGases registry</h2>
+
+<table class="brn-table">
+	<thead>
+		<tr>
+			<th>Username</th>
+			<th>Company/country</th>
+			<th>Contact</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in view.fgases_get_persons %}
+			<tr>
+				<td>{{ item.username }}</td>
+				<td>{{ item.companyname }}<br /><small>{{ item.country }}</small></td>
+				<td>{{ item.contact_firstname }} {{ item.contact_lastname }}<br /><small>{{ item.contact_email }}</small></td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<h2>BDR registry</h2>
+
+{{ view.bdr_get_persons }}
+
+{% endblock %}

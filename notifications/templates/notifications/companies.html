@@ -1,0 +1,30 @@
+{% extends layout_template %}
+
+{% block content %}
+
+<h1>Companies</h1>
+
+<p>Please find below the companies fetched from FGases and BDR registries.</p>
+
+<h2>FGases registry</h2>
+
+<table class="brn-table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in view.fgases_get_companies %}
+			<tr>
+				<td>{{ item.company_id }}</td>
+				<td>{{ item.name }}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<h2>BDR registry</h2>
+
+{% endblock %}
