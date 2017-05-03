@@ -9,13 +9,9 @@
 {% with items=view.fgases_get_companies %}
 <h2 id="fgases">FGases registry</h2>
 
-<div class="cycle-actions">
-	<a href="{% url 'notifications:persons_fgases_fetch' %}">Fetch companies</a>
-</div>
 <div class="cycle-stage">
 	{{ items|length }} companies in registry.
 </div>
-<div class="clear"></div>
 
 <table class="brn-table">
 	<thead>
@@ -33,7 +29,7 @@
 				<td>{{ item.company_id }}</td>
 				<td>{{ item.name }}</td>
 				<td>{{ item.vat|default_if_none:'' }}</td>
-				<td>{{ item.address.country.name }}</td>
+				<td>{{ item.address.country.name }}<br /><small>({{ item.address.country.type }})</small></td>
 				<td>
 					<ul>
 						{% for user in item.users %}
@@ -53,13 +49,9 @@
 {% with items=view.bdr_get_companies %}
 <h2 id="bdr">BDR registry</h2>
 
-<div class="cycle-actions">
-	<a href="{% url 'notifications:persons_bdr_fetch' %}">Fetch companies</a>
-</div>
 <div class="cycle-stage">
 	{{ items|length }} companies in registry.
 </div>
-<div class="clear"></div>
 
 <table class="brn-table">
 	<thead>

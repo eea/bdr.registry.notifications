@@ -201,6 +201,10 @@ LOGGING = {
         'notifications.registries': {
             'handlers': ['console'],
             'level': 'INFO',
+        },
+        'notifications.views': {
+            'handlers': ['console'],
+            'level': 'INFO',
         }
     }
 }

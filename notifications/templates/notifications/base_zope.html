@@ -72,6 +72,7 @@
 					<li><a href="{% url 'notifications:dashboard' %}">{% trans 'Reporting cycles' %}</a></li>
 					<li><a href="{% url 'notifications:companies' %}">{% trans 'Companies' %}</a></li>
 					<li><a href="{% url 'notifications:persons' %}">{% trans 'Persons' %}</a></li>
+					<li><a href="{% url 'notifications:actions' %}">{% trans 'Actions' %}</a></li>
 					{% if user.is_superuser %}
 						<li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
 					{% endif %}

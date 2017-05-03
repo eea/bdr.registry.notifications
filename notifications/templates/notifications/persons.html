@@ -9,13 +9,9 @@
 {% with items=view.fgases_get_persons %}
 <h2 id="fgases">FGases registry</h2>
 
-<div class="cycle-actions">
-	<a href="{% url 'notifications:persons_fgases_fetch' %}">Fetch persons</a>
-</div>
 <div class="cycle-stage">
 	{{ items|length }} persons in registry.
 </div>
-<div class="clear"></div>
 
 <table class="brn-table">
 	<thead>
@@ -40,13 +36,9 @@
 {% with items=view.bdr_get_persons %}
 <h2 id="bdr">BDR registry</h2>
 
-<div class="cycle-actions">
-	<a href="{% url 'notifications:persons_bdr_fetch' %}">Fetch persons</a>
-</div>
 <div class="cycle-stage">
 	{{ items|length }} persons in registry.
 </div>
-<div class="clear"></div>
 
 <table class="brn-table">
 	<thead>

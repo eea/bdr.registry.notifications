@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from simple_history import admin as admin_simple_history
 
-from .models import (Stage, CompaniesGroup, EmailTemplate,
+from .models import (Stage, CompaniesGroup, Company, Person, EmailTemplate,
                      Cycle, CycleEmailTemplate, CycleNotification)
 
 
@@ -17,6 +17,30 @@ class StageAdmin(admin.ModelAdmin):
 class CompaniesGroupAdmin(admin.ModelAdmin):
     list_display = ('title', 'code', 'count_emailtemplates')
     prepopulated_fields = {'code': ('title',)}
+
+
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('external_id', 'name', 'vat', 'country', 'group')
+    list_filter = ('group',)
+    search_fields = ('external_id', 'name', 'vat', 'country')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('username', 'name', 'email', 'admin_company')
+    list_filter = ('company__group',)
+    search_fields = ('username', 'name', 'email', 'company__name')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class EmailTemplateAdmin(admin.ModelAdmin):
@@ -67,6 +91,8 @@ class CycleNotificationAdmin(admin.ModelAdmin):
 
 admin.site.register(Stage, StageAdmin)
 admin.site.register(CompaniesGroup, CompaniesGroupAdmin)
+admin.site.register(Company, CompanyAdmin)
+admin.site.register(Person, PersonAdmin)
 admin.site.register(EmailTemplate, EmailTemplateAdmin)
 admin.site.register(Cycle, CycleAdmin)
 admin.site.register(CycleEmailTemplate, CycleEmailTemplateAdmin)

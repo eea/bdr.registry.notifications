@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+import logging
 from collections import namedtuple
 
 from django.shortcuts import redirect, get_object_or_404
@@ -14,10 +14,18 @@ from django.contrib import messages
 
 from braces import views as braces_views
 
-from .models import Cycle, CycleEmailTemplate, CycleNotification, STAGE_CLOSED
+from . import (FGASES_EU, FGASES_NONEU,
+               FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, FGASES_GROUP_CODE,
+               BDR_GROUP_CODE)
+from .models import (CompaniesGroup, Company, Person, Cycle,
+                     CycleEmailTemplate, CycleNotification, STAGE_CLOSED)
 from .forms import (CycleAddForm, CycleEditForm,
                     CycleEmailTemplateEditForm, CycleEmailTemplateTestForm)
 from .registries import BDRRegistry, FGasesRegistry
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
@@ -249,12 +257,6 @@ class CompaniesView(NotificationsBaseView, generic.TemplateView):
         ])
         return breadcrumbs
 
-    def fgases_get_companies(self):
-        return FGasesRegistry().get_companies()
-
-    def bdr_get_companies(self):
-        return BDRRegistry().get_companies()
-
 
 class PersonsView(NotificationsBaseView, generic.TemplateView):
     template_name = 'notifications/persons.html'
@@ -268,26 +270,68 @@ class PersonsView(NotificationsBaseView, generic.TemplateView):
         ])
         return breadcrumbs
 
-    def fgases_get_persons(self):
-        return FGasesRegistry().get_persons()
 
-    def bdr_get_persons(self):
-        return BDRRegistry().get_persons()
+class ActionsView(NotificationsBaseView, generic.TemplateView):
+    template_name = 'notifications/actions.html'
+
+    def breadcrumbs(self):
+        breadcrumbs = super(ActionsView, self).breadcrumbs()
+        breadcrumbs.extend([
+            Breadcrumb(
+                reverse('notifications:actions'),
+                'Actions'),
+        ])
+        return breadcrumbs
 
 
-class PersonsFGasesFetchView(generic.View):
+class ActionsFGasesView(generic.View):
+
+    def get(self, request, *args, **kwargs):
+        registry = FGasesRegistry()
+
+        #cleanup
+        Person.objects.filter(
+            company__group__code__in=FGASES_GROUP_CODE
+        ).delete()
+
+        Company.objects.filter(
+            group__code__in=FGASES_GROUP_CODE
+        ).delete()
+
+        #fetch companies
+        counter_companies = 0
+        for item in registry.get_companies():
+            item_country_type = item['address']['country']['type']
+            if item_country_type == FGASES_EU:
+                group = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
+            else:
+                group = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
+            company = Company(external_id=item['company_id'],
+                              name=item['name'],
+                              vat=item['vat'],
+                              country=item['address']['country']['name'],
+                              group=group)
+            company.save()
+            counter_companies += 1
+
+            logger.info('Fetched company {} ({})'.format(item['name'],
+                                                         item['company_id']))
+
+        #fetch persons
+        counter_persons = 0
+
+        messages.add_message(request,
+                             messages.INFO,
+                             ('FGases registry fetched successfully: '
+                              '{} companies, {} persons'
+                              .format(counter_companies, counter_persons)))
+        return redirect('notifications:actions')
+
+
+class ActionsBDRView(generic.View):
 
     def get(self, request, *args, **kwargs):
         messages.add_message(request,
                              messages.INFO,
-                             'FGases registry persons fetched successfully.')
-        return redirect('notifications:persons')
-
-
-class PersonsBDRFetchView(generic.View):
-
-    def get(self, request, *args, **kwargs):
-        messages.add_message(request,
-                             messages.INFO,
-                             'BDR registry persons fetched successfully.')
-        return redirect('notifications:persons')
+                             'BDR registry fetched successfully.')
+        return redirect('notifications:actions')

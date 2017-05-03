@@ -58,6 +58,45 @@ class CompaniesGroup(models.Model):
     count_emailtemplates.short_description = '#Email templates'
 
 
+class Company(models.Model):
+    """ Base class for a registry, FGases or BDR, company.
+    """
+
+    class Meta:
+        verbose_name_plural = 'Companies'
+
+    external_id = models.CharField(max_length=64, db_index=True, unique=True)
+    name = models.CharField(max_length=256)
+    vat = models.CharField(max_length=64, blank=True, null=True)
+    country = models.CharField(max_length=256)
+    group = models.ForeignKey(CompaniesGroup)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return '%s' % self.name
+
+
+class Person(models.Model):
+    """ Base class for a company user/person/contact.
+    """
+    username = models.CharField(max_length=128, db_index=True, unique=True)
+    name = models.CharField(max_length=256)
+    email = models.CharField(max_length=128, db_index=True, unique=True)
+    company = models.ManyToManyField(Company)
+
+    def __str__(self):
+        return '{} ({})'.format(self.name, self.username)
+
+    def __unicode__(self):
+        return '{} ({})'.format(self.name, self.username)
+
+    def admin_company(self):
+        return ', '.join([c.name for c in self.company.all()])
+    admin_company.short_description = 'Company'
+
+
 class EmailTemplate(models.Model):
     """ Base class for the 4 types of email templates. The corresponding
         stage is:

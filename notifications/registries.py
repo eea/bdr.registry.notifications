@@ -1,7 +1,6 @@
 import logging
 import requests
 from requests.exceptions import RequestException
-from memoize import memoize
 
 from django.conf import settings
 
@@ -137,7 +136,6 @@ class BDRRegistry(BaseRegistry):
                                                    cookies=self.cookies,
                                                    auth=auth)
 
-    @memoize(timeout=3600)
     def get_companies(self):
         """ Gets the list with all companies. Each company has
             the following fields:
@@ -165,7 +163,6 @@ class BDRRegistry(BaseRegistry):
         if response:
             return response.json()
 
-    @memoize(timeout=3600)
     def get_persons(self):
         """ Gets the list with all persons. Each person has
             the following fields:
@@ -209,7 +206,6 @@ class FGasesRegistry(BaseRegistry):
                                                    cookies=cookies,
                                                    auth=auth)
 
-    @memoize(timeout=3600)
     def get_companies(self):
         """ Gets the list with all companies. Each company has
             the following fields:
@@ -242,7 +238,6 @@ class FGasesRegistry(BaseRegistry):
         if response:
             return response.json()
 
-    @memoize(timeout=3600)
     def get_persons(self):
         """ Gets the list with all persons. Each person has
             the following fields:
