@@ -139,12 +139,46 @@ class BDRRegistry(BaseRegistry):
 
     @memoize(timeout=3600)
     def get_companies(self):
+        """ Gets the list with all companies. Each company has
+            the following fields:
+            - name
+            - country (code)
+            - addr_street
+            - userid
+            - date_registered
+            - addr_place1
+            - addr_place2
+            - active
+            - vat_number
+            - obligation
+            - outdated
+            - persons (array)
+                - first_name
+                - last_name
+                - title
+                - email
+                - phone
+                - phone2
+                - phone3
+        """
         response = self.do_request('/management/companies/export/json')
         if response:
             return response.json()
 
     @memoize(timeout=3600)
     def get_persons(self):
+        """ Gets the list with all persons. Each person has
+            the following fields:
+            - userid
+            - companyname
+            - country -- company's country
+            - contactname
+            - contactemail
+            - phone
+            - phone2
+            - phone3
+            - fax
+        """
         response = self.do_request('/management/persons/export/json/')
         if response:
             return response.json()
@@ -192,15 +226,15 @@ class FGasesRegistry(BaseRegistry):
              - phone
              - businessprofile
              - country_code
-             - address
+             - address (dict)
                 - city
                 - street
                 - number
                 - zipcode
-                - country
+                - country (dict)
                     - code
                     - type
-                    - United Kingdom,
+                    - name,
              - types
              - name
         """

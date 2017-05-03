@@ -47,7 +47,14 @@ urlpatterns = [
     url(r'^companies/$',
         views.CompaniesView.as_view(),
         name='companies'),
+
     url(r'^persons/$',
         views.PersonsView.as_view(),
         name='persons'),
+    url(r'^persons/fgases_fetch$',
+        views.PersonsFGasesFetchView.as_view(),
+        name='persons_fgases_fetch'),
+    url(r'^persons/bdr_fetch$',
+        views.PersonsBDRFetchView.as_view(),
+        name='persons_bdr_fetch'),
 ]

@@ -273,3 +273,21 @@ class PersonsView(NotificationsBaseView, generic.TemplateView):
 
     def bdr_get_persons(self):
         return BDRRegistry().get_persons()
+
+
+class PersonsFGasesFetchView(generic.View):
+
+    def get(self, request, *args, **kwargs):
+        messages.add_message(request,
+                             messages.INFO,
+                             'FGases registry persons fetched successfully.')
+        return redirect('notifications:persons')
+
+
+class PersonsBDRFetchView(generic.View):
+
+    def get(self, request, *args, **kwargs):
+        messages.add_message(request,
+                             messages.INFO,
+                             'BDR registry persons fetched successfully.')
+        return redirect('notifications:persons')

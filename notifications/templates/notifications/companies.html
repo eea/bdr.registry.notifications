@@ -4,27 +4,94 @@
 
 <h1>Companies</h1>
 
-<p>Please find below the companies fetched from FGases and BDR registries.</p>
+<p>You can find below the companies fetched from <a href="#fgases">FGases</a> and <a href="#bdr">BDR</a> registries.</p>
 
-<h2>FGases registry</h2>
+{% with items=view.fgases_get_companies %}
+<h2 id="fgases">FGases registry</h2>
+
+<div class="cycle-actions">
+	<a href="{% url 'notifications:persons_fgases_fetch' %}">Fetch companies</a>
+</div>
+<div class="cycle-stage">
+	{{ items|length }} companies in registry.
+</div>
+<div class="clear"></div>
 
 <table class="brn-table">
 	<thead>
 		<tr>
 			<th>Id</th>
 			<th>Name</th>
+			<th>VAT</th>
+			<th>Country</th>
+			<th>Contact</th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for item in view.fgases_get_companies %}
+		{% for item in items %}
 			<tr>
 				<td>{{ item.company_id }}</td>
 				<td>{{ item.name }}</td>
+				<td>{{ item.vat|default_if_none:'' }}</td>
+				<td>{{ item.address.country.name }}</td>
+				<td>
+					<ul>
+						{% for user in item.users %}
+							<li>
+								<a href="{% url 'notifications:persons' %}#{{ user.username }}" target="_blank">{{ user.first_name }} {{ user.last_name }}</a>
+								<small>({{ user.email }})</small>
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
 			</tr>
 		{% endfor %}
 	</tbody>
 </table>
+{% endwith %}
 
-<h2>BDR registry</h2>
+{% with items=view.bdr_get_companies %}
+<h2 id="bdr">BDR registry</h2>
+
+<div class="cycle-actions">
+	<a href="{% url 'notifications:persons_bdr_fetch' %}">Fetch companies</a>
+</div>
+<div class="cycle-stage">
+	{{ items|length }} companies in registry.
+</div>
+<div class="clear"></div>
+
+<table class="brn-table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th>VAT</th>
+			<th>Country</th>
+			<th>Contact</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in items %}
+			<tr>
+				<td>{{ item.userid }}</td>
+				<td>{{ item.name }}</td>
+				<td>{{ item.vat_number|default_if_none:'' }}</td>
+				<td>{{ item.country_name }}</td>
+				<td>
+					<ul>
+						{% for user in item.persons %}
+							<li>
+								<a href="{% url 'notifications:persons' %}#{{ item.userid }}" target="_blank">{{ user.first_name }} {{ user.last_name }}</a>
+								<small>({{ user.email }})</small>
+							</li>
+						{% endfor %}
+					</ul>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endwith %}
 
 {% endblock %}

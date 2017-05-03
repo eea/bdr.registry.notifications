@@ -4,21 +4,30 @@
 
 <h1>Persons</h1>
 
-<p>Please find below the persons fetched from FGases and BDR registries.</p>
+<p>You can find below the persons fetched from <a href="#fgases">FGases</a> and <a href="#bdr">BDR</a> registries.</p>
 
-<h2>FGases registry</h2>
+{% with items=view.fgases_get_persons %}
+<h2 id="fgases">FGases registry</h2>
+
+<div class="cycle-actions">
+	<a href="{% url 'notifications:persons_fgases_fetch' %}">Fetch persons</a>
+</div>
+<div class="cycle-stage">
+	{{ items|length }} persons in registry.
+</div>
+<div class="clear"></div>
 
 <table class="brn-table">
 	<thead>
 		<tr>
-			<th>Username</th>
-			<th>Company/country</th>
-			<th>Contact</th>
+			<th class="user">Username</th>
+			<th class="company">Company/Country</th>
+			<th class="contact">Contact/Email</th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for item in view.fgases_get_persons %}
-			<tr>
+		{% for item in items %}
+			<tr id="{{ item.username }}">
 				<td>{{ item.username }}</td>
 				<td>{{ item.companyname }}<br /><small>{{ item.country }}</small></td>
 				<td>{{ item.contact_firstname }} {{ item.contact_lastname }}<br /><small>{{ item.contact_email }}</small></td>
@@ -26,9 +35,37 @@
 		{% endfor %}
 	</tbody>
 </table>
+{% endwith %}
 
-<h2>BDR registry</h2>
+{% with items=view.bdr_get_persons %}
+<h2 id="bdr">BDR registry</h2>
 
-{{ view.bdr_get_persons }}
+<div class="cycle-actions">
+	<a href="{% url 'notifications:persons_bdr_fetch' %}">Fetch persons</a>
+</div>
+<div class="cycle-stage">
+	{{ items|length }} persons in registry.
+</div>
+<div class="clear"></div>
+
+<table class="brn-table">
+	<thead>
+		<tr>
+			<th class="user">Username</th>
+			<th class="company">Company/Country</th>
+			<th class="contact">Contact/Email</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for item in items %}
+			<tr id="{{ item.userid }}">
+				<td>{{ item.userid }}</td>
+				<td>{{ item.companyname }}<br /><small>{{ item.country }}</small></td>
+				<td>{{ item.contactname }}<br /><small>{{ item.contactemail }}</small></td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endwith %}
 
 {% endblock %}
