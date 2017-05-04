@@ -22,7 +22,7 @@ class CompaniesGroupAdmin(admin.ModelAdmin):
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('external_id', 'name', 'vat', 'country', 'group')
     list_filter = ('group',)
-    search_fields = ('external_id', 'name', 'vat', 'country')
+    search_fields = ('id', 'external_id', 'name', 'vat', 'country')
 
     def has_add_permission(self, request):
         return False

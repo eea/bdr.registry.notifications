@@ -29,3 +29,5 @@ table.brn-table th.company {width:35%;}
 table.brn-table th.contact {width:35%;}
 
 input[type='submit'] {background-color:#3065a6;border:1px solid #3065a6;color:#fff;border-radius:3px;padding:3px 7px;font-size:12px;}
+
+a.iter {margin:0 5px;}

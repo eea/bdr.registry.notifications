@@ -257,6 +257,9 @@ class CompaniesView(NotificationsBaseView, generic.TemplateView):
         ])
         return breadcrumbs
 
+    def get_groups(self):
+        return CompaniesGroup.objects.all()
+
 
 class PersonsView(NotificationsBaseView, generic.TemplateView):
     template_name = 'notifications/persons.html'
@@ -284,38 +287,74 @@ class ActionsView(NotificationsBaseView, generic.TemplateView):
         return breadcrumbs
 
 
-class ActionsFGasesView(generic.View):
 
-    def get(self, request, *args, **kwargs):
-        registry = FGasesRegistry()
+class ActionsBaseView(generic.View):
+    """ Base class for registry actions.
+    """
 
-        #cleanup
+    def create_company(self, external_id, name, vat, country, group):
+        """ Create or update a company.
+        """
+        company = Company.objects.get_or_none(external_id=external_id)
+
+        ## TODO: handle missing external_id !?!?!??!
+
+        if company is None:
+            company = Company(external_id=external_id,
+                              name=name,
+                              vat=vat,
+                              country=country,
+                              group=group)
+            company.save()
+            logger.info('Fetched company {} ({})'.format(name,
+                                                         external_id))
+        else:
+            company.name = name
+            company.vat = vat
+            company.country = country
+            company.group = group
+            company.save()
+            logger.info('Updated company {} {} ({})'.format(company.id,
+                                                            name,
+                                                            external_id))
+
+
+class ActionsFGasesView(ActionsBaseView):
+    """ Handles FGases registry fetching.
+    """
+
+    def cleanup(self):
+        """ Delete all persons and companies fetched from FGases registry.
+        """
         Person.objects.filter(
             company__group__code__in=FGASES_GROUP_CODE
         ).delete()
-
         Company.objects.filter(
             group__code__in=FGASES_GROUP_CODE
         ).delete()
 
+    def get(self, request, *args, **kwargs):
+        registry = FGasesRegistry()
+
+        group_eu = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
+        group_noneu = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
+
         #fetch companies
         counter_companies = 0
         for item in registry.get_companies():
-            item_country_type = item['address']['country']['type']
-            if item_country_type == FGASES_EU:
-                group = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
-            else:
-                group = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
-            company = Company(external_id=item['company_id'],
-                              name=item['name'],
-                              vat=item['vat'],
-                              country=item['address']['country']['name'],
-                              group=group)
-            company.save()
-            counter_companies += 1
 
-            logger.info('Fetched company {} ({})'.format(item['name'],
-                                                         item['company_id']))
+            if item['address']['country']['type'] == FGASES_EU:
+                group = group_eu
+            else:
+                group = group_noneu
+
+            self.create_company(external_id=item['company_id'],
+                                name=item['name'],
+                                vat=item['vat'],
+                                country=item['address']['country']['name'],
+                                group=group)
+
+            counter_companies += 1
 
         #fetch persons
         counter_persons = 0
@@ -328,10 +367,46 @@ class ActionsFGasesView(generic.View):
         return redirect('notifications:actions')
 
 
-class ActionsBDRView(generic.View):
+class ActionsBDRView(ActionsBaseView):
+    """ Handles BDR registry fetching.
+    """
+
+    def cleanup(self):
+        """ Delete all persons and companies fetched from BDR registry.
+        """
+        Person.objects.filter(
+            company__group__code=BDR_GROUP_CODE
+        ).delete()
+        Company.objects.filter(
+            group__code=BDR_GROUP_CODE
+        ).delete()
 
     def get(self, request, *args, **kwargs):
+        registry = BDRRegistry()
+
+        group = CompaniesGroup.objects.get(code=BDR_GROUP_CODE)
+
+        #fetch companies
+        counter_companies = 0
+        for item in registry.get_companies():
+
+            if item['userid'] is None:
+                print item
+
+            self.create_company(external_id=item['userid'],
+                                name=item['name'],
+                                vat=item['vat_number'],
+                                country=item['country_name'],
+                                group=group)
+
+            counter_companies += 1
+
+        #fetch persons
+        counter_persons = 0
+
         messages.add_message(request,
                              messages.INFO,
-                             'BDR registry fetched successfully.')
+                             ('BDR registry fetched successfully: '
+                              '{} companies, {} persons'
+                              .format(counter_companies, counter_persons)))
         return redirect('notifications:actions')

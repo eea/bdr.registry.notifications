@@ -8,6 +8,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from simple_history.models import HistoricalRecords
 
+from .managers import GetOrNoneManager
 from .toolz import extract_parameters
 
 
@@ -65,11 +66,13 @@ class Company(models.Model):
     class Meta:
         verbose_name_plural = 'Companies'
 
-    external_id = models.CharField(max_length=64, db_index=True, unique=True)
+    external_id = models.CharField(max_length=64, db_index=True, unique=True, blank=True, null=True)
     name = models.CharField(max_length=256)
     vat = models.CharField(max_length=64, blank=True, null=True)
     country = models.CharField(max_length=256)
     group = models.ForeignKey(CompaniesGroup)
+
+    objects = GetOrNoneManager()
 
     def __str__(self):
         return self.name

@@ -1,89 +1,60 @@
 {% extends layout_template %}
 
+{% load notifications_extras %}
+
 {% block content %}
 
 <h1>Companies</h1>
 
-<p>You can find below the companies fetched from <a href="#fgases">FGases</a> and <a href="#bdr">BDR</a> registries.</p>
+{% with groups=view.get_groups %}
 
-{% with items=view.fgases_get_companies %}
-<h2 id="fgases">FGases registry</h2>
+<p>
+	You can find below the companies listed by group:
+	{% for group in groups %}
+		<a href="#{{ group.code }}" class="iter">{{ group.title }}</a>
+	{% endfor %}
+</p>
 
-<div class="cycle-stage">
-	{{ items|length }} companies in registry.
-</div>
+{% for group in groups %}
+	<h2 id="{{ group.code }}">{{ group.title }}</h2>
+	{% get_group_companies group as items %}
+	<div class="cycle-stage">
+		{{ items|length }} companies in registry.
+	</div>
 
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th>Id</th>
-			<th>Name</th>
-			<th>VAT</th>
-			<th>Country</th>
-			<th>Contact</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
+	<table class="brn-table">
+		<thead>
 			<tr>
-				<td>{{ item.company_id }}</td>
-				<td>{{ item.name }}</td>
-				<td>{{ item.vat|default_if_none:'' }}</td>
-				<td>{{ item.address.country.name }}<br /><small>({{ item.address.country.type }})</small></td>
-				<td>
-					<ul>
-						{% for user in item.users %}
-							<li>
-								<a href="{% url 'notifications:persons' %}#{{ user.username }}" target="_blank">{{ user.first_name }} {{ user.last_name }}</a>
-								<small>({{ user.email }})</small>
-							</li>
-						{% endfor %}
-					</ul>
-				</td>
+				<th>Id</th>
+				<th>Name</th>
+				<th>VAT</th>
+				<th>Country</th>
+				<th>Contact</th>
 			</tr>
-		{% endfor %}
-	</tbody>
-</table>
-{% endwith %}
+		</thead>
+		<tbody>
+			{% for item in items %}
+				<tr>
+					<td>{{ item.external_id }}</td>
+					<td>{{ item.name }}</td>
+					<td>{{ item.vat|default_if_none:'' }}</td>
+					<td>{{ item.country }}</td>
+					<td>
+						<ul>
+							{% for user in item.users %}
+								<li>
+									<a href="{% url 'notifications:persons' %}#{{ user.username }}" target="_blank">{{ user.first_name }} {{ user.last_name }}</a>
+									<small>({{ user.email }})</small>
+								</li>
+							{% endfor %}
+						</ul>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endfor %}
 
-{% with items=view.bdr_get_companies %}
-<h2 id="bdr">BDR registry</h2>
-
-<div class="cycle-stage">
-	{{ items|length }} companies in registry.
-</div>
-
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th>Id</th>
-			<th>Name</th>
-			<th>VAT</th>
-			<th>Country</th>
-			<th>Contact</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
-			<tr>
-				<td>{{ item.userid }}</td>
-				<td>{{ item.name }}</td>
-				<td>{{ item.vat_number|default_if_none:'' }}</td>
-				<td>{{ item.country_name }}</td>
-				<td>
-					<ul>
-						{% for user in item.persons %}
-							<li>
-								<a href="{% url 'notifications:persons' %}#{{ item.userid }}" target="_blank">{{ user.first_name }} {{ user.last_name }}</a>
-								<small>({{ user.email }})</small>
-							</li>
-						{% endfor %}
-					</ul>
-				</td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
 {% endwith %}
 
 {% endblock %}

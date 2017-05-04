@@ -141,6 +141,7 @@ class BDRRegistry(BaseRegistry):
             the following fields:
             - name
             - country (code)
+            - country_name
             - addr_street
             - userid
             - date_registered
