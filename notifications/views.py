@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import logging
 from collections import namedtuple
 
+from django.db import IntegrityError
 from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
 from django.urls import reverse
@@ -292,31 +293,42 @@ class ActionsBaseView(generic.View):
     """ Base class for registry actions.
     """
 
-    def create_company(self, external_id, name, vat, country, group):
+    def create_company(self, **kwargs):
         """ Create or update a company.
         """
-        company = Company.objects.get_or_none(external_id=external_id)
+        name = kwargs['name']
+        external_id = kwargs['external_id']
 
-        ## TODO: handle missing external_id !?!?!??!
+        company, created = Company.objects.update_or_create(
+            external_id=external_id,
+            defaults=kwargs
+        )
 
-        if company is None:
-            company = Company(external_id=external_id,
-                              name=name,
-                              vat=vat,
-                              country=country,
-                              group=group)
-            company.save()
-            logger.info('Fetched company {} ({})'.format(name,
-                                                         external_id))
+        if created:
+            logger.info('Fetched company %s (%s)', name, external_id)
         else:
-            company.name = name
-            company.vat = vat
-            company.country = country
-            company.group = group
-            company.save()
-            logger.info('Updated company {} {} ({})'.format(company.id,
-                                                            name,
-                                                            external_id))
+            logger.info(
+                'Updated company %s %s (%s)', company.id, name, external_id)
+
+        return company
+
+    def create_person(self, **kwargs):
+        """ Create or update a company.
+        """
+        name = kwargs['name']
+        username = kwargs['username']
+
+        person, created = Person.objects.update_or_create(
+            username=username,
+            defaults=kwargs
+        )
+
+        if created:
+            logger.info('Fetched person %s (%s)', name, username)
+        else:
+            logger.info('Updated person %s %s (%s)', person.id, name, username)
+
+        return person
 
 
 class ActionsFGasesView(ActionsBaseView):
@@ -386,27 +398,56 @@ class ActionsBDRView(ActionsBaseView):
 
         group = CompaniesGroup.objects.get(code=BDR_GROUP_CODE)
 
-        #fetch companies
-        counter_companies = 0
-        for item in registry.get_companies():
+        # fetch companies
+        person_count = 0
+        for idx_company, item in enumerate(registry.get_companies(), start=1):
 
             if item['userid'] is None:
                 print item
 
-            self.create_company(external_id=item['userid'],
-                                name=item['name'],
-                                vat=item['vat_number'],
-                                country=item['country_name'],
-                                group=group)
+            company_data = dict(
+                external_id=item['userid'],
+                name=item['name'],
+                vat=item['vat_number'],
+                country=item['country_name'],
+                group=group
+            )
 
-            counter_companies += 1
+            company = self.create_company(**company_data)
 
-        #fetch persons
-        counter_persons = 0
 
-        messages.add_message(request,
-                             messages.INFO,
-                             ('BDR registry fetched successfully: '
-                              '{} companies, {} persons'
-                              .format(counter_companies, counter_persons)))
+        # fetch persons
+        count_persons = 0
+        errors_persons = []
+        for person in registry.get_persons():
+
+            person_data = dict(
+                username=person['userid'],
+                name=person['contactname'],
+                email=person['contactemail'],
+            )
+
+            try:
+                person_obj = self.create_person(**person_data)
+            except IntegrityError as e:
+                logger.info('Skipped person: %s (%s)', person['userid'], e)
+                errors_persons.append((e, person['userid']))
+
+            companies = Company.objects.filter(
+                name=person['companyname'],
+                country=person['country'],
+            )
+
+            person_obj.company.add(*companies)
+            count_persons += 1
+
+        if errors_persons:
+            msg = 'BDR registry fetched with errors: {}'
+            msg = msg.format(errors_persons)
+        else:
+            msg = 'BDR registry fetched successfully: {} companies, {} persons'
+            msg = msg.format(idx_company, person_count)
+
+        messages.add_message(request, messages.INFO, msg)
+
         return redirect('notifications:actions')
