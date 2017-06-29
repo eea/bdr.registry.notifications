@@ -4,7 +4,7 @@ from django import forms
 from django.core.validators import validate_email
 from django.core.mail import send_mail
 
-from .models import Cycle, CycleEmailTemplate
+from .models import Cycle, CycleEmailTemplate, Person, CycleNotification
 
 
 class CycleAddForm(forms.ModelForm):
@@ -65,3 +65,47 @@ class CycleEmailTemplateTestForm(forms.Form):
             fail_silently=False,
             html_message=body_html
         )
+
+
+class CycleEmailTemplateTriggerForm(forms.Form):
+
+    def send_emails(self, cycleemailtemplate):
+        emailtemplate = cycleemailtemplate.emailtemplate
+        # send email using the self.cleaned_data dictionary
+        subject = emailtemplate.subject
+        body_html = emailtemplate.body_html
+
+        recipients = Person.objects.filter(
+            company__group=emailtemplate.group).distinct()
+
+        for recipient in recipients:
+            # email template parameters
+            company = recipient.company.all()[0]
+            params = dict(
+                country=company.country,
+                company=company.name,
+                contact=recipient.name,
+                userid='randomid',
+                password='supersecure',
+            )
+
+            email_body = body_html.format(**params)
+
+            send_mail(
+                subject,
+                email_body,
+                'FROM@example.com',
+                [recipient.email],
+                fail_silently=False,
+                html_message=body_html
+            )
+
+            # store sent email
+            CycleNotification.objects.create(
+                subject=subject,
+                email=recipient.email,
+                body_html=email_body,
+                emailtemplate=cycleemailtemplate,
+            )
+
+            cycleemailtemplate.is_triggered = True

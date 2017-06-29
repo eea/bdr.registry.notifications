@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from itertools import chain
 import logging
 from collections import namedtuple
 
 from django.db import IntegrityError
 from django.shortcuts import redirect, get_object_or_404
-from django.views import generic
+from django.views import generic, View
 from django.urls import reverse
 from django.conf import settings
 from django.http import Http404
@@ -20,8 +21,13 @@ from . import (FGASES_EU, FGASES_NONEU,
                BDR_GROUP_CODE)
 from .models import (CompaniesGroup, Company, Person, Cycle,
                      CycleEmailTemplate, CycleNotification, STAGE_CLOSED)
-from .forms import (CycleAddForm, CycleEditForm,
-                    CycleEmailTemplateEditForm, CycleEmailTemplateTestForm)
+from .forms import (
+    CycleAddForm,
+    CycleEditForm,
+    CycleEmailTemplateEditForm,
+    CycleEmailTemplateTestForm,
+    CycleEmailTemplateTriggerForm,
+)
 from .registries import BDRRegistry, FGasesRegistry
 
 
@@ -180,6 +186,10 @@ class CycleEmailTemplateBase(NotificationsBaseView):
         ])
         return breadcrumbs
 
+    def get_recipients(self):
+        return Person.objects.filter(
+            company__group=self.object.group).distinct()
+
 
 class CycleEmailTemplateView(CycleEmailTemplateBase, generic.DetailView):
     template_name = 'notifications/emailtemplate_view.html'
@@ -202,20 +212,53 @@ class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
         return breadcrumbs
 
 
-class CycleEmailTemplateTrigger(CycleEmailTemplateBase, generic.DetailView):
+class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView):
     template_name = 'notifications/emailtemplate_trigger.html'
 
     def breadcrumbs(self):
-        breadcrumbs = super(CycleEmailTemplateTrigger, self).breadcrumbs()
+        breadcrumbs = super(CycleEmailTemplateTriggerDetail, self).breadcrumbs()
         breadcrumbs.extend([
             Breadcrumb('', 'Trigger'),
         ])
         return breadcrumbs
 
+    def get_context_data(self, **kwargs):
+        context = super(CycleEmailTemplateTriggerDetail, self).get_context_data(**kwargs)
+        context['form'] = CycleEmailTemplateTriggerForm()
+        return context
+
     def get_notifications(self):
         return (CycleNotification.objects
                 .filter(emailtemplate=self.object)
                 .order_by('-sent_date'))
+
+
+class CycleEmailTemplateTriggerSend(generic.detail.SingleObjectMixin, generic.FormView):
+    template_name = 'notifications/emailtemplate_trigger.html'
+    form_class = CycleEmailTemplateTriggerForm
+    model = CycleEmailTemplate
+    success_message = 'Emails sent successfully!'
+
+    def get_success_url(self):
+        return reverse(
+            'notifications:emailtemplate_trigger',
+            args=[self.kwargs['pk']]
+        )
+
+    def form_valid(self, form):
+        form.send_emails(self.get_object())
+        return super(CycleEmailTemplateTriggerSend, self).form_valid(form)
+
+
+class CycleEmailTemplateTrigger(View):
+
+    def get(self, request, *args, **kwargs):
+        view = CycleEmailTemplateTriggerDetail.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = CycleEmailTemplateTriggerSend.as_view()
+        return view(request, *args, **kwargs)
 
 
 class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
