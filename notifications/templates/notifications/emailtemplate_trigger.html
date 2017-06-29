@@ -20,6 +20,22 @@
 		<li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
 		<li>Don't send an email twice!</li>
 	</ul>
+    {% with view.get_recipients as persons %}
+    <p>The following {{ persons|length }} people will be notified:</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="I Understand, send {{ persons|length }} emails." />
+    </form>
+    <ul>
+        {% for person in persons %}
+        <li>
+            <a href="{% url 'notifications:persons' %}#{{ person.username }}" target="_blank">{{ person.name }}</a>
+            <small>({{ person.email }})</small>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endwith %}
 {% endif %}
 
 <h2>Sent emails</h2>
