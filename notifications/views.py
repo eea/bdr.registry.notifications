@@ -265,6 +265,9 @@ class CompaniesView(NotificationsBaseView, generic.TemplateView):
 class PersonsView(NotificationsBaseView, generic.TemplateView):
     template_name = 'notifications/persons.html'
 
+    def bdr_get_persons(self):
+        return Person.objects.all()
+
     def breadcrumbs(self):
         breadcrumbs = super(PersonsView, self).breadcrumbs()
         breadcrumbs.extend([

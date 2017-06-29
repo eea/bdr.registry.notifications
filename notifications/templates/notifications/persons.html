@@ -50,10 +50,24 @@
 	</thead>
 	<tbody>
 		{% for item in items %}
-			<tr id="{{ item.userid }}">
-				<td>{{ item.userid }}</td>
-				<td>{{ item.companyname }}<br /><small>{{ item.country }}</small></td>
-				<td>{{ item.contactname }}<br /><small>{{ item.contactemail }}</small></td>
+			<tr id="{{ item.username }}">
+				<td>{{ item.username }}</td>
+				<td>
+                    <ul>
+                    {% for company in item.company.all %}
+                        <li>
+                            {{ company.name }}
+                            <br />
+                            <small>{{ company.country }}</small>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </td>
+				<td>
+                    {{ item.name }}
+                    <br />
+                    <small>{{ item.email }}</small>
+                </td>
 			</tr>
 		{% endfor %}
 	</tbody>
