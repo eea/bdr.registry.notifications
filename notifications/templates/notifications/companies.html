@@ -41,9 +41,9 @@
 					<td>{{ item.country }}</td>
 					<td>
 						<ul>
-							{% for user in item.users %}
+							{% for user in item.person_set.all %}
 								<li>
-									<a href="{% url 'notifications:persons' %}#{{ user.username }}" target="_blank">{{ user.first_name }} {{ user.last_name }}</a>
+									<a href="{% url 'notifications:persons' %}#{{ user.username }}" target="_blank">{{ user.name }}</a>
 									<small>({{ user.email }})</small>
 								</li>
 							{% endfor %}
