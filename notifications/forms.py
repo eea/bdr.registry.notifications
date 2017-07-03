@@ -69,8 +69,7 @@ class CycleEmailTemplateTestForm(forms.Form):
 
 class CycleEmailTemplateTriggerForm(forms.Form):
 
-    def send_emails(self, cycleemailtemplate):
-        emailtemplate = cycleemailtemplate.emailtemplate
+    def send_emails(self, emailtemplate):
         # send email using the self.cleaned_data dictionary
         subject = emailtemplate.subject
         body_html = emailtemplate.body_html
@@ -78,15 +77,19 @@ class CycleEmailTemplateTriggerForm(forms.Form):
         recipients = Person.objects.filter(
             company__group=emailtemplate.group).distinct()
 
+        # XXX; For debugging
+        CycleNotification.objects.all().delete()
+
         for recipient in recipients:
             # email template parameters
             company = recipient.company.all()[0]
             params = dict(
-                country=company.country,
-                company=company.name,
-                contact=recipient.name,
-                userid='randomid',
-                password='supersecure',
+                COUNTRY=company.country,
+                COMPANY=company.name,
+                CONTACT=recipient.name,
+                # XXX: how will these be handled?
+                USERID='randomid',
+                PASSWORD='supersecure',
             )
 
             email_body = body_html.format(**params)
@@ -97,7 +100,7 @@ class CycleEmailTemplateTriggerForm(forms.Form):
                 'FROM@example.com',
                 [recipient.email],
                 fail_silently=False,
-                html_message=body_html
+                html_message=email_body
             )
 
             # store sent email
@@ -105,7 +108,8 @@ class CycleEmailTemplateTriggerForm(forms.Form):
                 subject=subject,
                 email=recipient.email,
                 body_html=email_body,
-                emailtemplate=cycleemailtemplate,
+                emailtemplate=emailtemplate,
             )
 
-            cycleemailtemplate.is_triggered = True
+        emailtemplate.is_triggered = True
+        emailtemplate.save()
