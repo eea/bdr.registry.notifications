@@ -309,7 +309,10 @@ class PersonsView(NotificationsBaseView, generic.TemplateView):
     template_name = 'notifications/persons.html'
 
     def bdr_get_persons(self):
-        return Person.objects.all()
+        return Person.objects.filter(company__group__code=BDR_GROUP_CODE)
+
+    def fgases_get_persons(self):
+        return Person.objects.filter(company__group__code__in=FGASES_GROUP_CODE)
 
     def breadcrumbs(self):
         breadcrumbs = super(PersonsView, self).breadcrumbs()
@@ -406,22 +409,56 @@ class ActionsFGasesView(ActionsBaseView):
             else:
                 group = group_noneu
 
-            self.create_company(external_id=item['company_id'],
-                                name=item['name'],
-                                vat=item['vat'],
-                                country=item['address']['country']['name'],
-                                group=group)
+            self.create_company(
+                external_id=item['company_id'],
+                name=item['name'],
+                vat=item['vat'],
+                country=item['address']['country']['name'],
+                group=group
+            )
 
             counter_companies += 1
 
-        #fetch persons
+        # fetch persons
         counter_persons = 0
+        errors_persons = []
+        for person in registry.get_persons():
 
-        messages.add_message(request,
-                             messages.INFO,
-                             ('FGases registry fetched successfully: '
-                              '{} companies, {} persons'
-                              .format(counter_companies, counter_persons)))
+            fmt_person_name = '{contact_firstname} {contact_lastname}'
+            person_name = fmt_person_name.format(**person)
+
+            person_data = dict(
+                username=person['username'],
+                name=person_name,
+                email=person['contact_email'],
+            )
+
+            try:
+                person_obj = self.create_person(**person_data)
+            except IntegrityError as e:
+                logger.info('Skipped person: %s (%s)', person['username'], e)
+                errors_persons.append((e, person['username']))
+
+            companies = Company.objects.filter(
+                name=person['companyname'],
+                country=person['country'],
+            )
+
+            person_obj.company.add(*companies)
+            counter_persons += 1
+
+        if errors_persons:
+            msg = 'BDR registry fetched with errors: {}'
+            msg = msg.format(errors_persons)
+        else:
+            msg = (
+                'FGases registry fetched successfully:'
+                ' {} companies, {} persons'
+            )
+            msg = msg.format(counter_companies, counter_persons)
+
+        messages.add_message(request, messages.INFO, msg)
+
         return redirect('notifications:actions')
 
 
