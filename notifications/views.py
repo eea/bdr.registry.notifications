@@ -307,12 +307,23 @@ class CompaniesView(NotificationsBaseView, generic.TemplateView):
 
 class PersonsView(NotificationsBaseView, generic.TemplateView):
     template_name = 'notifications/persons.html'
+    page_bdr = 1
+    page_fgas = 1
 
-    def bdr_get_persons(self):
-        return Person.objects.filter(company__group__code=BDR_GROUP_CODE)
+    def dispatch(self, request, *args, **kwargs):
+        # get current page from request
+        self.page_bdr = request.GET.get('page_bdr', 1)
+        self.page_fgas = request.GET.get('page_fgas', 1)
 
-    def fgases_get_persons(self):
-        return Person.objects.filter(company__group__code__in=FGASES_GROUP_CODE)
+        return super(PersonsView, self).dispatch(request, *args, **kwargs)
+
+    def get_bdr(self):
+        return Person.objects.filter(
+            company__group__code=BDR_GROUP_CODE)
+
+    def get_fgas(self):
+        return Person.objects.filter(
+            company__group__code__in=FGASES_GROUP_CODE)
 
     def breadcrumbs(self):
         breadcrumbs = super(PersonsView, self).breadcrumbs()
