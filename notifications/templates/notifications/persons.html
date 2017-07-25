@@ -1,4 +1,5 @@
 {% extends layout_template %}
+{% load table_persons %}
 
 {% block content %}
 
@@ -6,86 +7,10 @@
 
 <p>You can find below the persons fetched from <a href="#fgases">FGases</a> and <a href="#bdr">BDR</a> registries.</p>
 
-{% with items=view.fgases_get_persons %}
 <h2 id="fgases">FGases registry</h2>
+{% table_persons view.get_fgas page_fgas "page_fgas" %}
 
-<div class="cycle-stage">
-	{{ items|length }} persons in registry.
-</div>
-
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th class="user">Username</th>
-			<th class="company">Company/Country</th>
-			<th class="contact">Contact/Email</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
-			<tr id="{{ item.username }}">
-				<td>{{ item.username }}</td>
-				<td>
-                    <ul>
-                    {% for company in item.company.all %}
-                        <li>
-                            {{ company.name }}
-                            <br />
-                            <small>{{ company.country }}</small>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </td>
-				<td>
-                    {{ item.name }}
-                    <br />
-                    <small>{{ item.email }}</small>
-                </td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
-{% endwith %}
-
-{% with items=view.bdr_get_persons %}
 <h2 id="bdr">BDR registry</h2>
-
-<div class="cycle-stage">
-	{{ items|length }} persons in registry.
-</div>
-
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th class="user">Username</th>
-			<th class="company">Company/Country</th>
-			<th class="contact">Contact/Email</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
-			<tr id="{{ item.username }}">
-				<td>{{ item.username }}</td>
-				<td>
-                    <ul>
-                    {% for company in item.company.all %}
-                        <li>
-                            {{ company.name }}
-                            <br />
-                            <small>{{ company.country }}</small>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </td>
-				<td>
-                    {{ item.name }}
-                    <br />
-                    <small>{{ item.email }}</small>
-                </td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
-{% endwith %}
+{% table_persons view.get_bdr view.page_bdr "page_bdr" %}
 
 {% endblock %}
