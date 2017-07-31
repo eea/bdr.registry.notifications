@@ -23,7 +23,7 @@ class CycleEmailTemplateBase(NotificationsBaseView):
                         kwargs={'pk': self.object.cycle.pk}),
                 'Reporting cycle for year {}'.format(self.object.cycle)),
             Breadcrumb(
-                reverse('notifications:emailtemplate:view',
+                reverse('notifications:template:view',
                         kwargs={'pk': self.object.pk}),
                 self.object),
         ])
@@ -35,16 +35,18 @@ class CycleEmailTemplateBase(NotificationsBaseView):
 
 
 class CycleEmailTemplateView(CycleEmailTemplateBase, generic.DetailView):
-    template_name = 'notifications/emailtemplate/view.html'
+    template_name = 'notifications/template/view.html'
+    context_object_name = 'template'
 
 
 class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
     form_class = CycleEmailTemplateEditForm
-    template_name = 'notifications/emailtemplate/edit.html'
+    template_name = 'notifications/template/edit.html'
     success_message = 'Reporting cycle notification edited successfully'
+    context_object_name = 'template'
 
     def get_success_url(self):
-        return reverse('notifications:emailtemplate:view',
+        return reverse('notifications:template:view',
                        args=[self.object.pk])
 
     def breadcrumbs(self):
@@ -56,7 +58,8 @@ class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
 
 
 class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView):
-    template_name = 'notifications/emailtemplate/trigger.html'
+    template_name = 'notifications/template/trigger.html'
+    context_object_name = 'template'
 
     def breadcrumbs(self):
         breadcrumbs = super(CycleEmailTemplateTriggerDetail, self).breadcrumbs()
@@ -68,6 +71,8 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTriggerDetail, self).get_context_data(**kwargs)
         context['form'] = CycleEmailTemplateTriggerForm()
+        context['recipients'] = self.get_recipients()
+        context['notifications'] = self.get_notifications()
         return context
 
     def get_notifications(self):
@@ -77,14 +82,14 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
 
 
 class CycleEmailTemplateTriggerSend(generic.detail.SingleObjectMixin, generic.FormView):
-    template_name = 'notifications/emailtemplate_trigger.html'
+    template_name = 'notifications/template/trigger.html'
     form_class = CycleEmailTemplateTriggerForm
     model = CycleEmailTemplate
     success_message = 'Emails sent successfully!'
 
     def get_success_url(self):
         return reverse(
-            'notifications:emailtemplate_trigger',
+            'notifications:template:trigger',
             args=[self.kwargs['pk']]
         )
 
@@ -106,16 +111,17 @@ class CycleEmailTemplateTrigger(View):
 
 class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     form_class = CycleEmailTemplateTestForm
-    template_name = 'notifications/emailtemplate/test.html'
+    template_name = 'notifications/template/test.html'
     success_message = 'Email was send successfully'
 
-    def dispatch(self, request, *args, **kwargs):
-        self.object = get_object_or_404(CycleEmailTemplate,
+    def get_context_data(self, **kwargs):
+        context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
+        context['template'] = get_object_or_404(CycleEmailTemplate,
                                         id=self.kwargs['pk'])
-        return super(CycleEmailTemplateTest, self).dispatch(request, *args, **kwargs)
+        return context
 
     def get_success_url(self):
-        return reverse('notifications:emailtemplate:test',
+        return reverse('notifications:template:test',
                        args=[self.object.pk])
 
     def breadcrumbs(self):

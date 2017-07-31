@@ -106,13 +106,14 @@ class ActionsFGasesView(ActionsBaseView):
             else:
                 group = group_noneu
 
-            self.create_company(
+            company_data = dict(
                 external_id=item['company_id'],
                 name=item['name'],
                 vat=item['vat'],
                 country=item['address']['country']['name'],
                 group=group
             )
+            self.create_company(**company_data)
 
             counter_companies += 1
 
@@ -132,17 +133,15 @@ class ActionsFGasesView(ActionsBaseView):
 
             try:
                 person_obj = self.create_person(**person_data)
+                companies = Company.objects.filter(
+                    name=person['companyname'],
+                    country=person['country']
+                )
+                person_obj.company.add(*companies)
+                counter_persons += 1
             except IntegrityError as e:
                 logger.info('Skipped person: %s (%s)', person['username'], e)
                 errors_persons.append((e, person['username']))
-
-            companies = Company.objects.filter(
-                name=person['companyname'],
-                country=person['country'],
-            )
-
-            person_obj.company.add(*companies)
-            counter_persons += 1
 
         if errors_persons:
             msg = 'BDR registry fetched with errors: {}'
@@ -179,7 +178,7 @@ class ActionsBDRView(ActionsBaseView):
         group = CompaniesGroup.objects.get(code=BDR_GROUP_CODE)
 
         # fetch companies
-        person_count = 0
+        company_count = 0
         for idx_company, item in enumerate(registry.get_companies(), start=1):
 
             if item['userid'] is None:
@@ -193,10 +192,11 @@ class ActionsBDRView(ActionsBaseView):
                 group=group
             )
 
-            company = self.create_company(**company_data)
+            self.create_company(**company_data)
+            company_count += 1
 
         # fetch persons
-        count_persons = 0
+        person_count = 0
         errors_persons = []
         for person in registry.get_persons():
 
@@ -208,24 +208,22 @@ class ActionsBDRView(ActionsBaseView):
 
             try:
                 person_obj = self.create_person(**person_data)
+                companies = Company.objects.filter(
+                    name=person['companyname'],
+                    country=person['country'],
+                )
+                person_obj.company.add(*companies)
+                person_count += 1
             except IntegrityError as e:
                 logger.info('Skipped person: %s (%s)', person['userid'], e)
                 errors_persons.append((e, person['userid']))
-
-            companies = Company.objects.filter(
-                name=person['companyname'],
-                country=person['country'],
-            )
-
-            person_obj.company.add(*companies)
-            count_persons += 1
 
         if errors_persons:
             msg = 'BDR registry fetched with errors: {}'
             msg = msg.format(errors_persons)
         else:
             msg = 'BDR registry fetched successfully: {} companies, {} persons'
-            msg = msg.format(idx_company, person_count)
+            msg = msg.format(company_count, person_count)
 
         messages.add_message(request, messages.INFO, msg)
 

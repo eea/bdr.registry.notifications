@@ -160,9 +160,10 @@ class BDRRegistry(BaseRegistry):
                 - phone2
                 - phone3
         """
-        response = self.do_request('/management/companies/export/json')
+        response = self.do_request(settings.BDR_COMPANIES_PATH)
         if response:
             return response.json()
+        return []
 
     def get_persons(self):
         """ Gets the list with all persons. Each person has
@@ -177,9 +178,10 @@ class BDRRegistry(BaseRegistry):
             - phone3
             - fax
         """
-        response = self.do_request('/management/persons/export/json/')
+        response = self.do_request(settings.BDR_PERSONS_PATH)
         if response:
             return response.json()
+        return []
 
 
 class FGasesRegistry(BaseRegistry):
@@ -235,9 +237,10 @@ class FGasesRegistry(BaseRegistry):
              - types
              - name
         """
-        response = self.do_request('/undertaking/list')
+        response = self.do_request(settings.FGAES_COMPANY_PATH)
         if response:
             return response.json()
+        return []
 
     def get_persons(self):
         """ Gets the list with all persons. Each person has
@@ -249,6 +252,7 @@ class FGasesRegistry(BaseRegistry):
             - contact_lastname
             - contact_email
         """
-        response = self.do_request('/misc/user/export/json')
+        response = self.do_request(settings.FGAES_PERSON_PATH)
         if response:
             return response.json()
+        return []

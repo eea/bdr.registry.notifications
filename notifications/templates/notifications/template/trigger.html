@@ -1,17 +1,17 @@
 {% extends layout_template %}
 
-{% block head_title %}Trigger - {{ view.object.emailtemplate }} - Reporting cycle for year {{ view.object.cycle.year }} - {% endblock %}
+{% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }} - {% endblock %}
 
 {% block content %}
 
-<h1>Trigger - {{ view.object.emailtemplate }}</h1>
+<h1>Trigger - {{ template.emailtemplate }}</h1>
 
-{% include 'notifications/emailtemplate/actions.html' with object=view.object page='trigger' %}
+{% include 'notifications/template/actions.html' with object=template page='trigger' %}
 
 <p>Explanatory text here.</p>
 
 <h2>Send notifications</h2>
-{% if view.object.is_triggered %}
+{% if template.is_triggered %}
 	<p>This stage has been triggered.</p>
 {% else %}
 	<p style="color:red;">Things to consider when implementing this:</p>
@@ -20,7 +20,7 @@
 		<li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
 		<li>Don't send an email twice!</li>
 	</ul>
-  {% with view.get_recipients as persons %}
+  {% with recipients as persons %}
     <p>The following {{ persons|length }} people will be notified:</p>
     <form action="" method="post">
         {% csrf_token %}
@@ -48,10 +48,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for item in view.get_notifications %}
+		{% for notification in notifications %}
 			<tr>
-				<td>{{ item.email }}</td>
-				<td>{{ item.sent_date }}</td>
+				<td>{{ notification.email }}</td>
+				<td>{{ notification.sent_date }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>

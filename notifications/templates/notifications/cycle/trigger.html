@@ -1,12 +1,12 @@
 {% extends layout_template %}
 
-{% block head_title %}Trigger - Reporting cycle for year {{ object }} - {% endblock %}
+{% block head_title %}Trigger - Reporting cycle for year {{ cycle }} - {% endblock %}
 
 {% block content %}
 
-<h1>Trigger - Reporting cycle for year {{ object }}</h1>
+<h1>Trigger - Reporting cycle for year {{ cycle }}</h1>
 
-{% include 'notifications/cycle/actions.html' with object=object page='trigger' %}
+{% include 'notifications/cycle/actions.html' with object=cycle page='trigger' %}
 
 <p>Explanatory text here.</p>
 
@@ -14,7 +14,7 @@
 
 <p>WIP</p>
 
-<h2>Sent emails - {{ object.stage }}</h2>
+<h2>Sent emails - {{ cycle.stage }}</h2>
 
 <table class="brn-table">
 	<thead>
@@ -25,11 +25,11 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for item in view.get_notifications %}
+		{% for notification in notifications %}
 			<tr>
-				<td>{{ item.group }}</td>
-				<td>{{ item.email }}</td>
-				<td>{{ item.sent_date }}</td>
+				<td>{{ notification.group }}</td>
+				<td>{{ notification.email }}</td>
+				<td>{{ notification.sent_date }}</td>
 			</tr>
 		{% endfor %}
 	</tbody>
