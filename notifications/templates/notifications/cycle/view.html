@@ -1,12 +1,12 @@
 {% extends layout_template %}
 
-{% block head_title %}Reporting cycle for year {{ view.cycle }} - {% endblock %}
+{% block head_title %}Reporting cycle for year {{ cycle }} - {% endblock %}
 
 {% block content %}
 
-<h1>Reporting cycle for year {{ view.cycle }}</h1>
+<h1>Reporting cycle for year {{ cycle }}</h1>
 
-{% include 'notifications/cycle/actions.html' with object=view.cycle page='view' %}
+{% include 'notifications/cycle/actions.html' with object=cycle page='view' %}
 
 <p>Explanatory text here.</p>
 
@@ -24,19 +24,19 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for item in items %}
+		{% for template in templates %}
 			<tr>
-				<td>{{ item.group }}</td>
-				<td>{{ item.stage }}</td>
-				<td>{{ item.is_triggered|yesno:"YES,no" }}</td>
+				<td>{{ template.group }}</td>
+				<td>{{ template.stage }}</td>
+				<td>{{ template.is_triggered|yesno:"YES,no" }}</td>
 				<td class="actions">
-					<a href="{% url 'notifications:emailtemplate:view' item.id %}">View</a>
-					{% if item.can_edit %}
-						<a href="{% url 'notifications:emailtemplate:edit' item.id %}">Edit</a>
+					<a href="{% url 'notifications:template:view' template.pk %}">View</a>
+					{% if template.can_edit %}
+						<a href="{% url 'notifications:template:edit' template.pk %}">Edit</a>
 					{% endif %}
-					<a href="{% url 'notifications:emailtemplate:test' item.id %}">Test</a>
-					{% if item.can_trigger %}
-						<a href="{% url 'notifications:emailtemplate:trigger' item.id %}">Trigger</a>
+					<a href="{% url 'notifications:template:test' template.pk %}">Test</a>
+					{% if template.can_trigger %}
+						<a href="{% url 'notifications:template:trigger' template.pk %}">Trigger</a>
 					{% endif %}
 				</td>
 			</tr>

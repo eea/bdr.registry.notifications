@@ -5,10 +5,10 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 accounts_patterns = [
-
     url(r'^login/?$',
         auth_views.login, {'template_name': 'notifications/login.html'},
         name='login'),
+
     url(r'^logout/?$',
         views.logout_view,
         name='logout'),
@@ -18,12 +18,15 @@ cycle_patterns = [
     url(r'^add/?$',
         views.CycleAdd.as_view(),
         name='add'),
+
     url(r'^(?P<pk>\d+)/view/$',
-        views.CycleView.as_view(),
+        views.CycleDetailView.as_view(),
         name='view'),
+
     url(r'^(?P<pk>\d+)/edit/$',
         views.CycleEdit.as_view(),
         name='edit'),
+
     url(r'^(?P<pk>\d+)/trigger/$',
         views.CycleTrigger.as_view(),
         name='trigger'),
@@ -62,19 +65,24 @@ app_name = 'notifications'
 urlpatterns = [
     url(r'^accounts/',
         include(accounts_patterns, namespace='accounts')),
+
     url(r'^cycle/',
         include(cycle_patterns, namespace='cycle')),
-    url(r'^emailtemplate/',
-        include(email_template_patterns, namespace='emailtemplate')),
+
+    url(r'^template/',
+        include(email_template_patterns, namespace='template')),
+
     url(r'^actions/',
         include(actions_patterns, namespace='actions')),
 
     url(r'^$',
         views.DashboardView.as_view(),
         name='dashboard'),
+
     url(r'^companies/$',
         views.CompaniesView.as_view(),
         name='companies'),
+
     url(r'^persons/$',
         views.PersonsView.as_view(),
         name='persons'),

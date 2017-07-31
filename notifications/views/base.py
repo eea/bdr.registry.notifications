@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views import generic
 
 from notifications import BDR_GROUP_CODE, FGASES_GROUP_CODE
-from notifications.models import STAGE_CLOSED, Cycle, CompaniesGroup, Person, Company
+from notifications.models import Cycle, CompaniesGroup, Person, Company
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
@@ -28,16 +28,12 @@ class DashboardView(NotificationsBaseView, generic.ListView):
     context_object_name = 'items'
 
     def get_queryset(self):
-        return Cycle.objects.order_by('-year')
+        return Cycle.objects.order_by('-year').prefetch_related('stage')
 
-    def can_initiate_new_cycle(self):
-        r = True
-        cycles = Cycle.objects.order_by('-year')
-        if len(cycles) > 0:
-            last_cycle = cycles[0]
-            if last_cycle.stage.pk != STAGE_CLOSED:
-                r = False
-        return r
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context['model'] = self.model
+        return context
 
 
 class CompaniesView(NotificationsBaseView, PaginatedDataViewBase,

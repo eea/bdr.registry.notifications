@@ -219,6 +219,8 @@ EMAIL_HOST = env('EMAIL_HOST', 'localhost')
 EMAIL_PORT = env('EMAIL_PORT', 25)
 
 BDR_SERVER_URL = env('BDR_SERVER_URL', 'http://localhost')
+BDR_COMPANIES_PATH = env('BDR_COMPANIES_PATH', '/management/companies/export/json')
+BDR_PERSONS_PATH = env('BDR_PERSONS_PATH', '/management/persons/export/json/')
 BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
 
 USE_ZOPE_LAYOUT = env('USE_ZOPE_LAYOUT', True)
@@ -229,6 +231,8 @@ BDRREGISTRY_USERNAME = env('BDRREGISTRY_USERNAME', '')
 BDRREGISTRY_PASSWORD = env('BDRREGISTRY_PASSWORD', '')
 
 FGASESREGISTRY_URL = env('FGASESREGISTRY_URL', '')
+FGAES_COMPANY_PATH = env('FGASES_COMPANY_PATH', '/undertaking/list')
+FGAES_PERSON_PATH = env('FGASES_PERSON_PATH', '/misc/user/export/json')
 FGASESREGISTRY_TOKEN = env('FGASESREGISTRY_TOKEN', '')
 
 

@@ -153,23 +153,32 @@ class Cycle(models.Model):
         return self.stage.can_trigger
 
     def last_action(self):
-        return self.history.all()[0]
+        return self.history.first()
 
     def create_cycle_templates(self):
         year = self.year
         closing_date = self.closing_date.strftime('%d %B %Y')
-        for emailtemplate in EmailTemplate.objects.all():
-            cycle_emailtemplate = CycleEmailTemplate(
+        for template in EmailTemplate.objects.all():
+            cycle_template = CycleEmailTemplate(
                 cycle=self,
-                emailtemplate=emailtemplate,
-                subject=(emailtemplate
+                emailtemplate=template,
+                subject=(template
                          .subject
                          .format(year=year, closing_date=closing_date)),
-                body_html=(emailtemplate
+                body_html=(template
                            .body_html
                            .format(year=year, closing_date=closing_date)),
             )
-            cycle_emailtemplate.save()
+            cycle_template.save()
+
+    @classmethod
+    def can_initiate_new_cycle(cls):
+        cycles = cls.objects.order_by('-year')
+        if cycles.exists():
+            last_cycle = cycles.first()
+            if last_cycle.stage.pk != STAGE_CLOSED:
+                return False
+        return True
 
 
 class CycleEmailTemplate(models.Model):
@@ -210,7 +219,7 @@ class CycleEmailTemplate(models.Model):
         return self.cycle.can_trigger and self.cycle.stage == self.stage
 
     def last_action(self):
-        return self.history.all()[0]
+        return self.history.first()
 
     def get_parameters(self):
         return extract_parameters(self.body_html)

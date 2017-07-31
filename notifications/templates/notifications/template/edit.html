@@ -1,0 +1,21 @@
+{% extends layout_template %}
+
+{% block head_title %}Edit - {{ template.emailtemplate }} - Reporting cycle for year
+  {{ template.cycle.year }} - {% endblock %}
+
+{% block content %}
+
+<h1>Edit - {{ template.emailtemplate }}</h1>
+
+{% include 'notifications/template/actions.html' with object=template page='edit' %}
+
+<p>Explanatory text here.</p>
+
+<form action="" method="post">
+	{% csrf_token %}
+	{{ form.media }}
+	{{ form.as_p }}
+	<input type="submit" value="Update" />
+</form>
+
+{% endblock %}

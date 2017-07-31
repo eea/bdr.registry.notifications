@@ -1,5 +1,5 @@
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views import generic
 
@@ -14,6 +14,11 @@ class CycleAdd(NotificationsBaseView, generic.CreateView):
     template_name = 'notifications/cycle/add.html'
     success_message = 'Reporting cycle added successfully'
 
+    def dispatch(self, request, *args, **kwargs):
+        if not self.model.can_initiate_new_cycle():
+            raise Http404('Not allowed to add a new cycle since one is already open.')
+        return super(CycleAdd, self).dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse('notifications:dashboard')
 
@@ -25,30 +30,32 @@ class CycleAdd(NotificationsBaseView, generic.CreateView):
         return breadcrumbs
 
 
-class CycleView(NotificationsBaseView, generic.ListView):
-    model = CycleEmailTemplate
+class CycleDetailView(NotificationsBaseView, generic.DetailView):
+    model = Cycle
     template_name = 'notifications/cycle/view.html'
-    context_object_name = 'items'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.cycle = get_object_or_404(Cycle,
-                                       id=self.kwargs['pk'])
-        return super(CycleView, self).dispatch(request, *args, **kwargs)
+    context_object_name = 'cycle'
 
     def breadcrumbs(self):
-        breadcrumbs = super(CycleView, self).breadcrumbs()
+        cycle = self.object
+        breadcrumbs = super(CycleDetailView, self).breadcrumbs()
         breadcrumbs.extend([
             Breadcrumb(
                 reverse('notifications:cycle:view',
-                        kwargs={'pk': self.cycle.pk}),
-                'Reporting cycle for year {}'.format(self.cycle)),
+                        kwargs={'pk': cycle.pk}),
+                'Reporting cycle for year {}'.format(cycle)),
         ])
         return breadcrumbs
 
-    def get_queryset(self):
-        return (CycleEmailTemplate.objects
-                .filter(cycle=self.cycle)
-                .order_by('emailtemplate__stage'))
+    def get_context_data(self, **kwargs):
+        context = super(CycleDetailView, self).get_context_data(**kwargs)
+        context['templates'] = (CycleEmailTemplate.objects
+            .filter(cycle=self.object)
+            .order_by('emailtemplate__stage')
+            .prefetch_related('emailtemplate__group',
+                              'emailtemplate__stage',
+                              'cycle')
+        )
+        return context
 
 
 class CycleEdit(NotificationsBaseView, generic.UpdateView):
@@ -56,6 +63,7 @@ class CycleEdit(NotificationsBaseView, generic.UpdateView):
     form_class = CycleEditForm
     template_name = 'notifications/cycle/edit.html'
     success_message = 'Reporting cycle edited successfully'
+    context_object_name = 'cycle'
 
     def get_object(self, queryset=None):
         obj = super(CycleEdit, self).get_object(queryset)
@@ -81,6 +89,7 @@ class CycleEdit(NotificationsBaseView, generic.UpdateView):
 class CycleTrigger(NotificationsBaseView, generic.DetailView):
     model = Cycle
     template_name = 'notifications/cycle/trigger.html'
+    context_object_name = 'cycle'
 
     def breadcrumbs(self):
         breadcrumbs = super(CycleTrigger, self).breadcrumbs()
@@ -93,8 +102,11 @@ class CycleTrigger(NotificationsBaseView, generic.DetailView):
         ])
         return breadcrumbs
 
-    def get_notifications(self):
-        return (CycleNotification.objects
-                .filter(emailtemplate__cycle=self.object,
-                        emailtemplate__emailtemplate__stage=self.object.stage)
-                .order_by('-sent_date'))
+    def get_context_data(self, **kwargs):
+        context = super(CycleTrigger, self).get_context_data(**kwargs)
+        context['notifications'] = (CycleNotification.objects
+            .filter(emailtemplate__cycle=self.object,
+                    emailtemplate__emailtemplate__stage=self.object.stage)
+            .select_related('emailtemplate__emailtemplate__group')
+            .order_by('-sent_date'))
+        return context
