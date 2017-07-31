@@ -1,7 +1,8 @@
 from django.urls import reverse
 from django.views import generic
 
-from notifications.models import STAGE_CLOSED, Cycle, CompaniesGroup
+from notifications import BDR_GROUP_CODE, FGASES_GROUP_CODE
+from notifications.models import STAGE_CLOSED, Cycle, CompaniesGroup, Person
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
