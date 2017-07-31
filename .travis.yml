@@ -4,7 +4,7 @@ python:
 install:
   - pip install -r requirements-dev.txt
 script:
-  - ./manage.py test --settings=bdr.testsettings
+  - python manage.py test --settings=bdr.testsettings
 notifications:
   email:
     recipients:
