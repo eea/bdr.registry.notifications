@@ -17,9 +17,12 @@
 
 {% for group in groups %}
 	<h2 id="{{ group.code }}">{{ group.title }}</h2>
-	{% get_group_companies group as items %}
+  {% get_group_companies view group.code as items %}
 	<div class="cycle-stage">
-		{{ items|length }} companies in registry.
+    Showing {{ items.start_index }}-{{ items.end_index }} out of
+    {{ items.paginator.count }} companies in registry.
+  <br>
+    {% include 'notifications/_page_controls.html' with items=items req_page=group.code|add:"_page" section=group.code %}
 	</div>
 
 	<table class="brn-table">

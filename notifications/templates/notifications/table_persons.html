@@ -1,47 +1,39 @@
 <div class="cycle-stage">
-    Showing {{ items.start_index }}-{{ items.end_index }} out of {{ items.paginator.count }} persons in registry.
-    {% if items.has_previous %}
-        <a href=".">First</a>
-        <a href="?{{ req_page }}={{ items.previous_page_number }}">Previous</a>
-    {% endif %}
-    {% for page in items.paginator.page_range %}
-      <a href="?{{ req_page }}={{ page }}">{{ page }}</a>
-    {% endfor %}
-    {% if items.has_next %}
-      <a href="?{{ req_page }}={{ items.next_page_number }}">Next</a>
-      <a href="?{{ req_page }}={{ items.paginator.num_pages }}">Last</a>
-    {% endif %}
+  Showing {{ items.start_index }}-{{ items.end_index }} out of
+  {{ items.paginator.count }} persons in registry.
+  <br>
+  {% include 'notifications/_page_controls.html' with items=items req_page=req_page section=section %}
 </div>
 
 <table class="brn-table">
-	<thead>
-		<tr>
-			<th class="user">Username</th>
-			<th class="company">Company/Country</th>
-			<th class="contact">Contact/Email</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
-			<tr id="{{ item.username }}">
-				<td>{{ item.username }}</td>
-				<td>
-                    <ul>
-                    {% for company in item.company.all %}
-                        <li>
-                            {{ company.name }}
-                            <br />
-                            <small>{{ company.country }}</small>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </td>
-				<td>
-                    {{ item.name }}
-                    <br />
-                    <small>{{ item.email }}</small>
-                </td>
-			</tr>
-		{% endfor %}
-	</tbody>
+  <thead>
+  <tr>
+    <th class="user">Username</th>
+    <th class="company">Company/Country</th>
+    <th class="contact">Contact/Email</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for item in items %}
+    <tr id="{{ item.username }}">
+      <td>{{ item.username }}</td>
+      <td>
+        <ul>
+          {% for company in item.company.all %}
+            <li>
+              {{ company.name }}
+              <br/>
+              <small>{{ company.country }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      </td>
+      <td>
+        {{ item.name }}
+        <br/>
+        <small>{{ item.email }}</small>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
 </table>
