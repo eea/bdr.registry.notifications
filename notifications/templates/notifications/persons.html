@@ -1,5 +1,4 @@
 {% extends layout_template %}
-{% load table_persons %}
 
 {% block content %}
 
@@ -8,9 +7,9 @@
 <p>You can find below the persons fetched from <a href="#fgases">FGases</a> and <a href="#bdr">BDR</a> registries.</p>
 
 <h2 id="fgases">FGases registry</h2>
-{% table_persons view.get_fgas page_fgas "page_fgas" %}
+{% include 'notifications/table_persons.html' with items=view.get_fgas req_page="page_fgas" section='fgases' %}
 
 <h2 id="bdr">BDR registry</h2>
-{% table_persons view.get_bdr view.page_bdr "page_bdr" %}
+{% include 'notifications/table_persons.html' with items=view.get_bdr req_page="page_bdr" section='bdr' %}
 
 {% endblock %}

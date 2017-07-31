@@ -1,0 +1,23 @@
+{% if items.has_previous %}
+  <a href=".#{{ section }}">First</a>
+  <a href="?{{ req_page }}={{ items.previous_page_number }}#{{ section }}">Previous</a>
+  {% if items.previous_page_number != 1 %}
+    <span>1...</span>
+  {% endif %}
+  <a href="?{{ req_page }}={{ items.previous_page_number }}#{{ section }}">
+    {{ items.previous_page_number }}</a>
+{% endif %}
+
+<span>{{ items.number }}</span>
+
+{% if items.has_next %}
+  <a href="?{{ req_page }}={{ items.next_page_number }}#{{ section }}">
+    {{ items.next_page_number }}</a>
+
+  {% if items.next_page_number != items.paginator.num_pages %}
+    <span>...{{ items.paginator.num_pages }}</span>
+  {% endif %}
+
+  <a href="?{{ req_page }}={{ items.next_page_number }}#{{ section }}">Next</a>
+  <a href="?{{ req_page }}={{ items.paginator.num_pages }}#{{ section }}">Last</a>
+{% endif %}
