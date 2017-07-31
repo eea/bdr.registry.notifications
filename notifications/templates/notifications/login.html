@@ -10,7 +10,7 @@
 
 <h1>Login</h1>
 
-<form method="post" action="{% url 'notifications:login' %}">
+<form method="post" action="{% url 'notifications:accounts:login' %}">
 	{% csrf_token %}
 	<table>
 		<tr>

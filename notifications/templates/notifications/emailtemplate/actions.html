@@ -1,16 +1,16 @@
 {% if object.can_edit or object.can_trigger %}
     <div class="cycle-actions">
         {% if page != 'view' %}
-            <a href="{% url 'notifications:emailtemplate_view' object.id %}">View</a>
+            <a href="{% url 'notifications:emailtemplate:view' object.id %}">View</a>
         {% endif %}
         {% if object.can_edit and page != 'edit' %}
-            <a href="{% url 'notifications:emailtemplate_edit' object.id %}">Edit</a>
+            <a href="{% url 'notifications:emailtemplate:edit' object.id %}">Edit</a>
         {% endif %}
         {% if object.can_trigger and page != 'trigger' %}
-            <a href="{% url 'notifications:emailtemplate_trigger' object.id %}">Trigger</a>
+            <a href="{% url 'notifications:emailtemplate:trigger' object.id %}">Trigger</a>
         {% endif %}
         {% if page != 'test' %}
-            <a href="{% url 'notifications:emailtemplate_test' object.id %}">Test</a>
+            <a href="{% url 'notifications:emailtemplate:test' object.id %}">Test</a>
         {% endif %}
     </div>
 {% endif %}
