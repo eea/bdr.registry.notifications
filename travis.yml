@@ -1,0 +1,11 @@
+language: python
+python:
+  - "3.6"
+install:
+  - pip install -r requirements-dev.txt
+script:
+  - ./manage.py test --settings=bdr.testsettings
+notifications:
+  email:
+    recipients:
+      - purepython@eaudeweb.ro
