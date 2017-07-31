@@ -139,7 +139,7 @@ class Cycle(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.year
+        return str(self.year)
 
     def __unicode__(self):
         return '%s' % self.year

@@ -13,7 +13,12 @@ localsettings_test.py
 /static/
 
 # virtualenv
+sandbox/
+virtualenv/
 /bin/
 /include/
 /lib/
 pip-selfcheck.json
+
+# IDE
+.idea/

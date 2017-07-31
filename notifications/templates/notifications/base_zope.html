@@ -26,9 +26,9 @@
 			</div>
 			<div id="righttools">
 				{% if user.is_anonymous %}
-					<a id="loginlink" href="{% url 'notifications:login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
+					<a id="loginlink" href="{% url 'notifications:accounts:login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
 				{% else %}
-					<a id="logoutlink" href="{% url 'notifications:logout' %}">{% trans "Logout" %} ({{ user.username }})</a>
+					<a id="logoutlink" href="{% url 'notifications:accounts:logout' %}">{% trans "Logout" %} ({{ user.username }})</a>
 				{% endif %}
 				<a id="printlink" title="{% trans 'Print this page' %}" href="javascript:this.print();"><span>{% trans "Print" %}</span></a>
 				<a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="{% trans 'Switch to/from full screen mode' %}"><span>{% trans "Switch to/from full screen mode" %}</span></a>
@@ -72,7 +72,7 @@
 					<li><a href="{% url 'notifications:dashboard' %}">{% trans 'Reporting cycles' %}</a></li>
 					<li><a href="{% url 'notifications:companies' %}">{% trans 'Companies' %}</a></li>
 					<li><a href="{% url 'notifications:persons' %}">{% trans 'Persons' %}</a></li>
-					<li><a href="{% url 'notifications:actions' %}">{% trans 'Actions' %}</a></li>
+					<li><a href="{% url 'notifications:actions:home' %}">{% trans 'Actions' %}</a></li>
 					{% if user.is_superuser %}
 						<li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
 					{% endif %}

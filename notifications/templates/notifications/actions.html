@@ -7,8 +7,10 @@
 <p>Explanatory text here.</p>
 
 <ul>
-	<li><a href="{% url 'notifications:actions_fgases'%}">Fetch FGases registry companies and persons</a></li>
-	<li><a href="{% url 'notifications:actions_bdr'%}">Fetch BDR registry companies and persons</a></li>
+	<li><a href="{% url 'notifications:actions:fgases'%}">Fetch FGases registry
+    companies and persons</a></li>
+	<li><a href="{% url 'notifications:actions:bdr'%}">Fetch BDR registry companies and
+    persons</a></li>
 </ul>
 
 {% endblock %}

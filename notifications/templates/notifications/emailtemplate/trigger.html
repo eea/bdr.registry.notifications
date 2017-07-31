@@ -6,7 +6,7 @@
 
 <h1>Trigger - {{ view.object.emailtemplate }}</h1>
 
-{% include 'notifications/emailtemplate_actions.html' with object=view.object page='trigger' %}
+{% include 'notifications/emailtemplate/actions.html' with object=view.object page='trigger' %}
 
 <p>Explanatory text here.</p>
 
@@ -20,7 +20,7 @@
 		<li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
 		<li>Don't send an email twice!</li>
 	</ul>
-    {% with view.get_recipients as persons %}
+  {% with view.get_recipients as persons %}
     <p>The following {{ persons|length }} people will be notified:</p>
     <form action="" method="post">
         {% csrf_token %}

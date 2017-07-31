@@ -6,7 +6,7 @@
 
 <h1>Reporting cycle for year {{ view.cycle }}</h1>
 
-{% include 'notifications/cycle_actions.html' with object=view.cycle page='view' %}
+{% include 'notifications/cycle/actions.html' with object=view.cycle page='view' %}
 
 <p>Explanatory text here.</p>
 
@@ -30,13 +30,13 @@
 				<td>{{ item.stage }}</td>
 				<td>{{ item.is_triggered|yesno:"YES,no" }}</td>
 				<td class="actions">
-					<a href="{% url 'notifications:emailtemplate_view' item.id %}">View</a>
+					<a href="{% url 'notifications:emailtemplate:view' item.id %}">View</a>
 					{% if item.can_edit %}
-						<a href="{% url 'notifications:emailtemplate_edit' item.id %}">Edit</a>
+						<a href="{% url 'notifications:emailtemplate:edit' item.id %}">Edit</a>
 					{% endif %}
-					<a href="{% url 'notifications:emailtemplate_test' item.id %}">Test</a>
+					<a href="{% url 'notifications:emailtemplate:test' item.id %}">Test</a>
 					{% if item.can_trigger %}
-						<a href="{% url 'notifications:emailtemplate_trigger' item.id %}">Trigger</a>
+						<a href="{% url 'notifications:emailtemplate:trigger' item.id %}">Trigger</a>
 					{% endif %}
 				</td>
 			</tr>
