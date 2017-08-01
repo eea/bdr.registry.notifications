@@ -1,5 +1,5 @@
 # Settings module for running tests
-# Use:  ./manage.py test --settings=bdr.testsettings
+# Use:  python manage.py test --settings=bdr.testsettings
 
 from .settings import *
 
