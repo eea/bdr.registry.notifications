@@ -1,5 +1,9 @@
-from factory import SubFactory, RelatedFactory
+from datetime import datetime
+
+from factory import SubFactory, RelatedFactory, Sequence
 from factory.django import DjangoModelFactory
+
+from django.contrib.auth.models import User
 
 from notifications import models
 
@@ -7,6 +11,7 @@ from notifications import models
 class StageFactory(DjangoModelFactory):
 
     title = 'StageTest'
+    code = Sequence(lambda n: 'code{0}'.format(n))
 
     class Meta:
         model = models.Stage
@@ -15,6 +20,7 @@ class StageFactory(DjangoModelFactory):
 class CompaniesGroupFactory(DjangoModelFactory):
 
     title = 'CompaniesGroupTest'
+    code = Sequence(lambda n: 'code{0}'.format(n))
 
     class Meta:
         model = models.CompaniesGroup
@@ -47,6 +53,7 @@ class EmailTemplateFactory(DjangoModelFactory):
 
 class CycleFactory(DjangoModelFactory):
     stage = SubFactory(StageFactory)
+    closing_date = datetime.now()
 
     class Meta:
         model = models.Cycle
@@ -60,7 +67,24 @@ class CycleEmailTemplateFactory(DjangoModelFactory):
     class Meta:
         model = models.CycleEmailTemplate
 
+    @staticmethod
+    def create_email_template():
+        group = CompaniesGroupFactory()
+        stage = StageFactory()
+        emailtemplate = EmailTemplateFactory(
+            group=group,
+            stage=stage
+        )
+        return emailtemplate
+
 
 class CycleNotification(DjangoModelFactory):
     subject = 'CycleNotificationTest'
     emailtemplate = SubFactory(EmailTemplateFactory)
+
+
+class UserFactory(DjangoModelFactory):
+    username = Sequence(lambda n: 'user{0}'.format(n))
+
+    class Meta:
+        model = User
