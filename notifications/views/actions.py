@@ -1,4 +1,5 @@
 import logging
+import sys
 
 from django.contrib import messages
 from django.db import IntegrityError
@@ -16,7 +17,10 @@ from notifications import (
 from notifications.models import Company, Person, CompaniesGroup
 from notifications.registries import FGasesRegistry, BDRRegistry
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
-
+from notifications.tests.base.registry_mock import (
+    FGasesRegistryMock,
+    BDRRegistryMock
+)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -92,7 +96,10 @@ class ActionsFGasesView(ActionsBaseView):
         ).delete()
 
     def get(self, request, *args, **kwargs):
-        registry = FGasesRegistry()
+        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+            registry = FGasesRegistryMock()
+        else:
+            registry = FGasesRegistry()
 
         group_eu = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
         group_noneu = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
@@ -173,7 +180,10 @@ class ActionsBDRView(ActionsBaseView):
         ).delete()
 
     def get(self, request, *args, **kwargs):
-        registry = BDRRegistry()
+        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+            registry = BDRRegistryMock()
+        else:
+            registry = BDRRegistry()
 
         group = CompaniesGroup.objects.get(code=BDR_GROUP_CODE)
 
