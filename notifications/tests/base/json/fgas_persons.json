@@ -1,0 +1,10 @@
+[
+  {
+    "username": "user1",
+    "companyname": "First Company",
+    "country": "China",
+    "contact_firstname": "John",
+    "contact_lastname": "Smith",
+    "contact_email": "jhsm@mail.com"
+  }
+]

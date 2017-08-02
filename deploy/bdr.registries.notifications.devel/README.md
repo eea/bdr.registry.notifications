@@ -49,6 +49,16 @@ or in debug mode:
 To access the app, type in your browser http://localhost:APP_HTTP_PORT/notifications/.
 
 
+### 1.5 Running tests
+
+Run tests:
+
+    $ python manage.py test --settings=bdr.testsettings
+
+Check coverage:
+
+    $ coverage run --source='.' ./manage.py test --settings=bdr.testsettings
+    $ coverage html -i
 
 ## 2. Production
 
