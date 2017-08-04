@@ -1,9 +1,9 @@
-from django.test import TestCase
 from django.urls import reverse
+from django.core import mail
 
 from notifications.tests.base import factories
 from notifications.tests.base.base import BaseTest
-
+from notifications.models import CycleNotification
 
 class CycleEmailTemplateTest(BaseTest):
     def setUp(self):
@@ -49,3 +49,26 @@ class CycleEmailTemplateTest(BaseTest):
                          self._EDIT_DATA['subject'])
         self.assertEqual(resp.context['object'].body_html,
                          self._EDIT_DATA['body_html'])
+
+    def test_cycle_email_trigger(self):
+        self.prepare_email_testing()
+        resp = self.client.post(
+            reverse('notifications:template:trigger',
+                    kwargs={'pk': self.cycle_template.pk}),
+            follow=True
+        )
+
+        self.assertEqual(resp.status_code, 200)
+        sent_mails = mail.outbox
+        i = 0
+        cycle_notifications = CycleNotification.objects.all()
+        for person in self.persons:
+            body_expected = self.generate_body_for_person({
+                'CONTACT': person.name,
+                'COMPANY': person.company.first().name
+            })
+            self.assertEqual(sent_mails[i].to[0], person.email)
+            self.assertEqual(sent_mails[i].body, body_expected)
+            self.assertEqual(cycle_notifications[i].body_html, body_expected)
+            i += 1
+        self.assertEqual(len(cycle_notifications), 3)

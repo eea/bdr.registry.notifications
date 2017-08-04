@@ -40,7 +40,7 @@ email_template_patterns = [
         views.CycleEmailTemplateEdit.as_view(),
         name='edit'),
     url(r'^(?P<pk>\d+)/trigger/$',
-        views.CycleEmailTemplateTriggerDetail.as_view(),
+        views.CycleEmailTemplateTrigger.as_view(),
         name='trigger'),
     url(r'^(?P<pk>\d+)/test/$',
         views.CycleEmailTemplateTest.as_view(),
