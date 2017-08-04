@@ -35,7 +35,9 @@ class CompanyFactory(DjangoModelFactory):
 
 
 class PersonFactory(DjangoModelFactory):
-    username = 'PersonTest'
+    username = Sequence(lambda n: 'person{0}'.format(n))
+    name = Sequence(lambda n: 'Person name {0}'.format(n))
+    email = Sequence(lambda n: 'person{0}.test.com'.format(n))
     company = RelatedFactory(CompanyFactory)
 
     class Meta:
