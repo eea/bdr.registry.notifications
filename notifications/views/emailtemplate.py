@@ -114,10 +114,14 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     template_name = 'notifications/template/test.html'
     success_message = 'Email was send successfully'
 
+    def get_object(self):
+        return get_object_or_404(CycleEmailTemplate,
+                                 id=self.kwargs['pk'])
+
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
         context['template'] = get_object_or_404(CycleEmailTemplate,
-                                        id=self.kwargs['pk'])
+                                                id=self.kwargs['pk'])
         return context
 
     def get_success_url(self):
@@ -125,6 +129,7 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
                        args=[self.object.pk])
 
     def breadcrumbs(self):
+        self.object = self.get_object()
         breadcrumbs = super(CycleEmailTemplateTest, self).breadcrumbs()
         breadcrumbs.extend([
             Breadcrumb('', 'Test'),
@@ -132,5 +137,6 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         return breadcrumbs
 
     def form_valid(self, form):
+        self.object = self.get_object()
         form.send_email(self.object)
         return super(CycleEmailTemplateTest, self).form_valid(form)
