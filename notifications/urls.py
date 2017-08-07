@@ -53,11 +53,14 @@ actions_patterns = [
         views.ActionsView.as_view(),
         name='home'),
     url(r'^fgases$',
-        views.ActionsFGasesView.as_view(),
+        views.ActionsFGasView.as_view(),
         name='fgases'),
     url(r'^bdr$',
         views.ActionsBDRView.as_view(),
         name='bdr'),
+    url(r'^ods',
+        views.ActionsODSView.as_view(),
+        name='ods'),
 ]
 
 app_name = 'notifications'

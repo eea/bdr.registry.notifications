@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import generic
+from django.conf import settings
 
 from notifications import (
     FGASES_GROUP_CODE,
@@ -81,9 +82,13 @@ class ActionsBaseView(generic.View):
         return person
 
 
-class ActionsFGasesView(ActionsBaseView):
-    """ Handles FGases registry fetching.
+class ActionsBaseFCSView(ActionsBaseView):
+    """ Handles FCS registry fetching.
     """
+    company_path = settings.FGASES_COMPANY_PATH
+    person_path = settings.FGASES_PERSON_PATH
+    success_msg = ''
+    error_msg = ''
 
     def cleanup(self):
         """ Delete all persons and companies fetched from FGases registry.
@@ -108,7 +113,7 @@ class ActionsFGasesView(ActionsBaseView):
         counter_companies = 0
         errors_companies = []
 
-        for item in registry.get_companies():
+        for item in registry.get_companies(self.company_path):
             if item['address']['country']['type'] == FGASES_EU:
                 group = group_eu
             else:
@@ -138,7 +143,7 @@ class ActionsFGasesView(ActionsBaseView):
         # fetch persons
         counter_persons = 0
         errors_persons = []
-        for person in registry.get_persons():
+        for person in registry.get_persons(self.person_path):
 
             fmt_person_name = '{first_name} {last_name}'
             person_name = fmt_person_name.format(**person)
@@ -153,11 +158,11 @@ class ActionsFGasesView(ActionsBaseView):
             counter_persons += 1
 
         if errors_persons:
-            msg = 'BDR registry fetched with errors: {}'
+            msg = self.error_msg
             msg = msg.format(errors_persons)
         else:
             msg = (
-                'FGases registry fetched successfully:'
+                self.success_msg +
                 ' {} companies, {} persons'
             )
             msg = msg.format(counter_companies, counter_persons)
@@ -165,6 +170,23 @@ class ActionsFGasesView(ActionsBaseView):
         messages.add_message(request, messages.INFO, msg)
 
         return redirect('notifications:actions:home')
+
+class ActionsFGasView(ActionsBaseFCSView):
+    """ Handles FGases registry fetching.
+    """
+    company_path = settings.FGASES_COMPANY_PATH
+    person_path = settings.FGASES_PERSON_PATH
+    success_msg = 'FGases registry fetched successfully:'
+    error_msg = 'FGases registry fetched with errors: {}'
+
+
+class ActionsODSView(ActionsBaseFCSView):
+    """ Handles ODS registry fetching.
+    """
+    company_path = settings.ODS_COMPANY_PATH
+    person_path = settings.ODS_PERSON_PATH
+    success_msg = 'ODS registry fetched successfully:'
+    error_msg = 'ODS registry fetched with errors: {}'
 
 
 class ActionsBDRView(ActionsBaseView):

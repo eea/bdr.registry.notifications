@@ -209,7 +209,7 @@ class FGasesRegistry(BaseRegistry):
                                                    cookies=cookies,
                                                    auth=auth)
 
-    def get_companies(self):
+    def get_companies(self, path):
         """ Gets the list with all companies. Each company has
             the following fields:
              - website
@@ -237,12 +237,12 @@ class FGasesRegistry(BaseRegistry):
              - types
              - name
         """
-        response = self.do_request(settings.FGASES_COMPANY_PATH)
+        response = self.do_request(path)
         if response:
             return response.json()
         return []
 
-    def get_persons(self):
+    def get_persons(self, path):
         """ Gets the list with all persons. Each person has
             the following fields:
             - username
@@ -252,7 +252,7 @@ class FGasesRegistry(BaseRegistry):
             - contact_lastname
             - contact_email
         """
-        response = self.do_request(settings.FGASES_PERSON_PATH)
+        response = self.do_request(path)
         if response:
             return response.json()
         return []
