@@ -113,32 +113,32 @@ class ActionsBaseFCSView(ActionsBaseView):
         counter_companies = 0
         errors_companies = []
 
-        for item in registry.get_companies(self.company_path):
-            if item['address']['country']['type'] == FGASES_EU:
+        for company in registry.get_companies(self.company_path):
+            if company['address']['country']['type'] == FGASES_EU:
                 group = group_eu
             else:
                 group = group_noneu
 
             company_data = dict(
-                external_id=item['company_id'],
-                name=item['name'],
-                vat=item['vat'],
-                country=item['address']['country']['name'],
+                external_id=company['company_id'],
+                name=company['name'],
+                vat=company['vat'],
+                country=company['address']['country']['name'],
                 group=group
             )
 
             try:
                 company_obj = self.create_company(**company_data)
 
-                username_list = [user["username"] for user in item["users"]]
+                username_list = [user["username"] for user in company["users"]]
                 persons = Person.objects.filter(
                     username__in=username_list
                 )
                 company_obj.user.add(*persons)
                 counter_companies += 1
             except IntegrityError as e:
-                logger.info('Skipped company: %s (%s)', item['name'], e)
-                errors_companies.append((e, item['name']))
+                logger.info('Skipped company: %s (%s)', company['name'], e)
+                errors_companies.append((e, company['name']))
 
         # fetch persons
         counter_persons = 0
@@ -213,16 +213,16 @@ class ActionsBDRView(ActionsBaseView):
 
         # fetch companies
         company_count = 0
-        for idx_company, item in enumerate(registry.get_companies(), start=1):
+        for idx_company, company in enumerate(registry.get_companies(), start=1):
 
-            if item['userid'] is None:
-                print item
+            if company['userid'] is None:
+                print company
 
             company_data = dict(
-                external_id=item['userid'],
-                name=item['name'],
-                vat=item['vat_number'],
-                country=item['country_name'],
+                external_id=company['userid'],
+                name=company['name'],
+                vat=company['vat_number'],
+                country=company['country_name'],
                 group=group
             )
 
