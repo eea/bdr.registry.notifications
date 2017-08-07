@@ -53,7 +53,7 @@ actions_patterns = [
         views.ActionsView.as_view(),
         name='home'),
     url(r'^fgases$',
-        views.ActionsFGasView.as_view(),
+        views.ActionsFGasesView.as_view(),
         name='fgases'),
     url(r'^bdr$',
         views.ActionsBDRView.as_view(),

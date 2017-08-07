@@ -184,24 +184,24 @@ class BDRRegistry(BaseRegistry):
         return []
 
 
-class FGasesRegistry(BaseRegistry):
+class FCSRegistry(BaseRegistry):
     """ Middleware to communicate with BDR Registry.
     """
 
     def __init__(self):
-        entrypoint = settings.FGASESREGISTRY_URL
-        token = settings.FGASESREGISTRY_TOKEN
-        super(FGasesRegistry, self).__init__('FGasesRegistry',
+        entrypoint = settings.FCSREGISTRY_URL
+        token = settings.FCSREGISTRY_TOKEN
+        super(FCSRegistry, self).__init__('FCSRegistry',
                                           entrypoint=entrypoint,
                                           token=token)
 
     def do_request(self, path, method='get', params=None, data=None,
                    headers=None, cookies=None, auth=None):
-        """ Handler for FGases API calls - the authorization is done
+        """ Handler for FCS API calls - the authorization is done
             using a token.
         """
         headers = {'Authorization': self.token}
-        return super(FGasesRegistry, self).do_request(path,
+        return super(FCSRegistry, self).do_request(path,
                                                    method=method,
                                                    params=params,
                                                    data=data,

@@ -16,10 +16,10 @@ from notifications import (
     BDR_GROUP_CODE
 )
 from notifications.models import Company, Person, CompaniesGroup
-from notifications.registries import FGasesRegistry, BDRRegistry
+from notifications.registries import FCSRegistry, BDRRegistry
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 from notifications.tests.base.registry_mock import (
-    FGasesRegistryMock,
+    FCSRegistryMock,
     BDRRegistryMock
 )
 
@@ -91,7 +91,7 @@ class ActionsBaseFCSView(ActionsBaseView):
     error_msg = ''
 
     def cleanup(self):
-        """ Delete all persons and companies fetched from FGases registry.
+        """ Delete all persons and companies fetched from FCS registry.
         """
         Person.objects.filter(
             company__group__code__in=FGASES_GROUP_CODE
@@ -102,9 +102,9 @@ class ActionsBaseFCSView(ActionsBaseView):
 
     def get(self, request, *args, **kwargs):
         if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-            registry = FGasesRegistryMock()
+            registry = FCSRegistryMock()
         else:
-            registry = FGasesRegistry()
+            registry = FCSRegistry()
 
         group_eu = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
         group_noneu = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
@@ -171,7 +171,7 @@ class ActionsBaseFCSView(ActionsBaseView):
 
         return redirect('notifications:actions:home')
 
-class ActionsFGasView(ActionsBaseFCSView):
+class ActionsFGasesView(ActionsBaseFCSView):
     """ Handles FGases registry fetching.
     """
     company_path = settings.FGASES_COMPANY_PATH

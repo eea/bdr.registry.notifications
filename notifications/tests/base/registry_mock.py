@@ -10,7 +10,7 @@ class BaseRegistryMock(object):
         return data
 
 
-class FGasesRegistryMock(BaseRegistryMock):
+class FCSRegistryMock(BaseRegistryMock):
 
     def get_companies(self, path):
         return self.get_objects('notifications/tests/base/json/fgas_companies.json')
