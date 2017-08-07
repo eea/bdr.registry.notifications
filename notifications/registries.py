@@ -212,30 +212,36 @@ class FCSRegistry(BaseRegistry):
     def get_companies(self, path):
         """ Gets the list with all companies. Each company has
             the following fields:
-             - website
              - status
-             - domain
-             - vat
-             - users
-             - undertaking_type
              - date_updated
-             - country_code_orig
-             - company_id
-             - date_created
-             - phone
-             - businessprofile
+             - domain
+             - oldcompany_extid
              - country_code
+             - undertaking_type
+             - oldcompany_verified
+             - company_id
+             - businessprofile
+                - highleveluses
+             - vat
+             - website
+             - users
+             - phone
+             - representative
              - address (dict)
                 - city
-                - street
-                - number
-                - zipcode
                 - country (dict)
                     - code
                     - type
                     - name,
+                - zipcode
+                - number
+                - street
+             - collection_id
              - types
              - name
+             - country_code_orig
+             - date_created
+             - oldcompany_account
         """
         response = self.do_request(path)
         if response:
@@ -246,11 +252,9 @@ class FCSRegistry(BaseRegistry):
         """ Gets the list with all persons. Each person has
             the following fields:
             - username
-            - companyname
-            - country -- company's country
-            - contact_firstname
-            - contact_lastname
-            - contact_email
+            - first_name
+            - last_name
+            - email
         """
         response = self.do_request(path)
         if response:
