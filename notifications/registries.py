@@ -200,7 +200,6 @@ class FGasesRegistry(BaseRegistry):
         """ Handler for FGases API calls - the authorization is done
             using a token.
         """
-
         headers = {'Authorization': self.token}
         return super(FGasesRegistry, self).do_request(path,
                                                    method=method,
