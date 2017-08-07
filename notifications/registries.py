@@ -237,7 +237,7 @@ class FGasesRegistry(BaseRegistry):
              - types
              - name
         """
-        response = self.do_request(settings.FGAES_COMPANY_PATH)
+        response = self.do_request(settings.FGASES_COMPANY_PATH)
         if response:
             return response.json()
         return []
@@ -252,7 +252,7 @@ class FGasesRegistry(BaseRegistry):
             - contact_lastname
             - contact_email
         """
-        response = self.do_request(settings.FGAES_PERSON_PATH)
+        response = self.do_request(settings.FGASES_PERSON_PATH)
         if response:
             return response.json()
         return []

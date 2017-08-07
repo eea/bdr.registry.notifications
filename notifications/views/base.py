@@ -56,7 +56,7 @@ class CompaniesView(NotificationsBaseView, PaginatedDataViewBase,
         page = self.request.GET.get("{0}_page".format(group), 1)
         return self.get_current_page(
             data=Company.objects.filter(group__code=group)
-                 .prefetch_related('person_set')
+                 .prefetch_related('user')
                  .order_by('name'),
             page=page
         )

@@ -106,8 +106,9 @@ class ActionsFGasesView(ActionsBaseView):
 
         # fetch companies
         counter_companies = 0
-        for item in registry.get_companies():
+        errors_companies = []
 
+        for item in registry.get_companies():
             if item['address']['country']['type'] == FGASES_EU:
                 group = group_eu
             else:
@@ -120,35 +121,36 @@ class ActionsFGasesView(ActionsBaseView):
                 country=item['address']['country']['name'],
                 group=group
             )
-            self.create_company(**company_data)
 
-            counter_companies += 1
+            try:
+                company_obj = self.create_company(**company_data)
+
+                username_list = [user["username"] for user in item["users"]]
+                persons = Person.objects.filter(
+                    username__in=username_list
+                )
+                company_obj.user.add(*persons)
+                counter_companies += 1
+            except IntegrityError as e:
+                logger.info('Skipped company: %s (%s)', item['name'], e)
+                errors_companies.append((e, item['name']))
 
         # fetch persons
         counter_persons = 0
         errors_persons = []
         for person in registry.get_persons():
 
-            fmt_person_name = '{contact_firstname} {contact_lastname}'
+            fmt_person_name = '{first_name} {last_name}'
             person_name = fmt_person_name.format(**person)
 
             person_data = dict(
                 username=person['username'],
                 name=person_name,
-                email=person['contact_email'],
+                email=person['email'],
             )
 
-            try:
-                person_obj = self.create_person(**person_data)
-                companies = Company.objects.filter(
-                    name=person['companyname'],
-                    country=person['country']
-                )
-                person_obj.company.add(*companies)
-                counter_persons += 1
-            except IntegrityError as e:
-                logger.info('Skipped person: %s (%s)', person['username'], e)
-                errors_persons.append((e, person['username']))
+            self.create_person(**person_data)
+            counter_persons += 1
 
         if errors_persons:
             msg = 'BDR registry fetched with errors: {}'
