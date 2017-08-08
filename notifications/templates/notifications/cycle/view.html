@@ -6,42 +6,30 @@
 
 <h1>Reporting cycle for year {{ cycle }}</h1>
 
-{% include 'notifications/cycle/actions.html' with object=cycle page='view' %}
+{% for stage in stages %}
+  <h2>{{ stage }}</h2>
 
-<p>Explanatory text here.</p>
+  <table class="brn-table">
+    <thead>
+      <tr>
+        <th>Obligation</th>
+        <th>Status</th>
+        <th>Last updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for template in templates %}
+        {% if template.stage.title == stage %}
+          <tr>
+          <td><a href="{% url 'notifications:template:view' template.pk %}">{{ template.group }}</a></td>
+          <td>{{ template.is_triggered|yesno:"Sent,Draft" }}</td>
+          <td>{{ template.last_action.history_date.date }}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
 
-<h2>List of notifications email templates</h2>
-
-<p>Explanatory text here.</p>
-
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th>Group</th>
-			<th>Stage</th>
-			<th>Is triggered?</th>
-			<th>Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for template in templates %}
-			<tr>
-				<td>{{ template.group }}</td>
-				<td>{{ template.stage }}</td>
-				<td>{{ template.is_triggered|yesno:"YES,no" }}</td>
-				<td class="actions">
-					<a href="{% url 'notifications:template:view' template.pk %}">View</a>
-					{% if template.can_edit %}
-						<a href="{% url 'notifications:template:edit' template.pk %}">Edit</a>
-					{% endif %}
-					<a href="{% url 'notifications:template:test' template.pk %}">Test</a>
-					{% if template.can_trigger %}
-						<a href="{% url 'notifications:template:trigger' template.pk %}">Trigger</a>
-					{% endif %}
-				</td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
 
 {% endblock %}
