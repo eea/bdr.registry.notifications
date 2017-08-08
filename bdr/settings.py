@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #custom
+    'django_q',
     'frame',
     'ckeditor',
     'simple_history',
@@ -236,6 +237,14 @@ FGAES_PERSON_PATH = env('FGASES_PERSON_PATH', '/misc/user/export/json')
 FGASESREGISTRY_TOKEN = env('FGASESREGISTRY_TOKEN', '')
 
 EMAIL_SENDER = env('EMAIL_SENDER', '')
+
+Q_CLUSTER = {
+    'redis': {
+        'host': os.environ.get('REDIS_HOST', 'redis'),
+        'port': int(os.environ.get('REDIS_PORT', 6379)),
+    }
+}
+
 try:
     from localsettings import *
 except ImportError:

@@ -2,6 +2,9 @@ from django import forms
 from django.core.validators import validate_email
 from django.core.mail import send_mail
 from django.db import transaction
+
+from django_q.tasks import async, result
+
 from bdr.settings import EMAIL_SENDER
 from .models import Cycle, CycleEmailTemplate, Person, CycleNotification
 
@@ -11,10 +14,17 @@ def make_messages(persons, emailtemplate):
     subject = emailtemplate.subject
     for person in persons:
         company = person.company.first()
+        """
+          Modify company model to record their repxx fields.
+        """
         params = dict(
+            REPVAT='',
+            REPNAME='',
+            REPCOUNTRY='',
             COUNTRY=company.country,
             COMPANY=company.name,
             CONTACT=person.name,
+            VAT=company.vat,
             # XXX: how will these be handled?
             USERID='randomid',
             PASSWORD='supersecure',
@@ -42,8 +52,8 @@ def send_emails(subject, sender, emails):
         # TODO Email_body is written as html. Both plain text and
         # html messages should be available from interface.
 
-        send_mail(subject, email_body, sender, recipient_email,
-                  fail_silently=False, html_message=email_body)
+        async(send_mail, *(subject, email_body, sender, recipient_email,
+                           False, email_body))
 
 
 class CycleAddForm(forms.ModelForm):
