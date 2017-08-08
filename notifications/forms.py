@@ -1,3 +1,5 @@
+import sys
+
 from django import forms
 from django.core.validators import validate_email
 from django.core.mail import send_mail
@@ -51,9 +53,12 @@ def send_emails(subject, sender, emails):
     for recipient_email, email_body in emails:
         # TODO Email_body is written as html. Both plain text and
         # html messages should be available from interface.
-
-        async(send_mail, *(subject, email_body, sender, recipient_email,
-                           False, email_body))
+        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+            send_mail(subject, email_body, sender, recipient_email,
+                      fail_silently=False, html_message=email_body)
+        else:
+            async(send_mail, *(subject, email_body, sender, recipient_email,
+                               False, email_body))
 
 
 class CycleAddForm(forms.ModelForm):
