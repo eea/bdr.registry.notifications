@@ -50,11 +50,12 @@ class CycleDetailView(NotificationsBaseView, generic.DetailView):
         context = super(CycleDetailView, self).get_context_data(**kwargs)
         context['templates'] = (CycleEmailTemplate.objects
             .filter(cycle=self.object)
-            .order_by('emailtemplate__stage')
+            .order_by('emailtemplate__group')
             .prefetch_related('emailtemplate__group',
                               'emailtemplate__stage',
                               'cycle')
         )
+        context['stages'] = ['Invitation', 'Reminder', 'Deadline', 'After']
         return context
 
 
