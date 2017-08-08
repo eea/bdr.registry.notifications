@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+COMMANDS="qcluster"
+
 if [ -z "$MYSQL_ADDR" ]; then
   MYSQL_ADDR="mysql"
 fi
@@ -29,9 +31,15 @@ if [ ! -e .skip-loaddata ]; then
   python manage.py loaddata notifications/fixtures/emailtemplates.json
 fi
 
+if [ -z "$1" ]; then
 exec gunicorn bdr.wsgi:application \
   --name bdr_registries_notifications \
   --bind 0.0.0.0:$APP_HTTP_PORT \
   --workers 3 \
   --access-logfile - \
   --error-logfile -
+fi
+
+if [[ $COMMANDS == *"$1"* ]]; then
+  exec python manage.py qcluster
+fi
