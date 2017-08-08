@@ -33,6 +33,25 @@ services:
     entrypoint: /usr/bin/tail
     command:  -f /dev/null
 
+  async:
+    image: eeacms/bdr.registries.notifications:latest
+    depends_on:
+    - mysql
+    - redis
+    env_file:
+    - mysql.env
+    - app.env
+    - redis.env
+    environment:
+      TZ: Europe/Copenhagen
+    volumes:
+    - ../../:/var/local/bdr.registries.notifications/
+    command: ['qcluster']
+
+
+  redis:
+      image: redis:alpine
+
 volumes:
   mysqldata:
     driver: local
