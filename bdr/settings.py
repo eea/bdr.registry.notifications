@@ -215,7 +215,7 @@ LOGGING = {
 
 APP_REVERSE_PROXY = env('APP_REVERSE_PROXY', False)
 
-EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = env('EMAIL_HOST', 'localhost')
 EMAIL_PORT = env('EMAIL_PORT', 25)
 
@@ -232,8 +232,6 @@ BDRREGISTRY_USERNAME = env('BDRREGISTRY_USERNAME', '')
 BDRREGISTRY_PASSWORD = env('BDRREGISTRY_PASSWORD', '')
 
 FGASESREGISTRY_URL = env('FGASESREGISTRY_URL', '')
-FGAES_COMPANY_PATH = env('FGASES_COMPANY_PATH', '/undertaking/list')
-FGAES_PERSON_PATH = env('FGASES_PERSON_PATH', '/misc/user/export/json')
 FGASESREGISTRY_TOKEN = env('FGASESREGISTRY_TOKEN', '')
 
 EMAIL_SENDER = env('EMAIL_SENDER', '')
