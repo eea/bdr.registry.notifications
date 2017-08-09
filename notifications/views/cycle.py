@@ -55,7 +55,7 @@ class CycleDetailView(NotificationsBaseView, generic.DetailView):
                               'emailtemplate__stage',
                               'cycle')
         )
-        context['stages'] = ['Invitation', 'Reminder', 'Deadline', 'After']
+        context['stages'] = ['Invitations', 'Reminder', 'Deadline', 'After']
         return context
 
 
