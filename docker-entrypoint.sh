@@ -20,6 +20,10 @@ if ! mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "use $DATABASES_NAME
   mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $DATABASES_NAME.* TO '$DATABASES_USER'@'%';"
 fi
 
+if [ $DEBUG="True" ]; then
+  pip install -r requirements-dev.txt
+fi
+
 python manage.py migrate &&
 python manage.py collectstatic --noinput
 
