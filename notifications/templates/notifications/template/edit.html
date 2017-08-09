@@ -5,17 +5,25 @@
 
 {% block content %}
 
-<h1>Edit - {{ template.emailtemplate }}</h1>
+<h1>Email {{ template.stage|lower }} for {{ template.group }}</h1>
 
-{% include 'notifications/template/actions.html' with object=template page='edit' %}
-
-<p>Explanatory text here.</p>
+{% with params=template.get_parameters %}
+	{% if params %}
+		<p>Parameters:</p>
+    <ul>
+      {% for param in params %}
+        <li>{{ param }}</li>
+      {% endfor %}
+    </ul>
+	{% endif %}
+{% endwith %}
 
 <form action="" method="post">
 	{% csrf_token %}
 	{{ form.media }}
 	{{ form.as_p }}
-	<input type="submit" value="Update" />
+	<input type="submit" value="Save" />
+  <button>Cancel</button>
 </form>
 
 {% endblock %}
