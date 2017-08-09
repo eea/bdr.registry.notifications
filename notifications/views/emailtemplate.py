@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
 from django.views import generic
@@ -124,6 +124,28 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
         context['template'] = get_object_or_404(CycleEmailTemplate,
                                                 id=self.kwargs['pk'])
+        company = Company.objects\
+            .filter(group=context['template'].group)\
+            .order_by('?').first()
+        context['company'] = company
+        context['person'] = company.user.order_by('?').first()
+        context['params'] = context['template'].get_parameters()
+
+        params = dict(
+            REPVAT='',
+            REPNAME='',
+            REPCOUNTRY='',
+            COUNTRY=company.country,
+            COMPANY=company.name,
+            CONTACT=context['person'].name,
+            VAT=company.vat,
+            # XXX: how will these be handled?
+            USERID='randomid',
+            PASSWORD='TODO',
+        )
+        body = context['template'].body_html
+        context['template'].body_html = body.format(**params)
+
         return context
 
     def get_success_url(self):
