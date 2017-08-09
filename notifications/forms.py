@@ -4,6 +4,7 @@ from django import forms
 from django.core.validators import validate_email
 from django.core.mail import send_mail
 from django.db import transaction
+from django.utils.html import strip_tags
 
 from django_q.tasks import async, result
 
@@ -51,14 +52,9 @@ def make_messages(persons, emailtemplate):
 
 def send_emails(subject, sender, emails):
     for recipient_email, email_body in emails:
-        # TODO Email_body is written as html. Both plain text and
-        # html messages should be available from interface.
-        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-            send_mail(subject, email_body, sender, recipient_email,
-                      fail_silently=False, html_message=email_body)
-        else:
-            async(send_mail, *(subject, email_body, sender, recipient_email,
-                               False, email_body))
+        plain_html = strip_tags(email_body)
+        send_mail(subject, plain_html, sender, recipient_email,
+                  fail_silently=False, html_message=email_body)
 
 
 class CycleAddForm(forms.ModelForm):
@@ -110,8 +106,10 @@ class CycleEmailTemplateTestForm(forms.Form):
             values[param] = self.data[param.lower()]
 
         body_html = body_html.format(**values)
-
-        send_emails(subject, EMAIL_SENDER, [(email, body_html)])
+        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+            send_emails(subject, EMAIL_SENDER, [(email, body_html)])
+        else:
+            async(send_emails, *(subject, EMAIL_SENDER, [(email, body_html)]))
 
 
 class CycleEmailTemplateTriggerForm(forms.Form):
@@ -123,4 +121,7 @@ class CycleEmailTemplateTriggerForm(forms.Form):
             subject = emailtemplate.subject
             sender = EMAIL_SENDER
             emails_to_send = make_messages(recipients, emailtemplate)
-            send_emails(subject, sender, emails_to_send)
+            if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+                send_emails(subject, sender, emails_to_send)
+            else:
+                async(send_emails, *(subject, sender, emails_to_send))
