@@ -38,6 +38,7 @@ services:
     depends_on:
     - mysql
     - redis
+    - postfix
     env_file:
     - mysql.env
     - app.env
@@ -52,6 +53,11 @@ services:
   redis:
       image: redis:alpine
 
+  postfix:
+    image: marcelesser/smtp-sink:latest
+    environment:
+      - POSTFIX_USER=user
+      - POSTFIX_PASS=secret
 volumes:
   mysqldata:
     driver: local
