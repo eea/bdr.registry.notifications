@@ -1,4 +1,5 @@
 import sys
+import time
 
 from django import forms
 from django.core.validators import validate_email
@@ -57,6 +58,14 @@ def send_emails(subject, sender, emails):
                   fail_silently=False, html_message=email_body)
 
 
+def send_mail_sender(task):
+    # TODO implement mail
+    subject = ''
+    sender = ''
+    email = [(EMAIL_SENDER, '')]
+    send_emails(subject, sender, email)
+
+
 class CycleAddForm(forms.ModelForm):
 
     class Meta:
@@ -109,7 +118,8 @@ class CycleEmailTemplateTestForm(forms.Form):
         if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
             send_emails(subject, EMAIL_SENDER, [(email, body_html)])
         else:
-            async(send_emails, *(subject, EMAIL_SENDER, [(email, body_html)]))
+            async(send_emails, *(subject, EMAIL_SENDER, [(email, body_html)]),
+                  hook='notifications.forms.send_mail_sender')
 
 
 class CycleEmailTemplateTriggerForm(forms.Form):
@@ -124,4 +134,5 @@ class CycleEmailTemplateTriggerForm(forms.Form):
             if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
                 send_emails(subject, sender, emails_to_send)
             else:
-                async(send_emails, *(subject, sender, emails_to_send))
+                async(send_emails, *(subject, sender, emails_to_send),
+                      hook='notifications.forms.send_mail_sender')
