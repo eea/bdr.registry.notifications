@@ -30,7 +30,6 @@
 <h2>Send email</h2>
 <form action="" method="post">
 	{% csrf_token %}
-	{{ form.as_p }}
 	{% with params=params %}
 		{% if params %}
 			{% for param in params %}
@@ -48,7 +47,9 @@
 			{% endfor %}
 		{% endif %}
 	{% endwith %}
-	<input type="submit" value="Send email" />
+  <p>Email: <input class="my-input" type="text" name="email" id="email" required="" /></p>
+  <input type="submit" value="Send email" />
+  <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
 </form>
 
 {% endblock %}
