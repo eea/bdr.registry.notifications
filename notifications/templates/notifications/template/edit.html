@@ -8,21 +8,21 @@
 <h1>Email {{ template.stage|lower }} for {{ template.group }}</h1>
 
 {% with params=template.get_parameters %}
-	{% if params %}
-		<p>Parameters:</p>
+  {% if params %}
+    <p>Parameters:</p>
     <ul>
       {% for param in params %}
         <li>{{ param }}</li>
       {% endfor %}
     </ul>
-	{% endif %}
+  {% endif %}
 {% endwith %}
 
 <form action="" method="post">
-	{% csrf_token %}
-	{{ form.media }}
-	{{ form.as_p }}
-	<input type="submit" value="Save" />
+  {% csrf_token %}
+  {{ form.media }}
+  {{ form.as_p }}
+  <input type="submit" value="Save"/>
   <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
 </form>
 
