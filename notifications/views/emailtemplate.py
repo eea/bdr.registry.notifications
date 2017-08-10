@@ -124,13 +124,16 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
         context['template'] = get_object_or_404(CycleEmailTemplate,
                                                 id=self.kwargs['pk'])
-        company = Company.objects\
-            .filter(group=context['template'].group)\
+        company = (
+            Company.objects
+            .filter(group=context['template'].group)
             .order_by('?').first()
+        )
         context['company'] = company
         context['person'] = company.user.order_by('?').first()
         context['params'] = context['template'].get_parameters()
 
+        # TODO Create a function that takes param values, body_html and returns the formatted text
         params = dict(
             REPVAT='',
             REPNAME='',
