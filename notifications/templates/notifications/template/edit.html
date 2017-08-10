@@ -23,7 +23,7 @@
 	{{ form.media }}
 	{{ form.as_p }}
 	<input type="submit" value="Save" />
-  <button>Cancel</button>
+  <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
 </form>
 
 {% endblock %}
