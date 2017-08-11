@@ -35,6 +35,10 @@ class CycleEmailTemplateBase(NotificationsBaseView):
         return Person.objects.filter(
             company__group=self.object.group).distinct()
 
+    def get_recipient_companies(self):
+        return Company.objects.filter(
+            group=self.object.group).distinct().order_by("name")
+
 
 class CycleEmailTemplateView(CycleEmailTemplateBase, generic.DetailView):
     template_name = 'notifications/template/view.html'
@@ -74,7 +78,8 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
         context = super(CycleEmailTemplateTriggerDetail, self).get_context_data(**kwargs)
         context['form'] = CycleEmailTemplateTriggerForm()
         context['recipients'] = self.get_recipients()
-        context['notifications'] = self.get_notifications()
+        context['recipient_companies'] = self.get_recipient_companies()
+
         return context
 
     def get_notifications(self):
