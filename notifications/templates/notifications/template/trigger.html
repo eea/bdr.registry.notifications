@@ -1,4 +1,5 @@
 {% extends layout_template %}
+{% load static %}
 
 {% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
   - {% endblock %}
@@ -29,7 +30,22 @@
 {% if template.is_triggered %}
   <h2>Sent emails</h2>
 
-  <input style="" type="text" id="search" placeholder="Search for persons.." title="Type in a name">
+  <input style="float: right" type="text" id="search" placeholder="Search for persons.." title="Type in a name">
+  <div class="pagination">
+    <span class="step-links">
+      {% if companies.has_previous %}
+        <a href="?page={{ companies.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ companies.number }} of {{ companies.paginator.num_pages }}.
+      </span>
+
+      {% if companies.has_next %}
+        <a href="?page={{ companies.next_page_number }}">next</a>
+      {% endif %}
+    </span>
+  </div>
   <table class="brn-table">
     <thead>
     <tr>
@@ -39,7 +55,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for company in recipient_companies %}
+    {% for company in companies %}
       {% for person in company.user.all %}
         <tr>
           <td>{{ company.name }}</td>
