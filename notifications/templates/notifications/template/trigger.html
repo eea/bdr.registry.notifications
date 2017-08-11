@@ -1,6 +1,7 @@
 {% extends layout_template %}
 
-{% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }} - {% endblock %}
+{% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
+  - {% endblock %}
 
 {% block content %}
 
@@ -8,21 +9,67 @@
 
 <h2>Send notifications</h2>
 {% if template.is_triggered %}
-	<p>This stage has been triggered.</p>
+  <p>This stage has been triggered.</p>
 {% else %}
-	<p style="color:red;">Things to consider when implementing this:</p>
-	<ul style="color:red;">
-		<li>Fetch the list of emails and corresponding email template parameters based on the specific <strong>GROUP</strong>.</li>
-		<li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
-		<li>Don't send an email twice!</li>
-	</ul>
+  <p style="color:red;">Things to consider when implementing this:</p>
+  <ul style="color:red;">
+    <li>Fetch the list of emails and corresponding email template parameters based on the specific<strong>GROUP</strong>.</li>
+    <li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
+    <li>Don't send an email twice!</li>
+  </ul>
   {% with recipients as persons %}
     <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="I Understand, send {{ persons|length }} emails." />
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="I Understand, send {{ persons|length }} emails."/>
     </form>
-    {% endwith %}
+  {% endwith %}
 {% endif %}
+
+{% if template.is_triggered %}
+  <h2>Sent emails</h2>
+
+  <input style="" type="text" id="search" placeholder="Search for persons.." title="Type in a name">
+  <table class="brn-table">
+    <thead>
+    <tr>
+      <th>Company</th>
+      <th>Person</th>
+      <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for company in recipient_companies %}
+      {% for person in company.user.all %}
+        <tr>
+          <td>{{ company.name }}</td>
+          <td><a href="">{{ person.name }}</a></td>
+          <td>{{ person.email }}</td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+<script>
+  $(document).ready(function () {
+    $("#search").on("keyup", function () {
+      var value = $(this).val();
+      $("table tr").each(function (index) {
+        if (index !== 0) {
+          $row = $(this);
+          var id = $row.find("td:eq(1)").text().toLowerCase().trim();
+          if (id.indexOf(value) !== 0) {
+            $row.hide();
+          }
+          else {
+            $row.show();
+          }
+        }
+      });
+    });
+  });
+</script>
 
 {% endblock %}
