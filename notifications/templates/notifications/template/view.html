@@ -14,7 +14,7 @@
 
 <h5>Last updated: {{ template.last_action.history_date.date }}</h5>
 
-<a href="{% url 'notifications:template:trigger' object.id %}">Send</a>
+<a href="{% url 'notifications:template:trigger' object.id %}"><input type="button" value="Send" /></a>
 <a href="{% url 'notifications:template:edit' object.id %}">Edit</a>
 <a href="{% url 'notifications:template:test' object.id %}">Test</a>
 
