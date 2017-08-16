@@ -1,30 +1,61 @@
 {% extends layout_template %}
 
-{% block head_title %}Test - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }} - {% endblock %}
+{% block head_title %}Test - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
+{% endblock %}
 
 {% block content %}
 
-<h1>Test - {{ template.emailtemplate }}</h1>
+<h1>Preview {{ template.stage|lower }} for {{ template.group }}</h1>
 
-{% include 'notifications/template/actions.html' with object=template page='test' %}
+<h2>Provide the following parameters</h2>
+{% for param in params %}
+  {% if param == 'COMPANY' %}
+    <p>Company: {{ company.name }}</p>
+  {% elif param == 'CONTACT' %}
+    <p>Contact: {{ person.name }}</p>
+  {% elif param == 'COUNTRY' %}
+    <p>Country: {{ company.country }}</p>
+  {% elif param == 'USERID' %}
+    <p>Username: {{ person.username }}</p>
+  {% elif param == 'PASSWORD' %}
+    <p>Password:</p>
+  {% endif %}
+{% endfor %}
 
-<p>Explanatory text here.</p>
+<h2>Subject</h2>
+<div class="preview-body">{{ template.subject }}</div>
 
+<h2>Body</h2>
+<div class="preview-body">{{ template.body_html|safe }}</div>
+
+<h2>Send email</h2>
 <form action="" method="post">
-	{% csrf_token %}
-	{{ form.as_p }}
-	{% with params=template.get_parameters %}
-		{% if params %}
-		<p>Provide the following parameters</p>
-			{% for param in params %}
-				<p>
-					<label for="{{ param|lower }}">{{ param }}:</label>
-					<input type="text" name="{{ param|lower }}" id="{{ param|lower }}" value="{{ param|lower }}" required="" />
-				</p>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-	<input type="submit" value="Send email" />
+  {% csrf_token %}
+  {% with params=params %}
+    {% if params %}
+      {% for param in params %}
+        {% if param == 'COMPANY' %}
+          <input type="text" name="{{ param|lower }}" id="{{ param|lower }}" value="{{ company.name }}" hidden
+                 required=""/>
+        {% elif param == 'CONTACT' %}
+          <input type="text" name="{{ param|lower }}" id="{{ param|lower }}" value="{{ person.name }}" hidden
+                 required=""/>
+        {% elif param == 'COUNTRY' %}
+          <input type="text" name="{{ param|lower }}" id="{{ param|lower }}" value="{{ company.country }}" hidden
+                 required=""/>
+        {% elif param == 'USERID' %}
+          <input type="text" name="{{ param|lower }}" id="{{ param|lower }}" value="{{ person.username }}" hidden
+                 required=""/>
+        {% elif param == 'PASSWORD' %}
+          <input type="text" name="{{ param|lower }}" id="{{ param|lower }}" value="{{ param|lower }}" hidden
+                 required=""/>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <p>Email: <input class="my-input" type="text" name="email" id="email" required=""/></p>
+  <input type="submit" value="Send email"/>
+  <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
 </form>
 
 {% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
 from django.views import generic
@@ -10,6 +10,7 @@ from notifications.forms import (
     ResendEmailForm,
     format_body
 )
+
 from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
@@ -34,6 +35,10 @@ class CycleEmailTemplateBase(NotificationsBaseView):
     def get_recipients(self):
         return Person.objects.filter(
             company__group=self.object.group).distinct()
+
+    def get_recipient_companies(self):
+        return Company.objects.filter(
+            group=self.object.group).distinct().order_by("name")
 
 
 class CycleEmailTemplateView(CycleEmailTemplateBase, generic.DetailView):
@@ -74,7 +79,10 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
         context = super(CycleEmailTemplateTriggerDetail, self).get_context_data(**kwargs)
         context['form'] = CycleEmailTemplateTriggerForm()
         context['recipients'] = self.get_recipients()
-        context['notifications'] = self.get_notifications()
+
+        companies = self.get_recipient_companies()
+        context['companies'] = companies
+
         return context
 
     def get_notifications(self):
@@ -124,6 +132,31 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
         context['template'] = get_object_or_404(CycleEmailTemplate,
                                                 id=self.kwargs['pk'])
+        company = (
+            Company.objects
+            .filter(group=context['template'].group)
+            .order_by('?').first()
+        )
+        context['company'] = company
+        context['person'] = company.user.order_by('?').first()
+        context['params'] = context['template'].get_parameters()
+
+        # TODO Create a function that takes param values, body_html and returns the formatted text
+        params = dict(
+            REPVAT='',
+            REPNAME='',
+            REPCOUNTRY='',
+            COUNTRY=company.country,
+            COMPANY=company.name,
+            CONTACT=context['person'].name,
+            VAT=company.vat,
+            # XXX: how will these be handled?
+            USERID='randomid',
+            PASSWORD='TODO',
+        )
+        body = context['template'].body_html
+        context['template'].body_html = body.format(**params)
+
         return context
 
     def get_success_url(self):
