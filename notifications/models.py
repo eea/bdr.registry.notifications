@@ -239,7 +239,7 @@ class CycleNotification(models.Model):
     sent_date = models.DateTimeField(db_index=True,
                                      default=timezone.now)
     emailtemplate = models.ForeignKey(CycleEmailTemplate)
-    counter = models.IntegerField(default=0)
+    counter = models.IntegerField(default=1)
 
     def __str__(self):
         return '{} for {}'.format(self.emailtemplate, self.email)
