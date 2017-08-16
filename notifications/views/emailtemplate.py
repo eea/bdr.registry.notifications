@@ -6,9 +6,11 @@ from django.views import generic
 from notifications.forms import (
     CycleEmailTemplateEditForm,
     CycleEmailTemplateTestForm,
-    CycleEmailTemplateTriggerForm
+    CycleEmailTemplateTriggerForm,
+    ResendEmailForm,
+    format_body
 )
-from notifications.models import CycleEmailTemplate, CycleNotification, Person
+from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
@@ -140,3 +142,74 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         self.object = self.get_object()
         form.send_email(self.object)
         return super(CycleEmailTemplateTest, self).form_valid(form)
+
+
+class ResendEmailDetail(NotificationsBaseView, generic.DetailView):
+    template_name = 'notifications/template/resend.html'
+    context_object_name = 'template'
+    model = CycleEmailTemplate
+
+    def breadcrumbs(self):
+        breadcrumbs = super(ResendEmailDetail, self).breadcrumbs()
+        breadcrumbs.extend([
+            Breadcrumb('', 'Trigger'),
+        ])
+        return breadcrumbs
+
+    def get_context_data(self, **kwargs):
+        context = super(ResendEmailDetail, self).get_context_data(**kwargs)
+        context['person'] = get_object_or_404(
+            Person,
+            pk=self.kwargs['pk_person'],
+            company__group=context['template'].group
+        )
+        context['template'].body_html = format_body(
+            context['template'].body_html,
+            context['person']
+        )
+        cycle_notification = CycleNotification.objects.filter(
+            email=context['person'].email,
+            emailtemplate=context['template']
+        ).first()
+        if cycle_notification:
+            context['counter'] = cycle_notification.counter
+        else:
+            context['counter'] = 0
+        return context
+
+
+class ResendEmailTrigger(generic.FormView, generic.detail.SingleObjectMixin):
+    template_name = 'notifications/template/resend.html'
+    success_message = 'Email sent successfully!'
+    form_class = ResendEmailForm
+    model = CycleEmailTemplate
+
+    def get_object(self):
+        return get_object_or_404(CycleEmailTemplate,
+                                 id=self.kwargs['pk'])
+
+    def get_person(self):
+        return get_object_or_404(Person,
+                                 id=self.kwargs['pk_person'],
+                                 company__group=self.get_object().group)
+
+    def get_success_url(self):
+        return reverse(
+            'notifications:template:trigger',
+            args=[self.kwargs['pk']]
+        )
+
+    def form_valid(self, form):
+        form.send_email(self.get_object(), self.get_person())
+        return super(ResendEmailTrigger, self).form_valid(form)
+
+
+class ResendEmail(View):
+
+    def get(self, request, *args, **kwargs):
+        view = ResendEmailDetail.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = ResendEmailTrigger.as_view()
+        return view(request, *args, **kwargs)

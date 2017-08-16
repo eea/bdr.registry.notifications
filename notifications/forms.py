@@ -13,37 +13,54 @@ from bdr.settings import EMAIL_SENDER
 from .models import Cycle, CycleEmailTemplate, Person, CycleNotification
 
 
+def format_body(body_html, person):
+    company = person.company.first()
+    """
+      Modify company model to record their repxx fields.
+    """
+    params = dict(
+        REPVAT='',
+        REPNAME='',
+        REPCOUNTRY='',
+        COUNTRY=company.country,
+        COMPANY=company.name,
+        CONTACT=person.name,
+        VAT=company.vat,
+        # XXX: how will these be handled?
+        USERID='randomid',
+        PASSWORD='supersecure',
+    )
+    body = body_html
+    email_body = body.format(**params)
+    return email_body
+
+
 def make_messages(persons, emailtemplate):
     emails = []
     subject = emailtemplate.subject
     for person in persons:
-        company = person.company.first()
-        """
-          Modify company model to record their repxx fields.
-        """
-        params = dict(
-            REPVAT='',
-            REPNAME='',
-            REPCOUNTRY='',
-            COUNTRY=company.country,
-            COMPANY=company.name,
-            CONTACT=person.name,
-            VAT=company.vat,
-            # XXX: how will these be handled?
-            USERID='randomid',
-            PASSWORD='supersecure',
-        )
-        body = emailtemplate.body_html
-        email_body = body.format(**params)
+        email_body = format_body(emailtemplate.body_html, person)
         recipient_email = [person.email]
 
         emails.append((recipient_email, email_body))
+
+        cycle_notification = CycleNotification.objects.filter(
+            email=person.email,
+            emailtemplate=emailtemplate
+        ).first()
+
+        counter = 1
+        if cycle_notification:
+            counter = cycle_notification.counter + 1
+            cycle_notification.delete()
+
         # store sent email
         CycleNotification.objects.create(
             subject=subject,
             email=person.email,
             body_html=email_body,
             emailtemplate=emailtemplate,
+            counter=counter
         )
 
     emailtemplate.is_triggered = True
@@ -136,3 +153,13 @@ class CycleEmailTemplateTriggerForm(forms.Form):
             else:
                 async(send_emails, *(subject, sender, emails_to_send),
                       hook='notifications.forms.send_mail_sender')
+
+
+class ResendEmailForm(forms.Form):
+
+    def send_email(self, emailtemplate, person):
+        with transaction.atomic() as atomic:
+            subject = emailtemplate.subject
+            sender = EMAIL_SENDER
+            email = make_messages([person], emailtemplate)
+            send_emails(subject, sender, email)

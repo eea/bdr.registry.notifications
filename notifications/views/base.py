@@ -72,7 +72,8 @@ class PersonsView(NotificationsBaseView, PaginatedDataViewBase,
             data=Person.objects
                  .filter(company__group__code=BDR_GROUP_CODE)
                  .prefetch_related('company')
-                 .order_by('name'),
+                 .order_by('name')
+                 .distinct(),
             page=page_bdr
         )
 
@@ -82,7 +83,8 @@ class PersonsView(NotificationsBaseView, PaginatedDataViewBase,
             data=Person.objects
                 .filter(company__group__code__in=FGASES_GROUP_CODE)
                 .prefetch_related('company')
-                .order_by('name'),
+                .order_by('name')
+                .distinct(),
             page=page_fgas
         )
 
