@@ -2,8 +2,6 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
 from django.views import generic
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
 
 from notifications.forms import (
     CycleEmailTemplateEditForm,
@@ -83,17 +81,6 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
         context['recipients'] = self.get_recipients()
 
         companies = self.get_recipient_companies()
-        paginator = Paginator(companies, 25)
-
-        page = self.request.GET.get('page')
-
-        try:
-            companies = paginator.page(page)
-        except PageNotAnInteger:
-            companies = paginator.page(1)
-        except EmptyPage:
-            companies = paginator.page(paginator.num_pages)
-
         context['companies'] = companies
 
         return context
