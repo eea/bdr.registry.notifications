@@ -45,6 +45,9 @@ email_template_patterns = [
     url(r'^(?P<pk>\d+)/test/$',
         views.CycleEmailTemplateTest.as_view(),
         name='test'),
+    url(r'^(?P<pk>\d+)/detail/(?P<pk_person>\d+)/$',
+        views.ResendEmail.as_view(),
+        name='resend')
 ]
 
 actions_patterns = [
