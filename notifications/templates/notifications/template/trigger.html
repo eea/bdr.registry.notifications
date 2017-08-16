@@ -4,6 +4,11 @@
 {% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
   - {% endblock %}
 
+{% block head %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.css' %}">
+{% endblock %}
+
 {% block content %}
 
 <h1>Trigger - {{ template.emailtemplate }}</h1>
@@ -30,23 +35,7 @@
 {% if template.is_triggered %}
   <h2>Sent emails</h2>
 
-  <input style="float: right" type="text" id="search" placeholder="Search for persons.." title="Type in a name">
-  <div class="pagination">
-    <span class="step-links">
-      {% if companies.has_previous %}
-        <a href="?page={{ companies.previous_page_number }}">previous</a>
-      {% endif %}
-
-      <span class="current">
-        Page {{ companies.number }} of {{ companies.paginator.num_pages }}.
-      </span>
-
-      {% if companies.has_next %}
-        <a href="?page={{ companies.next_page_number }}">next</a>
-      {% endif %}
-    </span>
-  </div>
-  <table class="brn-table">
+  <table id="myTable" class="brn-table">
     <thead>
     <tr>
       <th>Company</th>
@@ -68,24 +57,19 @@
   </table>
 {% endif %}
 
-<script>
-  $(document).ready(function () {
-    $("#search").on("keyup", function () {
-      var value = $(this).val();
-      $("table tr").each(function (index) {
-        if (index !== 0) {
-          $row = $(this);
-          var id = $row.find("td:eq(1)").text().toLowerCase().trim();
-          if (id.indexOf(value) !== 0) {
-            $row.hide();
-          }
-          else {
-            $row.show();
-          }
-        }
-      });
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      var table = $('#myTable').DataTable();
+
+      $('#myInputTextField').on('keyup change', function () {
+        table.search($(this).val()).draw();
+      })
     });
-  });
-</script>
+  </script>
 
 {% endblock %}
