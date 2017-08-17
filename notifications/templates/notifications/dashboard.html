@@ -1,13 +1,9 @@
 {% extends layout_template %}
 
 {% block content %}
-{% with can_add_cycle_=model.can_initiate_new_cycle %}
-	{% if can_add_cycle_%}
-		<div class="cycle-actions">
-			<a href="{% url 'notifications:cycle:add' %}">Add new reporting cycle</a>
-		</div>
-	{% endif %}
-{% endwith %}
+<div class="cycle-actions">
+  <a href="{% url 'notifications:cycle:add' %}">Add new reporting cycle</a>
+</div>
 
 <h1>Welcome to BDR Registries Notifications</h1>
 
