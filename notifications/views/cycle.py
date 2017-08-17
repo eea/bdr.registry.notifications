@@ -15,8 +15,6 @@ class CycleAdd(NotificationsBaseView, generic.CreateView):
     success_message = 'Reporting cycle added successfully'
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.model.can_initiate_new_cycle():
-            raise Http404('Not allowed to add a new cycle since one is already open.')
         return super(CycleAdd, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
