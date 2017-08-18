@@ -101,14 +101,6 @@ class CycleAddForm(forms.ModelForm):
         return instance
 
 
-class CycleEditForm(forms.ModelForm):
-
-    class Meta:
-        model = Cycle
-        fields = ['stage', 'closing_date']
-        exclude = ('id', 'year')
-
-
 class CycleEmailTemplateEditForm(forms.ModelForm):
 
     class Meta:

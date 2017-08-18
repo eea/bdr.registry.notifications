@@ -1,10 +1,8 @@
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views import generic
 
-from notifications.forms import CycleAddForm, CycleEditForm
-from notifications.models import Cycle, CycleEmailTemplate, CycleNotification
+from notifications.forms import CycleAddForm
+from notifications.models import Cycle, CycleEmailTemplate
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
