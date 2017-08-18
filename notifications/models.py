@@ -217,7 +217,7 @@ class CycleEmailTemplate(models.Model):
 
     @property
     def can_trigger(self):
-        return self.cycle.can_trigger and self.cycle.stage == self.stage
+        return self.cycle.can_trigger
 
     def last_action(self):
         return self.history.first()
