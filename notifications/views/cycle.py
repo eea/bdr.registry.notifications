@@ -14,9 +14,6 @@ class CycleAdd(NotificationsBaseView, generic.CreateView):
     template_name = 'notifications/cycle/add.html'
     success_message = 'Reporting cycle added successfully'
 
-    def dispatch(self, request, *args, **kwargs):
-        return super(CycleAdd, self).dispatch(request, *args, **kwargs)
-
     def get_success_url(self):
         return reverse('notifications:dashboard')
 
