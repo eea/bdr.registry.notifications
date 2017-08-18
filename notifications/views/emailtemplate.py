@@ -56,10 +56,10 @@ class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
     def get_object(self):
         obj = get_object_or_404(CycleEmailTemplate,
                                 id=self.kwargs['pk'])
-        if obj.is_triggered is False:
-            return obj
-        else:
+        if obj.is_triggered:
             raise PermissionDenied
+
+        return obj
 
     def get_success_url(self):
         return reverse('notifications:template:view',
@@ -136,10 +136,10 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     def get_object(self):
         obj = get_object_or_404(CycleEmailTemplate,
                                 id=self.kwargs['pk'])
-        if obj.is_triggered is False:
-            return obj
-        else:
+        if obj.is_triggered:
             raise PermissionDenied
+
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
