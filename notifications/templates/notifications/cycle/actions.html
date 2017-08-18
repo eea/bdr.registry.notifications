@@ -3,12 +3,6 @@
 		{% if page != 'view' %}
 			<a href="{% url 'notifications:cycle:view' object.id %}">View</a>
 		{% endif %}
-		{% if object.can_edit and page != 'edit' %}
-			<a href="{% url 'notifications:cycle:edit' object.id %}">Edit</a>
-		{% endif %}
-		{% if object.can_trigger and page != 'trigger' %}
-			<a href="{% url 'notifications:cycle:trigger' object.id %}">Trigger</a>
-		{% endif %}
 	</div>
 {% endif %}
 
