@@ -74,7 +74,7 @@ class BaseFetchCommand:
 
         return person
 
-    def parse_person(self, person):
+    def parse_person_data(self, person):
         """ Custom way of creating a person """
         raise NotImplemented
 
@@ -86,31 +86,39 @@ class BaseFetchCommand:
         """ Custom way of picking a group """
         raise NotImplemented
 
+    def fetch_companies(self, registry):
+        company_count = 0
+        for item in registry.get_companies():
+            self.create_company(**self.parse_company_data(item))
+            company_count += 1
+        return company_count
+
+    def fetch_persons(self, registry):
+        person_count = 0
+        errors = []
+        for item in registry.get_persons():
+            try:
+                person = self.create_person(**self.parse_person_data(item))
+                person_count += 1
+                companies = Company.objects.filter(
+                    name=item['companyname'],
+                    country=item['country'])
+                print(item)
+                person.company.add(*companies)
+            except IntegrityError as e:
+                logger.info('Skipped person: %s (%s)', person['username'], e)
+                errors.append((e, person['username']))
+        return person_count, errors
+
     def handle(self, *args, **options):
         registry = self.get_registry(options)
+        company_count = self.fetch_companies(registry)
+        person_count, errors = self.fetch_persons(registry)
 
-        # fetch companies
-        company_count = 0
-        for company in registry.get_companies():
-            self.create_company(
-                **self.parse_company_data(company))
-            company_count += 1
-
-        # fetch persons
-        person_count = 0
-        errors_persons = []
-        for person in registry.get_persons():
-            try:
-                self.parse_person(person)
-                person_count += 1
-            except IntegrityError as e:
-                logger.info('Skipped person: %s (%s)', person['userid'], e)
-                errors_persons.append((e, person['userid']))
-
-        if errors_persons:
+        if errors:
             msg = 'Registry fetched with errors: {}'
-            msg = msg.format(errors_persons)
+            msg = msg.format(errors)
         else:
             msg = 'Registry fetched successfully: {} companies, {} persons'
             msg = msg.format(company_count, person_count)
-        print(msg)
+        logger.info(msg)

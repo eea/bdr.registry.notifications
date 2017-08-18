@@ -1,26 +1,26 @@
 [
-  {
-    "vat" : null,
-    "company_id": 1234,
-    "address" : {
-      "country" : {
-        "code" : "CN",
-        "type" : "NONEU_TYPE",
-        "name" : "China"
-      }
-    },
-    "name" : "First company"
-  },
-  {
-    "vat" : null,
-    "company_id": 3245,
-    "address" : {
-      "country" : {
-        "code" : "RO",
-        "type" : "EU_TYPE",
-        "name" : "Romania"
-      }
-    },
-    "name" : "Second company"
-  }
+ {
+   "vat" : null,
+   "company_id": 1234,
+   "address" : {
+     "country" : {
+       "code" : "CN",
+       "type" : "NONEU_TYPE",
+       "name" : "China"
+     }
+   },
+   "name" : "First company"
+ },
+ {
+   "vat" : null,
+   "company_id": 3245,
+   "address" : {
+     "country" : {
+       "code" : "RO",
+       "type" : "EU_TYPE",
+       "name" : "Romania"
+     }
+   },
+   "name" : "Second company"
+ }
 ]

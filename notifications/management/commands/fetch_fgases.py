@@ -1,10 +1,11 @@
 import logging
 
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 
 from notifications import FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, FGASES_EU
 from notifications.management.commands.fetch import BaseFetchCommand
-from notifications.models import CompaniesGroup
+from notifications.models import CompaniesGroup, Company
 from notifications.registries import FGasesRegistry
 from notifications.tests.base.registry_mock import FGasesRegistryMock
 
@@ -38,13 +39,11 @@ class Command(BaseFetchCommand, BaseCommand):
             country=company['address']['country']['name'],
             group=self.get_group(company))
 
-    def parse_person(self, person):
+    def parse_person_data(self, person):
         fmt_person_name = '{contact_firstname} {contact_lastname}'
-        print(person)
         person_name = fmt_person_name.format(**person)
-        person_data = dict(
+        return dict(
             username=person['username'],
             name=person_name,
             email=person['contact_email'],
         )
-        self.create_person(**person_data)

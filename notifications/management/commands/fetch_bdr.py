@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 from notifications import BDR_GROUP_CODE
 from notifications.management.commands.fetch import BaseFetchCommand
-from notifications.models import Company, CompaniesGroup
+from notifications.models import CompaniesGroup
 from notifications.registries import BDRRegistry
 from notifications.tests.base.registry_mock import BDRRegistryMock
 
@@ -36,16 +36,9 @@ class Command(BaseFetchCommand, BaseCommand):
             group=self.get_group(company)
         )
 
-    def parse_person(self, person):
-        person_data = dict(
+    def parse_person_data(self, person):
+        return dict(
             username=person['userid'],
             name=person['contactname'],
             email=person['contactemail'],
         )
-
-        person_obj = self.create_person(**person_data)
-        companies = Company.objects.filter(
-            name=person['companyname'],
-            country=person['country'],
-        )
-        person_obj.company.add(*companies)
