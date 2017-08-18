@@ -28,18 +28,16 @@ class FgasesActionTest(BaseTest):
         self.assertEqual(persons.first().username, persons_data[0]['username'])
 
         # Check relation
-        for person_data in persons_data:
-            fmt_person_name = '{contact_firstname} {contact_lastname}'
-            person_name = fmt_person_name.format(**person_data)
-            person = models.Person.objects.get(
-                username=person_data['username'],
-                name=person_name,
-                email=person_data['contact_email'],
+        for company_data in companies_data:
+            company = models.Company.objects.get(
+                external_id=company_data['company_id'],
+                name=company_data['name'],
+                vat=company_data['vat'],
+                country=company_data['address']['country']['name']
             )
-            self.assertIn(
-                person_data['companyname'],
-                person.company.values_list('name', flat=True)
-            )
+            for person_data in company_data['users']:
+                person = models.Person.objects.get(email=person_data['email'])
+                self.assertIn(company, person.company.all())
 
 
 class BDRActionTest(BaseTest):
