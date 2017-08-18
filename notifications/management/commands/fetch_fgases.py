@@ -5,7 +5,7 @@ from django.db import IntegrityError
 
 from notifications import FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, FGASES_EU
 from notifications.management.commands.fetch import BaseFetchCommand
-from notifications.models import CompaniesGroup, Company
+from notifications.models import CompaniesGroup, Person
 from notifications.registries import FGasesRegistry
 from notifications.tests.base.registry_mock import FGasesRegistryMock
 
@@ -47,3 +47,32 @@ class Command(BaseFetchCommand, BaseCommand):
             name=person_name,
             email=person['contact_email'],
         )
+
+    def fetch_companies(self, registry):
+        company_count = 0
+        errors = []
+        for item in registry.get_companies():
+            try:
+                company = self.create_company(
+                    **self.parse_company_data(item))
+                username_list = [user["username"] for user in item["users"]]
+                persons = Person.objects.filter(username__in = username_list)
+                company.user.add(*persons)
+                company_count += 1
+            except IntegrityError as e:
+                logger.info('Skipped company: %s (%s)', item['name'], e)
+                errors.append((e, item['name']))
+        return company_count, errors
+
+    def handle(self, *args, **options):
+        registry = self.get_registry(options)
+        person_count = self.fetch_persons(registry)
+        company_count, errors = self.fetch_companies(registry)
+
+        if errors:
+            msg = 'Registry fetched with errors: {}'
+            msg = msg.format(errors)
+        else:
+            msg = 'Registry fetched successfully: {} companies, {} persons'
+            msg = msg.format(company_count, person_count)
+        logger.info(msg)
