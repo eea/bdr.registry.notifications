@@ -24,31 +24,6 @@ class CycleTest(BaseTest):
         self.assertEqual(str(resp.context['items'][0].closing_date),
                          self._DATA['closing_date'])
 
-    def test_cycle_edit_no_edit_stage(self):
-        stage = factories.StageFactory(can_edit=False)
-        cycle = factories.CycleFactory(stage=stage)
-        resp = self.client.post(
-            reverse('notifications:cycle:edit', kwargs={'pk': cycle.pk}),
-            self._DATA,
-            follow=True
-        )
-        self.assertEqual(resp.status_code, 404)
-
-    def test_cycle_edit_stage(self):
-        stage = factories.StageFactory(can_edit=True)
-        cycle = factories.CycleFactory(stage=stage)
-        new_stage = factories.StageFactory(can_edit=True)
-        self._EDIT_DATA['stage'] = new_stage.pk
-        resp = self.client.post(
-            reverse('notifications:cycle:edit', kwargs={'pk': cycle.pk}),
-            self._EDIT_DATA,
-            follow=True
-        )
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.context['object'].stage, new_stage)
-        self.assertEqual(str(resp.context['object'].closing_date),
-                         self._EDIT_DATA['closing_date'])
-
     def test_cycle_view(self):
         stage = factories.StageFactory(can_edit=True)
         cycle = factories.CycleFactory(stage=stage)

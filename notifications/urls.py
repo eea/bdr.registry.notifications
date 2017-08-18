@@ -22,14 +22,6 @@ cycle_patterns = [
     url(r'^(?P<pk>\d+)/view/$',
         views.CycleDetailView.as_view(),
         name='view'),
-
-    url(r'^(?P<pk>\d+)/edit/$',
-        views.CycleEdit.as_view(),
-        name='edit'),
-
-    url(r'^(?P<pk>\d+)/trigger/$',
-        views.CycleTrigger.as_view(),
-        name='trigger'),
 ]
 
 email_template_patterns = [
