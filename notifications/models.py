@@ -87,7 +87,8 @@ class Person(models.Model):
     username = models.CharField(max_length=128, db_index=True, unique=True)
     name = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True, unique=True)
-    company = models.ManyToManyField(Company)
+    company = models.ManyToManyField(Company,
+                                     related_name='user')
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.username)
