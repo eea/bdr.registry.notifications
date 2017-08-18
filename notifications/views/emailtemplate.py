@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
 from django.views import generic
+from django.core.exceptions import PermissionDenied
 
 from notifications.forms import (
     CycleEmailTemplateEditForm,
@@ -51,6 +52,14 @@ class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
     template_name = 'notifications/template/edit.html'
     success_message = 'Reporting cycle notification edited successfully'
     context_object_name = 'template'
+
+    def get_object(self):
+        obj = get_object_or_404(CycleEmailTemplate,
+                                id=self.kwargs['pk'])
+        if obj.is_triggered is False:
+            return obj
+        else:
+            raise PermissionDenied
 
     def get_success_url(self):
         return reverse('notifications:template:view',
@@ -125,8 +134,12 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     success_message = 'Email was send successfully'
 
     def get_object(self):
-        return get_object_or_404(CycleEmailTemplate,
-                                 id=self.kwargs['pk'])
+        obj = get_object_or_404(CycleEmailTemplate,
+                                id=self.kwargs['pk'])
+        if obj.is_triggered is False:
+            return obj
+        else:
+            raise PermissionDenied
 
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
