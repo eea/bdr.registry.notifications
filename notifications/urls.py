@@ -50,19 +50,6 @@ email_template_patterns = [
         name='resend')
 ]
 
-actions_patterns = [
-
-    url(r'^$',
-        views.ActionsView.as_view(),
-        name='home'),
-    url(r'^fgases$',
-        views.ActionsFGasesView.as_view(),
-        name='fgases'),
-    url(r'^bdr$',
-        views.ActionsBDRView.as_view(),
-        name='bdr'),
-]
-
 app_name = 'notifications'
 
 urlpatterns = [
@@ -74,9 +61,6 @@ urlpatterns = [
 
     url(r'^template/',
         include(email_template_patterns, namespace='template')),
-
-    url(r'^actions/',
-        include(actions_patterns, namespace='actions')),
 
     url(r'^$',
         views.DashboardView.as_view(),

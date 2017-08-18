@@ -1,6 +1,6 @@
 import json
 
-from django.urls import reverse
+from django.core.management import call_command
 
 from notifications import models
 from notifications.tests.base.base import BaseTest
@@ -10,9 +10,7 @@ class FgasesActionTest(BaseTest):
     fixtures = ['companiesgroups.json', ]
 
     def test_fgases(self):
-        resp = self.client.get(reverse('notifications:actions:fgases'),
-                               follow=True)
-        self.assertEqual(resp.status_code, 200)
+        call_command('fetch_fgases', '--test')
         companies = models.Company.objects.all()
         json_data = open('notifications/tests/base/json/fgas_companies.json')
         companies_data = json.load(json_data)
@@ -30,9 +28,7 @@ class BDRActionTest(BaseTest):
     fixtures = ['companiesgroups.json', ]
 
     def test_fgases(self):
-        resp = self.client.get(reverse('notifications:actions:bdr'),
-                               follow=True)
-        self.assertEqual(resp.status_code, 200)
+        call_command('fetch_bdr', '--test')
         companies = models.Company.objects.all()
         json_data = open('notifications/tests/base/json/bdr_companies.json')
         companies_data = json.load(json_data)
