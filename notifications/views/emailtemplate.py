@@ -81,7 +81,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
         context['recipients'] = self.get_recipients()
 
         companies = self.get_recipient_companies()
-        context['companies'] = companies
+        context['companies'] = companies.prefetch_related('user')
 
         return context
 
@@ -130,16 +130,15 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
 
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
-        context['template'] = get_object_or_404(CycleEmailTemplate,
-                                                id=self.kwargs['pk'])
+        template = self.get_object()
         company = (
             Company.objects
-            .filter(group=context['template'].group)
+            .filter(group=template.group)
             .order_by('?').first()
         )
         context['company'] = company
         context['person'] = company.user.order_by('?').first()
-        context['params'] = context['template'].get_parameters()
+        context['params'] = template.get_parameters()
 
         # TODO Create a function that takes param values, body_html and returns the formatted text
         params = dict(
@@ -154,8 +153,9 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
             USERID='randomid',
             PASSWORD='TODO',
         )
-        body = context['template'].body_html
-        context['template'].body_html = body.format(**params)
+        body = template.body_html
+        template.body_html = body.format(**params)
+        context['template'] = template
 
         return context
 
