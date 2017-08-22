@@ -36,7 +36,8 @@ class Stage(models.Model):
     def __unicode__(self):
         return self.title
 
-    def get_main_stages(self):
+    @staticmethod
+    def get_main_stages():
         return ['invitations', 'reminder', 'deadline', 'after']
 
 
