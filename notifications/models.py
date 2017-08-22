@@ -36,6 +36,9 @@ class Stage(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_main_stages(self):
+        return ['invitations', 'reminder', 'deadline', 'after']
+
 
 class CompaniesGroup(models.Model):
     """ Base class for the 3 groups of companies:
