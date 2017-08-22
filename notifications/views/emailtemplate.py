@@ -308,7 +308,7 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
             obj['person'] = person
             obj['stages'] = []
 
-            for stage_code in Stage.get_main_stages(Stage()):
+            for stage_code in Stage.get_main_stages():
                 cycle_notification = self.get_cycle_notification_template(stage_code, company, person)
                 stage = dict()
                 stage['value'] = self.verify_cycle_notification(cycle_notification)
