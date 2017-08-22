@@ -83,6 +83,7 @@ class ResendEmailTest(BaseTest):
         cycle = factories.CycleFactory(stage=stage)
         emailtemplate = factories.CycleEmailTemplateFactory.create_email_template()
         company = factories.CompanyFactory(group=emailtemplate.group)
+        self.company = company
         self.person = factories.PersonFactory()
         self.person.company.add(company)
         self.cycle_email_template = factories.CycleEmailTemplateFactory(
@@ -96,6 +97,7 @@ class ResendEmailTest(BaseTest):
             reverse('notifications:template:resend',
                     kwargs={
                         'pk': self.cycle_email_template.pk,
+                        'pk_company': self.company.pk,
                         'pk_person': self.person.pk,
                     }),
             follow=True
@@ -110,6 +112,7 @@ class ResendEmailTest(BaseTest):
             reverse('notifications:template:resend',
                     kwargs={
                         'pk': self.cycle_email_template.pk,
+                        'pk_company': self.company.pk,
                         'pk_person': self.person.pk,
                     }),
             follow=True

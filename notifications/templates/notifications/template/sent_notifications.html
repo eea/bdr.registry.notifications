@@ -28,7 +28,7 @@
         {% for stage in obj.stages %}
           <td>
             {% if stage.value %}
-              <a href="{% url 'notifications:template:resend' stage.email_template_id obj.person.id %}">
+              <a href="{% url 'notifications:template:resend' stage.email_template_id company.id obj.person.id %}">
                 &#10004;
               </a>
             {% else %}
