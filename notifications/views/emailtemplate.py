@@ -191,10 +191,18 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         return super(CycleEmailTemplateTest, self).form_valid(form)
 
 
-class ResendEmailDetail(NotificationsBaseView, generic.DetailView):
+class ResendEmailBase(NotificationsBaseView):
     template_name = 'notifications/template/resend.html'
-    context_object_name = 'template'
     model = CycleEmailTemplate
+
+    def get_company(self):
+        company = get_object_or_404(Company,
+                                    id=self.kwargs['pk_company'])
+        return company
+
+
+class ResendEmailDetail(ResendEmailBase, generic.DetailView):
+    context_object_name = 'template'
 
     def breadcrumbs(self):
         breadcrumbs = super(ResendEmailDetail, self).breadcrumbs()
@@ -208,7 +216,8 @@ class ResendEmailDetail(NotificationsBaseView, generic.DetailView):
         context['person'] = get_object_or_404(
             Person,
             pk=self.kwargs['pk_person'],
-            company__group=context['template'].group
+            company__group=context['template'].group,
+            company=self.get_company()
         )
         context['template'].body_html = format_body(
             context['template'].body_html,
@@ -225,11 +234,9 @@ class ResendEmailDetail(NotificationsBaseView, generic.DetailView):
         return context
 
 
-class ResendEmailTrigger(generic.FormView, generic.detail.SingleObjectMixin):
-    template_name = 'notifications/template/resend.html'
+class ResendEmailTrigger(ResendEmailBase, generic.FormView, generic.detail.SingleObjectMixin):
     success_message = 'Email sent successfully!'
     form_class = ResendEmailForm
-    model = CycleEmailTemplate
 
     def get_object(self):
         return get_object_or_404(CycleEmailTemplate,
@@ -238,7 +245,8 @@ class ResendEmailTrigger(generic.FormView, generic.detail.SingleObjectMixin):
     def get_person(self):
         return get_object_or_404(Person,
                                  id=self.kwargs['pk_person'],
-                                 company__group=self.get_object().group)
+                                 company__group=self.get_object().group,
+                                 company=self.get_company())
 
     def get_success_url(self):
         return reverse(
