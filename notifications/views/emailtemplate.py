@@ -308,15 +308,11 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
             obj['person'] = person
             obj['stages'] = []
 
-            stages = Stage.objects.all()
-
-            # Skip first and last stage - meaning INITIATED and CLOSED
-            for i in range(1, 5):
-                stage_code = stages[i].code.lower()
+            for stage_code in Stage.get_main_stages(Stage()):
                 cycle_notification = self.get_cycle_notification_template(stage_code, company, person)
                 stage = dict()
                 stage['value'] = self.verify_cycle_notification(cycle_notification)
-                stage['email_template_id'] = self.email_template_id_list[i-1]
+                stage['email_template_id'] = self.email_template_id_list.pop(0)
                 obj['stages'].append(stage)
 
             persons_info.append(obj)
