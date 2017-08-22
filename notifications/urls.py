@@ -39,7 +39,10 @@ email_template_patterns = [
         name='test'),
     url(r'^(?P<pk>\d+)/detail/(?P<pk_person>\d+)/$',
         views.ResendEmail.as_view(),
-        name='resend')
+        name='resend'),
+    url(r'^(?P<pk>\d+)/sent-notifications/(?P<pk_company>\d+)/$',
+        views.ViewSentNotificationForCompany.as_view(),
+        name='sent_notifications'),
 ]
 
 app_name = 'notifications'

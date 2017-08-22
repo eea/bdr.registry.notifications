@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.views import View
 from django.views import generic
 from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 
 from notifications.forms import (
     CycleEmailTemplateEditForm,
@@ -12,7 +13,7 @@ from notifications.forms import (
     format_body
 )
 
-from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company
+from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company, EmailTemplate, Stage
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
@@ -259,3 +260,78 @@ class ResendEmail(View):
     def post(self, request, *args, **kwargs):
         view = ResendEmailTrigger.as_view()
         return view(request, *args, **kwargs)
+
+
+class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
+    template_name = 'notifications/template/sent_notifications.html'
+    email_template_id_list = []
+
+    def get_object(self):
+        return get_object_or_404(CycleEmailTemplate,
+                                 id=self.kwargs['pk'])
+
+    def get_company(self):
+        return get_object_or_404(Company,
+                                 id=self.kwargs['pk_company'],
+                                 group=self.get_object().group)
+
+    def get_cycle_notification_template(self, stage, company, person):
+        email_template = EmailTemplate.objects.get(
+            group=company.group,
+            stage=Stage.objects.get(code=stage)
+        )
+
+        cycle_email_template = CycleEmailTemplate.objects.get(
+            emailtemplate=email_template,
+            cycle__year=timezone.now().year
+        )
+        self.email_template_id_list.append(cycle_email_template.id)
+
+        cycle_notification = CycleNotification.objects.filter(
+            emailtemplate=cycle_email_template,
+            email=person.email
+        )
+
+        return cycle_notification
+
+    def verify_cycle_notification(self, cycle_notification):
+        if cycle_notification.count() > 0:
+            return True
+        else:
+            return False
+
+    def get_persons_info(self, company, persons):
+        persons_info = []
+
+        for person in persons:
+            obj = dict()
+            obj['person'] = person
+            obj['stages'] = []
+
+            stages = Stage.objects.all()
+
+            # Skip first and last stage - meaning INITIATED and CLOSED
+            for i in range(1, 5):
+                stage_code = stages[i].code.lower()
+                cycle_notification = self.get_cycle_notification_template(stage_code, company, person)
+                stage = dict()
+                stage['value'] = self.verify_cycle_notification(cycle_notification)
+                stage['email_template_id'] = self.email_template_id_list[i-1]
+                obj['stages'].append(stage)
+
+            persons_info.append(obj)
+
+        return persons_info
+
+    def get_context_data(self, **kwargs):
+        context = super(NotificationsBaseView, self).get_context_data(**kwargs)
+
+        company = self.get_company()
+        persons = company.user.all()
+        persons_info = self.get_persons_info(company, persons)
+
+        context['company'] = company
+        context['persons_info'] = persons_info
+
+        return context
+
