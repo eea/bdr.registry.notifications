@@ -47,7 +47,7 @@
     {% for company in companies %}
       {% for person in company.user.all %}
         <tr>
-          <td><a href="{% url 'notifications:template:sent_notifications' template.id company.id %}">{{ company.name }}</a></td>
+          <td>{{ company.name }}</td>
           <td><a href="{% url 'notifications:template:resend' template.id company.id person.id %}">{{ person.name }}</a></td>
           <td>{{ person.email }}</td>
         </tr>
