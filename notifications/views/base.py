@@ -50,16 +50,11 @@ class CompaniesView(NotificationsBaseView, PaginatedDataViewBase,
         return breadcrumbs
 
     def get_groups(self):
-        return CompaniesGroup.objects.values('code', 'title')
+        return CompaniesGroup.objects.values('pk', 'code', 'title')
 
     def get_companies_by_group(self, group):
-        page = self.request.GET.get("{0}_page".format(group), 1)
-        return self.get_current_page(
-            data=Company.objects.filter(group__code=group)
-                 .prefetch_related('user')
-                 .order_by('name'),
-            page=page
-        )
+        return Company.objects.filter(
+            group__code=group).distinct().order_by("name")
 
 
 class PersonsView(NotificationsBaseView, PaginatedDataViewBase,
