@@ -36,11 +36,11 @@ class CycleEmailTemplateBase(NotificationsBaseView):
 
     def get_recipients(self):
         return Person.objects.filter(
-            company__group=self.object.group).distinct()
+            company__group=self.object.group)
 
     def get_recipient_companies(self):
         return Company.objects.filter(
-            group=self.object.group).distinct().order_by("name")
+            group=self.object.group).order_by("name")
 
 
 class CycleEmailTemplateView(CycleEmailTemplateBase, generic.DetailView):
