@@ -13,7 +13,7 @@ from notifications.forms import (
     format_body
 )
 
-from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company, EmailTemplate, Stage
+from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company, EmailTemplate, Stage, CompaniesGroup
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
@@ -275,13 +275,13 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
     email_template_id_list = []
 
     def get_object(self):
-        return get_object_or_404(CycleEmailTemplate,
+        return get_object_or_404(CompaniesGroup,
                                  id=self.kwargs['pk'])
 
     def get_company(self):
         return get_object_or_404(Company,
                                  id=self.kwargs['pk_company'],
-                                 group=self.get_object().group)
+                                 group=self.get_object())
 
     def get_cycle_notification_template(self, stage, company, person):
         email_template = EmailTemplate.objects.get(
