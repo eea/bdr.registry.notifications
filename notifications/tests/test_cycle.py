@@ -40,3 +40,4 @@ class CycleTest(BaseTest):
         self.assertEqual(resp.context['object'], cycle)
         self.assertEqual(len(resp.context['templates']), 1)
         self.assertEqual(resp.context['templates'].first(), cycle_email_template)
+        self.assertEqual(resp.context['stages'], ['Invitations', 'Reminder', 'Deadline', 'After'])
