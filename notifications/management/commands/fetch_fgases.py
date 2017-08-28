@@ -40,12 +40,12 @@ class Command(BaseFetchCommand, BaseCommand):
             group=self.get_group(company))
 
     def parse_person_data(self, person):
-        fmt_person_name = '{contact_firstname} {contact_lastname}'
+        fmt_person_name = '{first_name} {last_name}'
         person_name = fmt_person_name.format(**person)
         return dict(
             username=person['username'],
             name=person_name,
-            email=person['contact_email'],
+            email=person['email'],
         )
 
     def fetch_companies(self, registry):

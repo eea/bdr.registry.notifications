@@ -49,7 +49,7 @@ class Command(BaseFetchCommand, BaseCommand):
         errors = []
         for item in registry.get_persons():
             try:
-                person = self.create_person(**self.parse_person(item))
+                person = self.create_person(**self.parse_person_data(item))
                 person_count += 1
                 companies = Company.objects.filter(
                     name=item['companyname'],
