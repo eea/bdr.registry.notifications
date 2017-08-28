@@ -1,7 +1,7 @@
 FROM python:2.7-slim
 MAINTAINER "EEA: IDM2 C-TEAM" <eea-edw-c-team-alerts@googlegroups.com>
 
-ENV WORK_DIR=/var/local/bdr.registries.notifications
+ENV WORK_DIR=/var/local/bdr.registry.notifications
 
 RUN runDeps="curl vim build-essential netcat mysql-client libmysqlclient-dev" \
  && apt-get update \

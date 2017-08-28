@@ -1,5 +1,5 @@
 
-BDR Registries Notifications
+BDR Registry Notifications
 ============================
 
 
@@ -19,8 +19,8 @@ Local development and deployment
 
 2. Clone the repository:
     ```
-    $ git clone https://github.com/eea/bdr.registries.notifications
-    $ cd bdr.registries.notifications
+    $ git clone https://github.com/eea/bdr.registry.notifications
+    $ cd bdr.registry.notifications
     ```
 
 3. Install dependencies:
@@ -44,7 +44,7 @@ Local development and deployment
 
     where:
     ```
-    * DB_NAME: database name (e.g. **bdr_registries_notifications**)
+    * DB_NAME: database name (e.g. **bdr_registry_notifications**)
     * DB_USER: database access user (e.g. **bdr**)
     * DB_PASSWORD: user's password (e.g. **bdr**)
     ```
@@ -82,5 +82,5 @@ Local development and deployment
 Local development and deployment with Docker
 --------------------------------------------
 
-Please refer to [/deploy/bdr.registries.notifications.devel](https://github.com/eea/bdr.registries.notifications/tree/master/deploy/bdr.registries.notifications.devel)
+Please refer to [/deploy/bdr.registry.notifications.devel](https://github.com/eea/bdr.registry.notifications/tree/master/deploy/bdr.registry.notifications.devel)
 

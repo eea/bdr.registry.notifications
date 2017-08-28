@@ -1,4 +1,4 @@
-# Docker orchestration for BDR Registries Notifications
+# Docker orchestration for BDR Registry Notifications
 
 
 ## 1. Development
@@ -11,15 +11,15 @@
 
 ### 1.2. Start stack
 
-    $ git clone https://github.com/eea/bdr.registries.notifications
-    $ cd bdr.registries.notifications/deploy/bdr.registries.notifications.devel
+    $ git clone https://github.com/eea/bdr.registry.notifications
+    $ cd bdr.registry.notifications/deploy/bdr.registry.notifications.devel
     $ docker-compose up -d
 
 ### 1.3. Initial setup
 
 Step into app's container:
 
-    $ docker exec -it bdrregistriesnotificationsdevel_app_1 bash
+    $ docker exec -it bdrregistrynotificationsdevel_app_1 bash
 
 Create initial database structure:
 

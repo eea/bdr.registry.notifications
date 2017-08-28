@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<title>{% block head_title %}{% endblock %}{% trans 'BDR Registries Notifications' %}</title>
+	<title>{% block head_title %}{% endblock %}{% trans 'BDR Registry Notifications' %}</title>
 	<script src="https://bdr.eionet.europa.eu/styles/pageops.js" type="text/javascript"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
 	<link rel="stylesheet" media="print" href="https://www.eionet.europa.eu/styles/eionet2007/print.css" />
@@ -67,7 +67,7 @@
 				<li><a href="/help/dataconfidentiality" title="{% trans 'Confidentiality' %}">{% trans "Confidentiality" %}</a></li>
 			</ul>
 			{% if user.is_staff %}
-				<h2>{% trans 'BDR Registries Notifications' %}</h2>
+				<h2>{% trans 'BDR Registry Notifications' %}</h2>
 				<ul>
 					<li><a href="{% url 'notifications:dashboard' %}">{% trans 'Reporting cycles' %}</a></li>
 					<li><a href="{% url 'notifications:companies' %}">{% trans 'Companies' %}</a></li>
