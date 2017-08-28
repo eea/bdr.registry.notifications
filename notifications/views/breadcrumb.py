@@ -17,5 +17,5 @@ class NotificationsBaseView(braces_views.StaffuserRequiredMixin,
         return [
             Breadcrumb(settings.BDR_SERVER_URL, 'BDR'),
             Breadcrumb(reverse('notifications:dashboard'),
-                       'Registries Notifications')
+                       'Registry Notifications')
         ]
