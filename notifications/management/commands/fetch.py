@@ -106,8 +106,8 @@ class BaseFetchCommand:
                 print(item)
                 person.company.add(*companies)
             except IntegrityError as e:
-                logger.info('Skipped person: %s (%s)', person['username'], e)
-                errors.append((e, person['username']))
+                logger.info('Skipped person: %s (%s)', person.username, e)
+                errors.append((e, person.username))
         return person_count, errors
 
     def handle(self, *args, **options):
