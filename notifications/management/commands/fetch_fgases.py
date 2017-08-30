@@ -41,6 +41,8 @@ class Command(BaseFetchCommand, BaseCommand):
 
     def parse_person_data(self, person):
         fmt_person_name = '{contact_firstname} {contact_lastname}'
+        for key in person.keys():
+            person[key]=person[key].encode('utf-8')
         person_name = fmt_person_name.format(**person)
         return dict(
             username=person['username'],
