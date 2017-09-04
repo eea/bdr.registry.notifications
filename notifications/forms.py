@@ -136,7 +136,7 @@ class CycleEmailTemplateTriggerForm(forms.Form):
     def send_emails(self, emailtemplate):
         with transaction.atomic() as atomic:
             recipients = Person.objects.filter(
-                company__group=emailtemplate.group).distinct()
+                company__group=emailtemplate.group)
             subject = emailtemplate.subject
             sender = EMAIL_SENDER
             emails_to_send = make_messages(recipients, emailtemplate)
