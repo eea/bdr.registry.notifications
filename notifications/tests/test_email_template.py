@@ -51,6 +51,53 @@ class CycleEmailTemplateTest(BaseTest):
         self.assertEqual(resp.context['object'].body_html,
                          self._EDIT_DATA['body_html'])
 
+    def test_cycle_email_test(self):
+        self.stage = factories.StageFactory()
+        self.group = factories.CompaniesGroupFactory()
+        self.cycle = factories.CycleFactory(stage=self.stage)
+        self.emailtemplate = factories.EmailTemplateFactory(
+            subject=self._EDIT_DATA['subject'],
+            body_html=self._EDIT_DATA['body_html'],
+            group=self.group,
+            stage=self.stage
+        )
+        self.cycle_template = factories.CycleEmailTemplateFactory(
+            cycle=self.cycle,
+            subject=self._EDIT_DATA['subject'],
+            body_html=self._EDIT_DATA['body_html'],
+            emailtemplate=self.emailtemplate
+        )
+        self.company = factories.CompanyFactory(group=self.group)
+        self.persons = [
+            factories.PersonFactory(),
+            factories.PersonFactory(),
+            factories.PersonFactory()
+        ]
+        for person in self.persons:
+            person.company.add(self.company)
+
+        resp = self.client.post(
+            reverse('notifications:template:test',
+                    kwargs={'pk': self.cycle_template.pk}),
+            self._EDIT_DATA,
+            follow=True
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.context['template'].body_html, self._EDIT_DATA['body_html'])
+        self.assertEqual(resp.context['template'].subject, self._EDIT_DATA['subject'])
+
+    def test_cycle_email_test_objects(self):
+        self.prepare_email_testing()
+        resp = self.client.post(
+            reverse('notifications:template:test',
+                    kwargs={'pk': self.cycle_template.pk}),
+            follow=True
+        )
+
+        self.assertEqual(self.company, resp.context['company'])
+        self.assertEqual(self.cycle_template, resp.context['template'])
+        self.assertIn(resp.context['person'], self.persons)
+
     def test_cycle_email_trigger(self):
         self.prepare_email_testing()
         resp = self.client.post(
@@ -74,6 +121,18 @@ class CycleEmailTemplateTest(BaseTest):
             self.assertEqual(cycle_notifications[i].counter, 1)
             i += 1
         self.assertEqual(len(cycle_notifications), 3)
+
+    def test_cycle_email_trigger_objects(self):
+        self.prepare_email_testing()
+        resp = self.client.post(
+            reverse('notifications:template:trigger',
+                    kwargs={'pk': self.cycle_template.pk}),
+            follow=True
+        )
+
+        self.assertIn(self.company, resp.context['companies'])
+        self.assertEqual(self.cycle_template, resp.context['template'])
+        self.assertEqual(len(self.persons), len(resp.context['recipients']))
 
 
 class ResendEmailTest(BaseTest):

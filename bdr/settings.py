@@ -86,6 +86,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bdr.wsgi.application'
 
+FIXTURE_DIRS = (
+   'notifications/fixtures/',
+)
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -235,6 +238,8 @@ FGASESREGISTRY_URL = env('FGASESREGISTRY_URL', '')
 FGASES_COMPANY_PATH = env('FGASES_COMPANY_PATH', '/undertaking/list')
 FGASES_PERSON_PATH = env('FGASES_PERSON_PATH', '/misc/user/export/json')
 FGASESREGISTRY_TOKEN = env('FGASESREGISTRY_TOKEN', '')
+FGASES_COMPANY_PATH = env('FGASES_COMPANY_PATH', '')
+FGASES_PERSON_PATH = env('FGASES_PERSON_PATH', '')
 
 EMAIL_SENDER = env('EMAIL_SENDER', '')
 
