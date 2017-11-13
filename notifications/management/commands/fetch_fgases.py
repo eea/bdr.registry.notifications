@@ -42,7 +42,7 @@ class Command(BaseFetchCommand, BaseCommand):
     def parse_person_data(self, person):
         fmt_person_name = '{first_name} {last_name}'
         for key in person.keys():
-            person[key]=person[key].encode('utf-8')
+            person[key] = person[key].encode('utf-8')
         person_name = fmt_person_name.format(**person)
         return dict(
             username=person['username'],
@@ -58,7 +58,7 @@ class Command(BaseFetchCommand, BaseCommand):
                 company = self.create_company(
                     **self.parse_company_data(item))
                 username_list = [user["username"] for user in item["users"]]
-                persons = Person.objects.filter(username__in = username_list)
+                persons = Person.objects.filter(username__in=username_list)
                 company.user.add(*persons)
                 company_count += 1
             except IntegrityError as e:
