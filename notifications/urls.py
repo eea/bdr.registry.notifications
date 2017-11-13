@@ -1,7 +1,6 @@
 from django.conf.urls import include, url
 from django.contrib.auth import views as auth_views
 
-
 from . import views
 
 accounts_patterns = [
@@ -68,4 +67,8 @@ urlpatterns = [
     url(r'^persons/$',
         views.PersonsView.as_view(),
         name='persons'),
+
+    url(r'^crashme/$',
+        views.Crashme.as_view(),
+        name='crashme')
 ]

@@ -79,6 +79,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 #custom
                 'notifications.layout.layout_context_processor',
+                'notifications.context.sentry',
             ],
         },
     },
@@ -248,6 +249,13 @@ Q_CLUSTER = {
         'port': int(os.environ.get('REDIS_PORT', 6379)),
     }
 }
+
+if not DEBUG:
+    INSTALLED_APPS += ['raven.contrib.django.raven_compat', ]
+    RAVEN_CONFIG = {
+        'dsn': env('SENTRY_DSN'),
+    }
+
 
 try:
     from localsettings import *

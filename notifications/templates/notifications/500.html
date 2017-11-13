@@ -1,8 +1,18 @@
-{% extends layout_template %}
-
-{% block title %}Internal server error{% endblock %}
-
-{% block content %}
-	<h1>Internal server error</h1>
-	<p>The server got mixed up. Sorry about that.</p>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+  {% if sentry_id %}
+    <script src="https://cdn.ravenjs.com/2.3.0/raven.min.js"></script>
+    <script>
+      Raven.showReportDialog({
+        eventId: '{{ sentry_id }}',
+        // use the public DSN (dont include your secret!)
+        dsn: '{{ sentry_public_id }}'
+      });
+    </script>
+  {% endif %}
+</head>
+<body>
+<h1>Internal Server Error</h1>
+</body>
+</html>
