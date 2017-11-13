@@ -283,10 +283,10 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
                                  id=self.kwargs['pk_company'],
                                  group=self.get_object())
 
-    def get_cycle_notification_template(self, stage, company, person):
+    def get_cycle_notification_template(self, stage_code, company, person):
         email_template = EmailTemplate.objects.get(
             group=company.group,
-            stage=Stage.objects.get(code=stage)
+            stage__code=stage_code
         )
 
         cycle_email_template = CycleEmailTemplate.objects.get(
