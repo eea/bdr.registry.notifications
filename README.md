@@ -2,6 +2,8 @@
 BDR Registry Notifications
 ============================
 
+[![Travis](https://travis-ci.org/eea/bdr.registry.notifications.svg?branch=master)](https://travis-ci.org/eea/bdr.registry.notifications)
+[![Coverage](https://coveralls.io/repos/github/eea/bdr.registry.notifications/badge.svg?branch=master)](https://coveralls.io/github/eea/bdr.registry.notifications?branch=master)
 
 WIP
 ---

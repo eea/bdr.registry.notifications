@@ -4,7 +4,8 @@ python:
 install:
   - pip install -r requirements-dev.txt
 script:
-  - python manage.py test --settings=bdr.testsettings
+  - coverage run --source='notifications' manage.py test --settings=bdr.testsettings
+after_success: coveralls
 notifications:
   email:
     recipients:
