@@ -1,26 +1,34 @@
 [
-{
-  "model": "notifications.companiesgroup",
-  "pk": 1,
-  "fields": {
-    "title": "ODS/Cars/Vans",
-    "code": "ods-cars-vans"
+  {
+    "model": "notifications.companiesgroup",
+    "pk": 1,
+    "fields": {
+      "title": "Cars/Vans",
+      "code": "cars-vans"
+    }
+  },
+  {
+    "model": "notifications.companiesgroup",
+    "pk": 2,
+    "fields": {
+      "title": "F-gases EU",
+      "code": "f-gases-eu"
+    }
+  },
+  {
+    "model": "notifications.companiesgroup",
+    "pk": 3,
+    "fields": {
+      "title": "F-gases NONEU",
+      "code": "f-gases-noneu"
+    }
+  },
+  {
+    "model": "notifications.companiesgroup",
+    "pk": 4,
+    "fields": {
+      "title": "ODS",
+      "code": "ods"
+    }
   }
-},
-{
-  "model": "notifications.companiesgroup",
-  "pk": 2,
-  "fields": {
-    "title": "F-gases EU",
-    "code": "f-gases-eu"
-  }
-},
-{
-  "model": "notifications.companiesgroup",
-  "pk": 3,
-  "fields": {
-    "title": "F-gases NONEU",
-    "code": "f-gases-noneu"
-  }
-}
 ]

@@ -6,15 +6,15 @@ from notifications import models
 from notifications.tests.base.base import BaseTest
 
 
-class FgasesActionTest(BaseTest):
+class ECRActionTest(BaseTest):
     fixtures = ['companiesgroups.json', ]
 
-    def test_fgases(self):
-        call_command('fetch_fgases', '--test')
+    def test_ecr(self):
+        call_command('fetch_ecr', '--test')
 
         # Check companies
         companies = models.Company.objects.all()
-        json_data = open('notifications/tests/base/json/fgas_companies.json')
+        json_data = open('notifications/tests/base/json/ecr_companies.json')
         companies_data = json.load(json_data)
         self.assertEqual(len(companies), 2)
         self.assertEqual(companies.first().name, companies_data[0]['name'])
@@ -22,7 +22,7 @@ class FgasesActionTest(BaseTest):
 
         # Check persons
         persons = models.Person.objects.all()
-        json_data = open('notifications/tests/base/json/fgas_persons.json')
+        json_data = open('notifications/tests/base/json/ecr_persons.json')
         persons_data = json.load(json_data)
         self.assertEqual(len(persons), 1)
         self.assertEqual(persons.first().username, persons_data[0]['username'])

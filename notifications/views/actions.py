@@ -1,6 +1,7 @@
 import logging
 import sys
 
+from django.conf import settings
 from django.contrib import messages
 from django.db import IntegrityError
 from django.shortcuts import redirect
@@ -8,17 +9,17 @@ from django.urls import reverse
 from django.views import generic
 
 from notifications import (
-    FGASES_GROUP_CODE,
+    ECR_GROUP_CODES,
     FGASES_EU_GROUP_CODE,
     FGASES_NONEU_GROUP_CODE,
     FGASES_EU,
-    BDR_GROUP_CODE
-)
+    BDR_GROUP_CODE,
+    ODS_GROUP_CODE, FGASES_NONEU)
 from notifications.models import Company, Person, CompaniesGroup
-from notifications.registries import FGasesRegistry, BDRRegistry
+from notifications.registries import EuropeanCacheRegistry, BDRRegistry
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 from notifications.tests.base.registry_mock import (
-    FGasesRegistryMock,
+    EuropeanCacheRegistryMock,
     BDRRegistryMock
 )
 
@@ -81,38 +82,56 @@ class ActionsBaseView(generic.View):
         return person
 
 
-class ActionsFGasesView(ActionsBaseView):
-    """ Handles FGases registry fetching.
+class ActionsECRView(ActionsBaseView):
+    """ Handles ECR registry fetching.
     """
 
     def cleanup(self):
-        """ Delete all persons and companies fetched from FGases registry.
+        """ Delete all persons and companies fetched from ECR registry.
         """
         Person.objects.filter(
-            company__group__code__in=FGASES_GROUP_CODE
+            company__group__code__in=ECR_GROUP_CODES
         ).delete()
         Company.objects.filter(
-            group__code__in=FGASES_GROUP_CODE
+            group__code__in=ECR_GROUP_CODES
         ).delete()
 
     def get(self, request, *args, **kwargs):
         if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-            registry = FGasesRegistryMock()
+            registry = EuropeanCacheRegistryMock()
         else:
-            registry = FGasesRegistry()
+            registry = EuropeanCacheRegistry()
+
+        # fetch persons
+        counter_persons = 0
+        errors_persons = []
+        for person in registry.get_persons():
+            fmt_person_name = '{first_name} {last_name}'
+            person_name = fmt_person_name.format(**person)
+
+            person_data = dict(
+                username=person['username'],
+                name=person_name,
+                email=person['email'],
+            )
+
+            self.create_person(**person_data)
+            counter_persons += 1
 
         group_eu = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
         group_noneu = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
+        group_ods = CompaniesGroup.objects.get(code=ODS_GROUP_CODE)
 
         # fetch companies
         counter_companies = 0
         errors_companies = []
-
         for item in registry.get_companies():
             if item['address']['country']['type'] == FGASES_EU:
                 group = group_eu
-            else:
+            elif item['address']['country']['type'] == FGASES_NONEU:
                 group = group_noneu
+            else:
+                group = group_ods
 
             company_data = dict(
                 external_id=item['company_id'],
@@ -135,29 +154,12 @@ class ActionsFGasesView(ActionsBaseView):
                 logger.info('Skipped company: %s (%s)', item['name'], e)
                 errors_companies.append((e, item['name']))
 
-        # fetch persons
-        counter_persons = 0
-        errors_persons = []
-        for person in registry.get_persons():
-
-            fmt_person_name = '{first_name} {last_name}'
-            person_name = fmt_person_name.format(**person)
-
-            person_data = dict(
-                username=person['username'],
-                name=person_name,
-                email=person['email'],
-            )
-
-            self.create_person(**person_data)
-            counter_persons += 1
-
         if errors_persons:
-            msg = 'BDR registry fetched with errors: {}'
+            msg = 'European Cache registry fetched with errors: {}'
             msg = msg.format(errors_persons)
         else:
             msg = (
-                'FGases registry fetched successfully:'
+                'European Cache registry fetched successfully:'
                 ' {} companies, {} persons'
             )
             msg = msg.format(counter_companies, counter_persons)

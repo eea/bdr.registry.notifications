@@ -184,24 +184,24 @@ class BDRRegistry(BaseRegistry):
         return []
 
 
-class FGasesRegistry(BaseRegistry):
+class EuropeanCacheRegistry(BaseRegistry):
     """ Middleware to communicate with BDR Registry.
     """
 
     def __init__(self):
-        entrypoint = settings.FGASESREGISTRY_URL
-        token = settings.FGASESREGISTRY_TOKEN
-        super(FGasesRegistry, self).__init__('FGasesRegistry',
+        entrypoint = settings.ECRREGISTRY_URL
+        token = settings.ECRREGISTRY_TOKEN
+        super(EuropeanCacheRegistry, self).__init__('EuropeanCacheRegistry',
                                           entrypoint=entrypoint,
                                           token=token)
 
     def do_request(self, path, method='get', params=None, data=None,
                    headers=None, cookies=None, auth=None):
-        """ Handler for FGases API calls - the authorization is done
+        """ Handler for ECR API calls - the authorization is done
             using a token.
         """
         headers = {'Authorization': self.token}
-        return super(FGasesRegistry, self).do_request(path,
+        return super(EuropeanCacheRegistry, self).do_request(path,
                                                    method=method,
                                                    params=params,
                                                    data=data,
@@ -237,10 +237,14 @@ class FGasesRegistry(BaseRegistry):
              - types
              - name
         """
-        response = self.do_request(settings.FGASES_COMPANY_PATH)
-        if response:
-            return response.json()
-        return []
+        companies = []
+        for domain in settings.ECR_DOMAINS:
+            response = self.do_request(
+                settings.ECR_COMPANY_PATH.replace("[domain]", domain)
+            )
+            if response:
+                companies += response.json()
+        return companies
 
     def get_persons(self):
         """ Gets the list with all persons. Each person has
@@ -252,7 +256,7 @@ class FGasesRegistry(BaseRegistry):
             - contact_lastname
             - contact_email
         """
-        response = self.do_request(settings.FGASES_PERSON_PATH)
+        response = self.do_request(settings.ECR_PERSON_PATH)
         if response:
             return response.json()
         return []

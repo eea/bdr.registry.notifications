@@ -2,7 +2,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse
 from django.views import generic
 
-from notifications import BDR_GROUP_CODE, FGASES_GROUP_CODE
+from notifications import BDR_GROUP_CODE, ECR_GROUP_CODES
 from notifications.models import Cycle, CompaniesGroup, Person, Company
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
@@ -72,15 +72,15 @@ class PersonsView(NotificationsBaseView, PaginatedDataViewBase,
             page=page_bdr
         )
 
-    def get_fgas(self):
-        page_fgas = self.request.GET.get('page_fgas', 1)
+    def get_ecr(self):
+        page_ecr = self.request.GET.get('page_ecr', 1)
         return self.get_current_page(
             data=Person.objects
-                .filter(company__group__code__in=FGASES_GROUP_CODE)
+                .filter(company__group__code__in=ECR_GROUP_CODES)
                 .prefetch_related('company')
                 .order_by('name')
                 .distinct(),
-            page=page_fgas
+            page=page_ecr
         )
 
     def breadcrumbs(self):

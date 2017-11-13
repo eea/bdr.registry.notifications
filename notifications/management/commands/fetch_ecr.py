@@ -3,33 +3,39 @@ import logging
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
 
-from notifications import FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, FGASES_EU
+from notifications import (
+    FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, ODS_GROUP_CODE,
+    FGASES_EU, FGASES_NONEU,
+)
 from notifications.management.commands.fetch import BaseFetchCommand
 from notifications.models import CompaniesGroup, Person
-from notifications.registries import FGasesRegistry
-from notifications.tests.base.registry_mock import FGasesRegistryMock
+from notifications.registries import EuropeanCacheRegistry
+from notifications.tests.base.registry_mock import EuropeanCacheRegistryMock
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
 class Command(BaseFetchCommand, BaseCommand):
-    """ Helpful command to be executed by a cron to fetch new companies from FGASES
+    """ Helpful command to be executed by a cron to fetch new companies from ECR
     """
 
-    help = 'Fetch companies from FGASES'
-    registry = FGasesRegistry
-    test_registry = FGasesRegistryMock
+    help = 'Fetch companies from European Cache Registry'
+    registry = EuropeanCacheRegistry
+    test_registry = EuropeanCacheRegistryMock
 
     def __init__(self):
         super(Command, self).__init__()
         self.group_eu = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
         self.group_noneu = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
+        self.group_ods = CompaniesGroup.objects.get(code=ODS_GROUP_CODE)
 
     def get_group(self, company):
         if company['address']['country']['type'] == FGASES_EU:
             return self.group_eu
-        return self.group_noneu
+        elif company['address']['country']['type'] == FGASES_NONEU:
+            return self.group_noneu
+        return self.group_ods
 
     def parse_company_data(self, company):
         return dict(
