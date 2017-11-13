@@ -22,3 +22,6 @@ pip-selfcheck.json
 
 # IDE
 .idea/
+
+.coverage
+.skip-loaddata
