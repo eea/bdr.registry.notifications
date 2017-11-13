@@ -70,9 +70,9 @@ class CycleEmailTemplateFactory(DjangoModelFactory):
         model = models.CycleEmailTemplate
 
     @staticmethod
-    def create_email_template():
-        group = CompaniesGroupFactory()
-        stage = StageFactory()
+    def create_email_template(group=None, stage=None):
+        group = group or CompaniesGroupFactory()
+        stage = stage or StageFactory()
         emailtemplate = EmailTemplateFactory(
             group=group,
             stage=stage
