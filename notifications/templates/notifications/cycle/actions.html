@@ -1,13 +1,7 @@
 {% if object.can_edit or object.can_trigger %}
 	<div class="cycle-actions">
 		{% if page != 'view' %}
-			<a href="{% url 'notifications:cycle_view' object.id %}">View</a>
-		{% endif %}
-		{% if object.can_edit and page != 'edit' %}
-			<a href="{% url 'notifications:cycle_edit' object.id %}">Edit</a>
-		{% endif %}
-		{% if object.can_trigger and page != 'trigger' %}
-			<a href="{% url 'notifications:cycle_trigger' object.id %}">Trigger</a>
+			<a href="{% url 'notifications:cycle:view' object.id %}">View</a>
 		{% endif %}
 	</div>
 {% endif %}

@@ -1,0 +1,14 @@
+[
+  {
+    "userid" : 23,
+    "name" : "BDR company 1",
+    "vat_number": 43,
+    "country_name": "China"
+  },
+  {
+    "userid" : 24,
+    "name" : "BDR company 2",
+    "vat_number": 43,
+    "country_name": "Ukraine"
+  }
+]

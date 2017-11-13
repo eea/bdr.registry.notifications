@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+COMMANDS="qcluster"
+
 if [ -z "$MYSQL_ADDR" ]; then
   MYSQL_ADDR="mysql"
 fi
@@ -18,6 +20,10 @@ if ! mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "use $DATABASES_NAME
   mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $DATABASES_NAME.* TO '$DATABASES_USER'@'%';"
 fi
 
+if [ $DEBUG="True" ]; then
+  pip install -r requirements-dev.txt
+fi
+
 python manage.py migrate &&
 python manage.py collectstatic --noinput
 
@@ -29,9 +35,15 @@ if [ ! -e .skip-loaddata ]; then
   python manage.py loaddata notifications/fixtures/emailtemplates.json
 fi
 
+if [ -z "$1" ]; then
 exec gunicorn bdr.wsgi:application \
-  --name bdr_registries_notifications \
+  --name bdr_registry_notifications \
   --bind 0.0.0.0:$APP_HTTP_PORT \
   --workers 3 \
   --access-logfile - \
   --error-logfile -
+fi
+
+if [[ $COMMANDS == *"$1"* ]]; then
+  exec python manage.py qcluster
+fi

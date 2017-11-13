@@ -2,59 +2,107 @@
 
 {% load notifications_extras %}
 
+{% load static %}
+
+{% block head %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.css' %}">
+{% endblock %}
+
 {% block content %}
 
 <h1>Companies</h1>
 
 {% with groups=view.get_groups %}
 
-<p>
-	You can find below the companies listed by group:
-	{% for group in groups %}
-		<a href="#{{ group.code }}" class="iter">{{ group.title }}</a>
-	{% endfor %}
-</p>
+<p style="display: inline">Choose obligation: </p>
+<select id="obligations">
+  {% for group in groups %}
+    <option value="#{{ group.code }}">{{ group.title }}</option>
+  {% endfor %}
+</select>
+<input id="button" type="button" value="Show Companies!" />
 
 {% for group in groups %}
-	<h2 id="{{ group.code }}">{{ group.title }}</h2>
-	{% get_group_companies group as items %}
-	<div class="cycle-stage">
-		{{ items|length }} companies in registry.
-	</div>
-
-	<table class="brn-table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Name</th>
-				<th>VAT</th>
-				<th>Country</th>
-				<th>Contact</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for item in items %}
-				<tr>
-					<td>{{ item.external_id }}</td>
-					<td>{{ item.name }}</td>
-					<td>{{ item.vat|default_if_none:'' }}</td>
-					<td>{{ item.country }}</td>
-					<td>
-						<ul>
-							{% for user in item.users %}
-								<li>
-									<a href="{% url 'notifications:persons' %}#{{ user.username }}" target="_blank">{{ user.first_name }} {{ user.last_name }}</a>
-									<small>({{ user.email }})</small>
-								</li>
-							{% endfor %}
-						</ul>
-					</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+  <div id={{ group.code }}>
+    <h2 id="{{ group.code }}">{{ group.title }}</h2>
+    {% get_group_companies view group.code as items %}
+    {% include 'notifications/_page_controls.html' with items=items %}
+    <table id="{{ group.code }}-table" class="brn-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>VAT</th>
+          <th>Country</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr>
+            <td><a href="{% url 'notifications:template:sent_notifications' group.pk item.id %}">{{ item.name }}</a></td>
+            <td>{{ item.vat|default_if_none:'' }}</td>
+            <td>{{ item.country }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endfor %}
 
 {% endwith %}
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      var cars_table = $('#cars-vans-table').DataTable();
+      var ods_table = $('#ods-table').DataTable();
+      var fgas_eu_table = $('#f-gases-eu-table').DataTable();
+      var fgas_noneu_table = $('#f-gases-noneu-table').DataTable();
+
+      $('#myInputTextField').on('keyup change', function () {
+        ods_table.search($(this).val()).draw();
+        fgas_eu_table.search($(this).val()).draw();
+        fgas_noneu_table.search($(this).val()).draw();
+      });
+
+      $('#f-gases-eu').hide();
+      $('#f-gases-noneu').hide();
+      $('#ods').hide();
+
+      $('#button').click(function () {
+        var selectedOption = $('#obligations :selected').text();
+
+        switch (selectedOption) {
+          case 'F-gases EU':
+            $('#f-gases-eu').show();
+            $('#cars-vans').hide();
+            $('#ods').hide();
+            $('#f-gases-noneu').hide();
+            break;
+          case 'F-gases NONEU':
+            $('#f-gases-noneu').show();
+            $('#ods').hide();
+            $('#cars-vans').hide();
+            $('#f-gases-eu').hide();
+            break;
+          case 'ODS':
+            $('#ods').show();
+            $('#cars-vans').hide();
+            $('#f-gases-eu').hide();
+            $('#f-gases-noneu').hide();
+            break;
+          default:
+            $('#ods').hide();
+            $('#cars-vans').show();
+            $('#f-gases-eu').hide();
+            $('#f-gases-noneu').hide();
+        }
+      });
+    });
+  </script>
 
 {% endblock %}

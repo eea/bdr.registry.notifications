@@ -36,6 +36,10 @@ class Stage(models.Model):
     def __unicode__(self):
         return self.title
 
+    @staticmethod
+    def get_main_stages():
+        return ['invitations', 'reminder', 'deadline', 'after']
+
 
 class CompaniesGroup(models.Model):
     """ Base class for the 3 groups of companies:
@@ -60,7 +64,7 @@ class CompaniesGroup(models.Model):
 
 
 class Company(models.Model):
-    """ Base class for a registry, FGases or BDR, company.
+    """ Base class for a registry, ECR or BDR, company.
     """
 
     class Meta:
@@ -87,7 +91,8 @@ class Person(models.Model):
     username = models.CharField(max_length=128, db_index=True, unique=True)
     name = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True, unique=True)
-    company = models.ManyToManyField(Company)
+    company = models.ManyToManyField(Company,
+                                     related_name='user')
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.username)
@@ -139,7 +144,7 @@ class Cycle(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.year
+        return str(self.year)
 
     def __unicode__(self):
         return '%s' % self.year
@@ -153,23 +158,32 @@ class Cycle(models.Model):
         return self.stage.can_trigger
 
     def last_action(self):
-        return self.history.all()[0]
+        return self.history.first()
 
     def create_cycle_templates(self):
         year = self.year
         closing_date = self.closing_date.strftime('%d %B %Y')
-        for emailtemplate in EmailTemplate.objects.all():
-            cycle_emailtemplate = CycleEmailTemplate(
+        for template in EmailTemplate.objects.all():
+            cycle_template = CycleEmailTemplate(
                 cycle=self,
-                emailtemplate=emailtemplate,
-                subject=(emailtemplate
+                emailtemplate=template,
+                subject=(template
                          .subject
                          .format(year=year, closing_date=closing_date)),
-                body_html=(emailtemplate
+                body_html=(template
                            .body_html
                            .format(year=year, closing_date=closing_date)),
             )
-            cycle_emailtemplate.save()
+            cycle_template.save()
+
+    @classmethod
+    def can_initiate_new_cycle(cls):
+        cycles = cls.objects.order_by('-year')
+        if cycles.exists():
+            last_cycle = cycles.first()
+            if last_cycle.stage.pk != STAGE_CLOSED:
+                return False
+        return True
 
 
 class CycleEmailTemplate(models.Model):
@@ -207,10 +221,10 @@ class CycleEmailTemplate(models.Model):
 
     @property
     def can_trigger(self):
-        return self.cycle.can_trigger and self.cycle.stage == self.stage
+        return self.cycle.can_trigger
 
     def last_action(self):
-        return self.history.all()[0]
+        return self.history.first()
 
     def get_parameters(self):
         return extract_parameters(self.body_html)
@@ -230,6 +244,7 @@ class CycleNotification(models.Model):
     sent_date = models.DateTimeField(db_index=True,
                                      default=timezone.now)
     emailtemplate = models.ForeignKey(CycleEmailTemplate)
+    counter = models.IntegerField(default=1)
 
     def __str__(self):
         return '{} for {}'.format(self.emailtemplate, self.email)

@@ -1,0 +1,75 @@
+{% extends layout_template %}
+{% load static %}
+
+{% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
+  - {% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h1>Trigger - {{ template.emailtemplate }}</h1>
+
+<h2>Send notifications</h2>
+{% if template.is_triggered %}
+  <p>This stage has been triggered.</p>
+{% else %}
+  <p style="color:red;">Things to consider when implementing this:</p>
+  <ul style="color:red;">
+    <li>Fetch the list of emails and corresponding email template parameters based on the specific<strong>GROUP</strong>.</li>
+    <li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
+    <li>Don't send an email twice!</li>
+  </ul>
+  {% with recipients as persons %}
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="I Understand, send {{ persons|length }} emails."/>
+    </form>
+  {% endwith %}
+{% endif %}
+
+{% if template.is_triggered %}
+  <h2>Sent emails</h2>
+
+  <table id="myTable" class="brn-table">
+    <thead>
+    <tr>
+      <th>Company</th>
+      <th>Person</th>
+      <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for company in companies %}
+      {% for person in company.user.all %}
+        <tr>
+          <td>{{ company.name }}</td>
+          <td><a href="{% url 'notifications:template:resend' template.id company.id person.id %}">{{ person.name }}</a></td>
+          <td>{{ person.email }}</td>
+        </tr>
+      {% endfor %}
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      var table = $('#myTable').DataTable();
+
+      $('#myInputTextField').on('keyup change', function () {
+        table.search($(this).val()).draw();
+      })
+    });
+  </script>
+
+{% endblock %}

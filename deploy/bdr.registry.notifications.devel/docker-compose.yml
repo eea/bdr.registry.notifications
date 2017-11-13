@@ -28,11 +28,36 @@ services:
     environment:
       TZ: Europe/Copenhagen
     volumes:
-    - appdata:/var/local/bdr.registries.notifications/static
-    - ../../notifications:/var/local/bdr.registries.notifications/notifications
+    - appdata:/var/local/bdr.registry.notifications/static
+    - ../../:/var/local/bdr.registry.notifications/
     entrypoint: /usr/bin/tail
     command:  -f /dev/null
 
+  async:
+    image: eeacms/bdr.registry.notifications:latest
+    depends_on:
+    - mysql
+    - redis
+    - postfix
+    env_file:
+    - mysql.env
+    - app.env
+    - redis.env
+    environment:
+      TZ: Europe/Copenhagen
+    volumes:
+    - ../../:/var/local/bdr.registry.notifications/
+    command: ['qcluster']
+
+
+  redis:
+      image: redis:alpine
+
+  postfix:
+    image: marcelesser/smtp-sink:latest
+    environment:
+      - POSTFIX_USER=user
+      - POSTFIX_PASS=secret
 volumes:
   mysqldata:
     driver: local

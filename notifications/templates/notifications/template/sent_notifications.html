@@ -1,0 +1,44 @@
+{% extends layout_template %}
+
+{% block content %}
+
+  <p>Company: {{ company.name }}</p>
+  <p>VAT: {{ company.vat }}</p>
+  <p>Country: {{ company.country }}</p>
+  <p>Group: {{ company.group }}</p>
+
+  <table id="myTable" class="brn-table">
+    <thead>
+    <tr>
+      <th>Username</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Invitation</th>
+      <th>Reminder</th>
+      <th>Deadline</th>
+      <th>After</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in persons_info %}
+      <tr>
+        <td>{{ obj.person.username }}</td>
+        <td>{{ obj.person.name }}</td>
+        <td>{{ obj.person.email }}</td>
+        {% for stage in obj.stages %}
+          <td>
+            {% if stage.value %}
+              <a href="{% url 'notifications:template:resend' stage.email_template_id company.id obj.person.id %}">
+                &#10004;
+              </a>
+            {% else %}
+              &#10006;
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}

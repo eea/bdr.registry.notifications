@@ -1,16 +1,11 @@
 {% extends layout_template %}
 
 {% block content %}
+<div class="cycle-actions">
+  <a href="{% url 'notifications:cycle:add' %}">Add new reporting cycle</a>
+</div>
 
-{% with can_add_cycle_=view.can_initiate_new_cycle %}
-	{% if can_add_cycle_%}
-		<div class="cycle-actions">
-			<a href="{% url 'notifications:cycle_add' %}">Add new reporting cycle</a>
-		</div>
-	{% endif %}
-{% endwith %}
-
-<h1>Welcome to BDR Registries Notifications</h1>
+<h1>Welcome to BDR Registry Notifications</h1>
 
 <div class="clear"></div>
 
@@ -34,13 +29,7 @@
 				<td>{{ item.stage }}</td>
 				<td>{{ item.closing_date }}</td>
 				<td class="actions">
-					<a href="{% url 'notifications:cycle_view' item.id %}">View</a>
-					{% if item.can_edit %}
-						<a href="{% url 'notifications:cycle_edit' item.id %}">Edit</a>
-					{% endif %}
-					{% if item.can_trigger %}
-						<a href="{% url 'notifications:cycle_trigger' item.id %}">Trigger</a>
-					{% endif %}
+					<a href="{% url 'notifications:cycle:view' item.id %}">View</a>
 				</td>
 			</tr>
 		{% endfor %}

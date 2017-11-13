@@ -8,3 +8,20 @@ db.sqlite3
 *.log
 localsettings.py
 localsettings_test.py
+
+# static folder
+/static/
+
+# virtualenv
+sandbox/
+virtualenv/
+/bin/
+/include/
+/lib/
+pip-selfcheck.json
+
+# IDE
+.idea/
+
+.coverage
+.skip-loaddata

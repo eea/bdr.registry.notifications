@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #custom
+    'django_q',
     'frame',
     'ckeditor',
     'simple_history',
@@ -85,6 +86,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bdr.wsgi.application'
 
+FIXTURE_DIRS = (
+   'notifications/fixtures/',
+)
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -214,11 +218,13 @@ LOGGING = {
 
 APP_REVERSE_PROXY = env('APP_REVERSE_PROXY', False)
 
-EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = env('EMAIL_HOST', 'localhost')
 EMAIL_PORT = env('EMAIL_PORT', 25)
 
 BDR_SERVER_URL = env('BDR_SERVER_URL', 'http://localhost')
+BDR_COMPANIES_PATH = env('BDR_COMPANIES_PATH', '/management/companies/export/json')
+BDR_PERSONS_PATH = env('BDR_PERSONS_PATH', '/management/persons/export/json/')
 BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
 
 USE_ZOPE_LAYOUT = env('USE_ZOPE_LAYOUT', True)
@@ -228,9 +234,20 @@ BDRREGISTRY_URL = env('BDRREGISTRY_URL', '')
 BDRREGISTRY_USERNAME = env('BDRREGISTRY_USERNAME', '')
 BDRREGISTRY_PASSWORD = env('BDRREGISTRY_PASSWORD', '')
 
-FGASESREGISTRY_URL = env('FGASESREGISTRY_URL', '')
-FGASESREGISTRY_TOKEN = env('FGASESREGISTRY_TOKEN', '')
+ECRREGISTRY_URL = env('ECR_REGISTRY_URL', '')
+ECR_COMPANY_PATH = env('ECR_COMPANY_PATH', '/undertaking/list')
+ECR_PERSON_PATH = env('ECR_PERSON_PATH', '/misc/user/export/json')
+ECRREGISTRY_TOKEN = env('ECR_REGISTRY_TOKEN', '')
+ECR_DOMAINS = env('ECR_DOMAINS', '')
 
+EMAIL_SENDER = env('EMAIL_SENDER', '')
+
+Q_CLUSTER = {
+    'redis': {
+        'host': os.environ.get('REDIS_HOST', 'redis'),
+        'port': int(os.environ.get('REDIS_PORT', 6379)),
+    }
+}
 
 try:
     from localsettings import *

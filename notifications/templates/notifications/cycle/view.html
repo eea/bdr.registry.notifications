@@ -1,0 +1,34 @@
+{% extends layout_template %}
+
+{% block head_title %}Reporting cycle for year {{ cycle }} - {% endblock %}
+
+{% block content %}
+
+<h1>Reporting cycle for year {{ cycle }}</h1>
+
+{% for stage in stages %}
+  <h2>{{ stage }}</h2>
+
+  <table class="brn-table">
+    <thead>
+      <tr>
+        <th>Obligation</th>
+        <th>Status</th>
+        <th>Last updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for template in templates %}
+        {% if template.stage.title == stage %}
+          <tr>
+          <td><a href="{% url 'notifications:template:view' template.pk %}">{{ template.group }}</a></td>
+          <td>{{ template.is_triggered|yesno:"Sent,Draft" }}</td>
+          <td>{{ template.last_action.history_date.date }}</td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+
+{% endblock %}

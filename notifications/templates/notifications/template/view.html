@@ -1,0 +1,25 @@
+{% extends layout_template %}
+
+{% block head_title %}{{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }} - {% endblock %}
+
+{% block content %}
+
+<h1>Email {{ template.stage|lower }} for {{ template.group }}</h1>
+
+<h2>Subject</h2>
+<div class="preview-body">{{ template.subject }}</div>
+
+<h2>Body</h2>
+<div class="preview-body">{{ template.body_html|safe }}</div>
+
+<h5>Last updated: {{ template.last_action.history_date.date }}</h5>
+
+{% if template.is_triggered %}
+  <a href="{% url 'notifications:template:trigger' object.id %}"><input type="button" value="View details" /></a>
+{% else %}
+  <a href="{% url 'notifications:template:trigger' object.id %}"><input type="button" value="Send" /></a>
+  <a href="{% url 'notifications:template:edit' object.id %}">Edit</a>
+  <a href="{% url 'notifications:template:test' object.id %}">Test</a>
+{% endif %}
+
+{% endblock %}

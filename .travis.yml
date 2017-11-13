@@ -1,0 +1,12 @@
+language: python
+python:
+  - "2.7"
+install:
+  - pip install -r requirements-dev.txt
+script:
+  - coverage run --source='notifications' manage.py test --settings=bdr.testsettings
+after_success: coveralls
+notifications:
+  email:
+    recipients:
+      - purepython@eaudeweb.ro

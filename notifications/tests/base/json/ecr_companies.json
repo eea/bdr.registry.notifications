@@ -1,0 +1,35 @@
+[
+ {
+   "users": [
+     {
+       "username": "user1",
+       "first_name": "John",
+       "last_name": "Smith",
+       "email": "jhsm@mail.com"
+     }
+   ],
+   "vat" : null,
+   "company_id": 1234,
+   "address" : {
+     "country" : {
+       "code" : "CN",
+       "type" : "NONEU_TYPE",
+       "name" : "China"
+     }
+   },
+   "name" : "First company"
+ },
+ {
+   "users": [],
+   "vat" : null,
+   "company_id": 3245,
+   "address" : {
+     "country" : {
+       "code" : "RO",
+       "type" : "EU_TYPE",
+       "name" : "Romania"
+     }
+   },
+   "name" : "Second company"
+ }
+]

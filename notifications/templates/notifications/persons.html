@@ -4,60 +4,13 @@
 
 <h1>Persons</h1>
 
-<p>You can find below the persons fetched from <a href="#fgases">FGases</a> and <a href="#bdr">BDR</a> registries.</p>
+<p>You can find below the persons fetched from <a href="#ecr">European Cache</a> and <a
+        href="#bdr">BDR</a> registry.</p>
 
-{% with items=view.fgases_get_persons %}
-<h2 id="fgases">FGases registry</h2>
+<h2 id="ecr">European Cache registry</h2>
+{% include 'notifications/table_persons.html' with items=view.get_ecr req_page="page_ecr" section='ecr' %}
 
-<div class="cycle-stage">
-	{{ items|length }} persons in registry.
-</div>
-
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th class="user">Username</th>
-			<th class="company">Company/Country</th>
-			<th class="contact">Contact/Email</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
-			<tr id="{{ item.username }}">
-				<td>{{ item.username }}</td>
-				<td>{{ item.companyname }}<br /><small>{{ item.country }}</small></td>
-				<td>{{ item.contact_firstname }} {{ item.contact_lastname }}<br /><small>{{ item.contact_email }}</small></td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
-{% endwith %}
-
-{% with items=view.bdr_get_persons %}
 <h2 id="bdr">BDR registry</h2>
-
-<div class="cycle-stage">
-	{{ items|length }} persons in registry.
-</div>
-
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th class="user">Username</th>
-			<th class="company">Company/Country</th>
-			<th class="contact">Contact/Email</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
-			<tr id="{{ item.userid }}">
-				<td>{{ item.userid }}</td>
-				<td>{{ item.companyname }}<br /><small>{{ item.country }}</small></td>
-				<td>{{ item.contactname }}<br /><small>{{ item.contactemail }}</small></td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
-{% endwith %}
+{% include 'notifications/table_persons.html' with items=view.get_bdr req_page="page_bdr" section='bdr' %}
 
 {% endblock %}
