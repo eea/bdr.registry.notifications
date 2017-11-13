@@ -10,13 +10,13 @@ class BaseRegistryMock(object):
         return data
 
 
-class FGasesRegistryMock(BaseRegistryMock):
+class EuropeanCacheRegistryMock(BaseRegistryMock):
 
     def get_companies(self):
-        return self.get_objects('notifications/tests/base/json/fgas_companies.json')
+        return self.get_objects('notifications/tests/base/json/ecr_companies.json')
 
     def get_persons(self):
-        return self.get_objects('notifications/tests/base/json/fgas_persons.json')
+        return self.get_objects('notifications/tests/base/json/ecr_persons.json')
 
 
 class BDRRegistryMock(BaseRegistryMock):

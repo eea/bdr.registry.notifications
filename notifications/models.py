@@ -64,7 +64,7 @@ class CompaniesGroup(models.Model):
 
 
 class Company(models.Model):
-    """ Base class for a registry, FGases or BDR, company.
+    """ Base class for a registry, ECR or BDR, company.
     """
 
     class Meta:

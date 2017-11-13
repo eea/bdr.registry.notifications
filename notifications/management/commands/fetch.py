@@ -95,20 +95,10 @@ class BaseFetchCommand:
 
     def fetch_persons(self, registry):
         person_count = 0
-        errors = []
-        for item in registry.get_persons():
-            try:
-                person = self.create_person(**self.parse_person_data(item))
-                person_count += 1
-                companies = Company.objects.filter(
-                    name=item['companyname'],
-                    country=item['country'])
-                print(item)
-                person.company.add(*companies)
-            except IntegrityError as e:
-                logger.info('Skipped person: %s (%s)', person.username, e)
-                errors.append((e, person.username))
-        return person_count, errors
+        for person in registry.get_persons():
+            self.create_person(**self.parse_person_data(person))
+            person_count += 1
+        return person_count
 
     def handle(self, *args, **options):
         registry = self.get_registry(options)
