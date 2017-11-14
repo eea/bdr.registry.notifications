@@ -1,7 +1,5 @@
 import logging
 
-from django.db import IntegrityError
-
 from notifications.models import Person, Company
 
 logger = logging.getLogger(__name__)

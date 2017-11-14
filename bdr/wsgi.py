@@ -23,6 +23,7 @@ HEADER_MAP = {
     'wsgi.url_scheme': 'HTTP_X_FORWARDED_SCHEME',
 }
 
+
 def proxy_middleware(app):
     def proxy_fix(environ, start_response):
         for name in HEADER_MAP:

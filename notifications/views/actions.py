@@ -196,7 +196,7 @@ class ActionsBDRView(ActionsBaseView):
         for idx_company, item in enumerate(registry.get_companies(), start=1):
 
             if item['userid'] is None:
-                print item
+                print(item)
 
             company_data = dict(
                 external_id=item['userid'],

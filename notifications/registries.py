@@ -51,14 +51,9 @@ class BaseRegistry(object):
         response = None
 
         try:
-            response = request(url,
-                        params=params,
-                        data=data,
-                        headers=headers,
-                        cookies=cookies,
-                        auth=auth,
-                        timeout=self.timeout,
-                        verify=True)
+            response = request(url, params=params, data=data, headers=headers,
+                               cookies=cookies, auth=auth, timeout=self.timeout,
+                               verify=True)
         except Exception as e:
             logger.warning('Error contacting {} ({})'.format(self.name, e))
         else:

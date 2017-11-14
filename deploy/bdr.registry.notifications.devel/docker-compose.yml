@@ -4,6 +4,7 @@ services:
 
   mysql:
     image: mysql:latest
+    container_name: not.db
     tty: true
     stdin_open: true
     ports:
@@ -17,7 +18,8 @@ services:
     command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
 
   app:
-    image: eeacms/bdr.registry.notifications:latest
+    image: notif
+    container_name: not.app
     ports:
     - "12301:12301"
     depends_on:
