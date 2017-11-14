@@ -3,7 +3,7 @@ MAINTAINER "EEA: IDM2 C-TEAM" <eea-edw-c-team-alerts@googlegroups.com>
 
 ENV WORK_DIR=/var/local/bdr.registry.notifications
 
-RUN runDeps="curl vim build-essential netcat mysql-client libmysqlclient-dev" \
+RUN runDeps="curl vim build-essential netcat" \
  && apt-get update \
  && apt-get install -y --no-install-recommends $runDeps \
  && rm -vrf /var/lib/apt/lists/*

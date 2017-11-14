@@ -3,22 +3,14 @@ set -e
 
 COMMANDS="qcluster"
 
-if [ -z "$MYSQL_ADDR" ]; then
-  MYSQL_ADDR="mysql"
+if [ -z "$POSTGRES_ADDR" ]; then
+  export POSTGRES_ADDR="postgres"
 fi
 
-while ! nc -z $MYSQL_ADDR 3306; do
-  echo "Waiting for MySQL server at '$MYSQL_ADDR' to accept connections on port 3306..."
-  sleep 3s
+while ! nc -z $POSTGRES_ADDR 5432; do
+  echo "Waiting for Postgres server at '$POSTGRES_ADDR' to accept connections on port 5432..."
+  sleep 1s
 done
-
-#create database for service
-if ! mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "use $DATABASES_NAME;"; then
-  echo "CREATE DATABASE $DATABASES_NAME"
-  mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE $DATABASES_NAME CHARACTER SET utf8 COLLATE utf8_general_ci;"
-  mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE USER '$DATABASES_USER'@'%' IDENTIFIED BY '$DATABASES_PASSWORD';"
-  mysql -h $MYSQL_ADDR -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $DATABASES_NAME.* TO '$DATABASES_USER'@'%';"
-fi
 
 if [ $DEBUG="True" ]; then
   pip install -r requirements-dev.txt

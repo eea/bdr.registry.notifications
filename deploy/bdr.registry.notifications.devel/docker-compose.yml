@@ -2,20 +2,16 @@ version: '2'
 
 services:
 
-  mysql:
-    image: mysql:latest
+  postgres:
+    image: postgres:9
     container_name: not.db
-    tty: true
-    stdin_open: true
-    ports:
-    - "3306:3306"
-    env_file:
-    - mysql.env
+    environment:
+    - POSTGRES_PASSWORD=test
     environment:
       TZ: Europe/Copenhagen
     volumes:
-    - mysqldata:/var/lib/mysql
-    command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci"
+    - data:/var/lib/postgresql/data
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   app:
     image: notif
@@ -23,9 +19,8 @@ services:
     ports:
     - "12301:12301"
     depends_on:
-    - mysql
+    - postgres
     env_file:
-    - mysql.env
     - app.env
     environment:
       TZ: Europe/Copenhagen
@@ -38,11 +33,10 @@ services:
   async:
     image: eeacms/bdr.registry.notifications:latest
     depends_on:
-    - mysql
+    - postgres
     - redis
     - postfix
     env_file:
-    - mysql.env
     - app.env
     - redis.env
     environment:
@@ -61,7 +55,7 @@ services:
       - POSTFIX_USER=user
       - POSTFIX_PASS=secret
 volumes:
-  mysqldata:
+  data:
     driver: local
   appdata:
     driver: local

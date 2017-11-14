@@ -13,6 +13,8 @@
 
     $ git clone https://github.com/eea/bdr.registry.notifications
     $ cd bdr.registry.notifications/deploy/bdr.registry.notifications.devel
+    $ cp init.sql.example init.sql
+    $ vim init.sql
     $ docker-compose up -d
 
 ### 1.3. Initial setup
