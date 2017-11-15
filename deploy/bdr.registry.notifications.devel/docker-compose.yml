@@ -3,7 +3,7 @@ version: '2'
 services:
 
   postgres:
-    image: postgres:9
+    image: postgres:9-alpine
     container_name: not.db
     environment:
     - POSTGRES_PASSWORD=test
