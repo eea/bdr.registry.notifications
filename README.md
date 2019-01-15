@@ -80,6 +80,11 @@ Local development and deployment
 
 10. In your browser type http://localhost:5000/notifications/.
 
+Testing
+-------
+    ```
+    $ python manage.py test --settings=bdr.testsettings
+    ```
 
 Local development and deployment with Docker
 --------------------------------------------

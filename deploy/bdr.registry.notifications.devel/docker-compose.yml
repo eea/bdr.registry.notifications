@@ -14,7 +14,7 @@ services:
     - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   app:
-    image: notif
+    image: eeacms/bdr.registry.notifications:latest
     container_name: not.app
     ports:
     - "12301:12301"
@@ -32,6 +32,7 @@ services:
 
   async:
     image: eeacms/bdr.registry.notifications:latest
+    container_name: not.async
     depends_on:
     - postgres
     - redis
@@ -51,6 +52,7 @@ services:
 
   postfix:
     image: marcelesser/smtp-sink:latest
+    container_name: not.postfix
     environment:
       - POSTFIX_USER=user
       - POSTFIX_PASS=secret
