@@ -38,10 +38,14 @@ class Command(BaseFetchCommand, BaseCommand):
         )
 
     def parse_person_data(self, person):
+        fmt_person_name = '{first_name} {last_name}'
+        for key in person.keys():
+            person[key] = person[key].encode('utf-8')
+        person_name = fmt_person_name.format(**person)
         return dict(
-            username=person['userid'],
-            name=person['contactname'],
-            email=person['contactemail'],
+            username=person['email'],
+            name=person_name,
+            email=person['email'],
         )
 
     def fetch_persons(self, registry):
