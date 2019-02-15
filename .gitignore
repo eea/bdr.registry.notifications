@@ -22,6 +22,7 @@ pip-selfcheck.json
 
 # IDE
 .idea/
+.vscode/
 
 .coverage
 .skip-loaddata
