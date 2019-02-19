@@ -39,21 +39,19 @@ class Command(BaseFetchCommand, BaseCommand):
 
     def parse_company_data(self, company):
         return dict(
-            external_id=company['id'],
+            external_id=company['company_id'],
             name=company['name'],
             vat=company['vat'],
             country=company['address']['country']['name'],
             group=self.get_group(company))
 
     def parse_person_data(self, person):
-        fmt_person_name = '{firstName} {lastName}'
-        for key in person.keys():
-            person[key] = person[key].encode('utf-8')
+        fmt_person_name = '{first_name} {last_name}'
         person_name = fmt_person_name.format(**person)
         return dict(
             username=person['username'],
             name=person_name,
-            email=person['emailAddress'],
+            email=person['email'],
         )
 
     def fetch_companies(self, registry):
@@ -63,7 +61,7 @@ class Command(BaseFetchCommand, BaseCommand):
             try:
                 company = self.create_company(
                     **self.parse_company_data(item))
-                username_list = [user["username"] for user in item["contactPersons"]]
+                username_list = [user["username"] for user in item["users"]]
                 persons = Person.objects.filter(username__in=username_list)
                 company.user.add(*persons)
                 company_count += 1

@@ -239,7 +239,7 @@ ECRREGISTRY_URL = env('ECR_REGISTRY_URL', '')
 ECR_COMPANY_PATH = env('ECR_COMPANY_PATH', '/undertaking/list')
 ECR_PERSON_PATH = env('ECR_PERSON_PATH', '/misc/user/export/json')
 ECRREGISTRY_TOKEN = env('ECR_REGISTRY_TOKEN', '')
-ECR_DOMAINS = env('ECR_DOMAINS', '')
+ECR_DOMAINS = env('ECR_DOMAINS', '').split(',')
 
 EMAIL_SENDER = env('EMAIL_SENDER', '')
 
