@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        REQFILE: requirements-dev.txt
+    volumes:
+    - appdata:/var/local/bdr.registry.notifications/static
+    - ./:/var/local/bdr.registry.notifications/
+    entrypoint: /usr/bin/tail
+    command:  -f /dev/null

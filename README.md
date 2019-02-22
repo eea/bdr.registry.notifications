@@ -9,8 +9,82 @@ BDR Registry Notifications
 WIP
 ---
 
+Docker orchestration
+--------------------
 
-Local development and deployment
+## 1. Prerequisites
+
+1. Install [Docker](https://www.docker.com/).
+
+2. Install [Docker Compose](https://docs.docker.com/compose/).
+
+## 3. Clone project
+
+    $ git clone https://github.com/eea/bdr.registry.notifications
+    $ cd bdr.registry.notifications/
+
+## 2. Set database environemnt
+
+    $ cp docker/init.sql.example docker/init.sql
+    $ vim docker/init.sql
+
+## 3. Set the other services:
+    $ cp docker/app.env.example docker/app.env
+    $ vim docker/app.env
+    $ cp docker/redis.env.example docker/redis.env 
+    $ vim redis.env.example
+
+## 4. Start stack:
+    $ cp docker-compose.override.yml.example docker-compose.override.yml
+    $ vim docker-compose.override.yml
+    $ docker-compose up -d
+
+## 5. Initial setup
+
+Step into app's container:
+
+    $ docker exec -it not.app bash
+
+Create initial database structure:
+
+    $ python manage.py migrate
+
+Load fixtures data into the database:
+
+    $ python manage.py loaddata notifications/fixtures/stages.json
+    $ python manage.py loaddata notifications/fixtures/companiesgroups.json
+    $ python manage.py loaddata notifications/fixtures/emailtemplates.json
+
+Create a super user to be able to use the app:
+
+    $ python manage.py createsuperuser
+
+Start as service:
+
+    $ ./docker-entrypoint.sh
+
+or in debug mode:
+
+    $ python manage.py runserver 0.0.0.0:$APP_HTTP_PORT
+
+## 6 Running tests
+
+Run tests:
+
+    $ python manage.py test --settings=bdr.testsettings
+
+Check coverage:
+
+    $ coverage run --source='.' ./manage.py test --settings=bdr.testsettings
+    $ coverage html -i
+
+
+# Production
+
+The configuration for production deployment is detailed in the BDR/BDR-TEST stack.
+
+
+Local development and deployment without Docker
 --------------------------------
 
 1. Create a virtual environment:
@@ -87,8 +161,18 @@ Testing
     $ python manage.py test --settings=bdr.testsettings
     ```
 
-Local development and deployment with Docker
---------------------------------------------
+## Copyright and license
 
-Please refer to [/deploy/bdr.registry.notifications.devel](https://github.com/eea/bdr.registry.notifications/tree/master/deploy/bdr.registry.notifications.devel)
+The Initial Owner of the Original Code is European Environment Agency (EEA).
+All Rights Reserved.
 
+The Original Code is free software;
+you can redistribute it and/or modify it under the terms of the GNU
+General Public License as published by the Free Software Foundation;
+either version 2 of the License, or (at your option) any later
+version.
+
+
+## Funding
+
+[European Environment Agency (EU)](http://eea.europa.eu)

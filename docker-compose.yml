@@ -1,7 +1,6 @@
 version: '2'
 
 services:
-
   postgres:
     image: postgres:9-alpine
     container_name: not.db
@@ -11,7 +10,7 @@ services:
       TZ: Europe/Copenhagen
     volumes:
     - data:/var/lib/postgresql/data
-    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   app:
     image: eeacms/bdr.registry.notifications:latest
@@ -21,14 +20,11 @@ services:
     depends_on:
     - postgres
     env_file:
-    - app.env
+    - docker/app.env
     environment:
       TZ: Europe/Copenhagen
     volumes:
     - appdata:/var/local/bdr.registry.notifications/static
-    - ../../:/var/local/bdr.registry.notifications/
-    entrypoint: /usr/bin/tail
-    command:  -f /dev/null
 
   async:
     image: eeacms/bdr.registry.notifications:latest
@@ -38,17 +34,18 @@ services:
     - redis
     - postfix
     env_file:
-    - app.env
-    - redis.env
+    - docker/app.env
+    - docker/redis.env
     environment:
       TZ: Europe/Copenhagen
     volumes:
-    - ../../:/var/local/bdr.registry.notifications/
+    - ./:/var/local/bdr.registry.notifications/
     command: ['qcluster']
 
 
   redis:
       image: redis:alpine
+      container_name: not.redis
 
   postfix:
     image: marcelesser/smtp-sink:latest
