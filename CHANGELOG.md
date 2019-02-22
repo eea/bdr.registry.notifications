@@ -1,5 +1,12 @@
 Changelog
 =========
+
+1.0.5 (2019-02-22)
+------------------
+* Fix fetching errors
+* Refactor docker-compose
+  [dianaboiangiu]
+
 1.0.2 (2019-01-16)
 ------------------
 * Upgrade gunicorn to 19.5.0
