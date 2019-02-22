@@ -16,8 +16,13 @@ if [ $DEBUG="True" ]; then
   pip install -r requirements-dev.txt
 fi
 
-python manage.py migrate &&
-python manage.py collectstatic --noinput
+if [ "x$DJANGO_MIGRATE" = 'xyes' ]; then
+  python manage.py migrate
+fi
+
+if [ "x$DJANGO_COLLECT_STATIC" = "xyes" ]; then
+  python manage.py collectstatic --noinput
+fi
 
 if [ ! -e .skip-loaddata ]; then
   touch .skip-loaddata
