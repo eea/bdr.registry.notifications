@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.0.7 (2019-02-22)
+-----------------
+* Set entrypoint variables
+
+1.0.6 (2019-02-22)
+------------------
+* Fix alpine sh
+  [dianaboiangiu]
+
 1.0.5 (2019-02-22)
 ------------------
 * Fix fetching errors
