@@ -1,9 +1,15 @@
 Changelog
 =========
 
+1.0.8 (2019-02-22)
+-----------------
+* Rewrite alpine entrypoint commands
+  [dianaboiangiu]
+
 1.0.7 (2019-02-22)
 -----------------
 * Set entrypoint variables
+  [dianaboiangiu]
 
 1.0.6 (2019-02-22)
 ------------------
