@@ -31,11 +31,13 @@ class Command(BaseFetchCommand, BaseCommand):
         self.group_ods = CompaniesGroup.objects.get(code=ODS_GROUP_CODE)
 
     def get_group(self, company):
-        if company['address']['country']['type'] == FGASES_EU:
+        if company['domain'] == 'ODS':
+            return self.group_ods
+        elif company['address']['country']['type'] == FGASES_EU:
             return self.group_eu
         elif company['address']['country']['type'] == FGASES_NONEU:
             return self.group_noneu
-        return self.group_ods
+
 
     def parse_company_data(self, company):
         return dict(

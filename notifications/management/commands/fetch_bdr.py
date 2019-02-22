@@ -38,14 +38,12 @@ class Command(BaseFetchCommand, BaseCommand):
         )
 
     def parse_person_data(self, person):
-        fmt_person_name = '{first_name} {last_name}'
         for key in person.keys():
-            person[key] = person[key].encode('utf-8')
-        person_name = fmt_person_name.format(**person)
+            person[key] = person[key]
         return dict(
-            username=person['email'],
-            name=person_name,
-            email=person['email'],
+            username=person['contactemail'],
+            name=person['contactname'],
+            email=person['contactemail'],
         )
 
     def fetch_persons(self, registry):
@@ -60,8 +58,8 @@ class Command(BaseFetchCommand, BaseCommand):
                     country=item['country'])
                 person.company.add(*companies)
             except IntegrityError as e:
-                logger.info('Skipped person: %s (%s)', person['username'], e)
-                errors.append((e, person['username']))
+                logger.info('Skipped person: %s (%s)', item['contactemail'], e)
+                errors.append((e, item['contactemail']))
         return person_count, errors
 
     def handle(self, *args, **options):

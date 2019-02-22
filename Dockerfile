@@ -1,12 +1,11 @@
-FROM python:3.6-slim
+FROM python:3.6-alpine
+
 MAINTAINER "EEA: IDM2 C-TEAM" <eea-edw-c-team-alerts@googlegroups.com>
 
 ENV WORK_DIR=/var/local/bdr.registry.notifications
 
-RUN runDeps="curl vim build-essential netcat" \
- && apt-get update \
- && apt-get install -y --no-install-recommends $runDeps \
- && rm -vrf /var/lib/apt/lists/*
+RUN apk add --no-cache --update gcc postgresql-dev \
+                                pcre-dev musl-dev
 
 RUN mkdir -p $WORK_DIR
 COPY . $WORK_DIR/
