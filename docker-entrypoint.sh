@@ -12,7 +12,7 @@ while ! nc -z $POSTGRES_ADDR 5432; do
   sleep 1s
 done
 
-if [ $DEBUG="True" ]; then
+if [ $DEBUG = "True" ]; then
   pip install -r requirements-dev.txt
 fi
 
@@ -41,6 +41,16 @@ exec gunicorn bdr.wsgi:application \
   --error-logfile -
 fi
 
-if [[ $COMMANDS == *"$1"* ]]; then
-  exec python manage.py qcluster
-fi
+case "$1" in
+    qcluster)
+        exec python manage.py qcluster
+        ;;
+    *)
+        exec gunicorn bdr.wsgi:application \
+          --name bdr_registry_notifications \
+          --bind 0.0.0.0:$APP_HTTP_PORT \
+          --workers 3 \
+          --access-logfile - \
+          --error-logfile -
+        ;;
+esac

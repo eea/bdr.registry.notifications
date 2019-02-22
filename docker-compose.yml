@@ -30,6 +30,7 @@ services:
     image: eeacms/bdr.registry.notifications:latest
     container_name: not.async
     depends_on:
+    - app
     - postgres
     - redis
     - postfix
