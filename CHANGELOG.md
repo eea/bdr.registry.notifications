@@ -1,5 +1,10 @@
 Changelog
 =========
+1.0.10(2019-02-25)
+-----------------
+* Add params to subject
+  [dianaboiangiu]
+
 1.0.9 (2019-02-25)
 -----------------
 * Fix email templates editing and creation
