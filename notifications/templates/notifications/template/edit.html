@@ -21,7 +21,16 @@
 <form action="" method="post">
   {% csrf_token %}
   {{ form.media }}
-  {{ form.as_p }}
+
+  {% for field in form %}
+    <div class="fieldWrapper">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+        {% if field.help_text %}
+          <p class="help">{{ field.help_text|safe }}</p>
+        {% endif %}
+    </div>
+  {% endfor %}
   <input type="submit" value="Save"/>
   <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
 </form>

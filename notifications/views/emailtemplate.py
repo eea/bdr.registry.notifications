@@ -10,7 +10,8 @@ from notifications.forms import (
     CycleEmailTemplateTestForm,
     CycleEmailTemplateTriggerForm,
     ResendEmailForm,
-    format_body
+    format_body,
+    format_subject
 )
 
 from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company, EmailTemplate, Stage, CompaniesGroup
@@ -163,12 +164,15 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
             COMPANY=company.name,
             CONTACT=context['person'].name,
             VAT=company.vat,
+            EXTERNAL_ID=company.external_id,
             # XXX: how will these be handled?
             USERID='randomid',
             PASSWORD='TODO',
         )
         body = template.body_html
         template.body_html = body.format(**params)
+        subject = template.subject
+        template.subject = subject.format(**params)
         context['template'] = template
 
         return context
@@ -221,6 +225,10 @@ class ResendEmailDetail(ResendEmailBase, generic.DetailView):
         )
         context['template'].body_html = format_body(
             context['template'].body_html,
+            context['person']
+        )
+        context['template'].subject = format_subject(
+            context['template'].subject,
             context['person']
         )
         cycle_notification = CycleNotification.objects.filter(

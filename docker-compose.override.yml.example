@@ -11,3 +11,9 @@ services:
     - ./:/var/local/bdr.registry.notifications/
     entrypoint: /usr/bin/tail
     command:  -f /dev/null
+
+  postfix:
+    image: eaudeweb/mailtrap:2.0
+    container_name: not.postfix
+    ports:
+    - 80:80

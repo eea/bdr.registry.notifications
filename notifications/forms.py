@@ -22,6 +22,7 @@ def format_body(body_html, person):
         REPVAT='',
         REPNAME='',
         REPCOUNTRY='',
+        EXTERNAL_ID=company.external_id,
         COUNTRY=company.country,
         COMPANY=company.name,
         CONTACT=person.name,
@@ -34,15 +35,32 @@ def format_body(body_html, person):
     email_body = body.format(**params)
     return email_body
 
+def format_subject(subject, person):
+    company = person.company.first()
+    params = dict(
+        REPVAT='',
+        REPNAME='',
+        REPCOUNTRY='',
+        EXTERNAL_ID=company.external_id,
+        COUNTRY=company.country,
+        COMPANY=company.name,
+        CONTACT=person.name,
+        VAT=company.vat,
+        # XXX: how will these be handled?
+        USERID='randomid',
+        PASSWORD='supersecure',
+    )
+    subject = subject.format(**params)
+    return subject
 
 def make_messages(persons, emailtemplate):
     emails = []
-    subject = emailtemplate.subject
     for person in persons:
+        subject = format_subject(emailtemplate.subject, person)
         email_body = format_body(emailtemplate.body_html, person)
         recipient_email = [person.email]
 
-        emails.append((recipient_email, email_body))
+        emails.append(( subject ,recipient_email, email_body))
 
         cycle_notification = CycleNotification.objects.filter(
             email=person.email,
@@ -68,8 +86,8 @@ def make_messages(persons, emailtemplate):
     return emails
 
 
-def send_emails(subject, sender, emails):
-    for recipient_email, email_body in emails:
+def send_emails(sender, emails):
+    for subject, recipient_email, email_body in emails:
         plain_html = strip_tags(email_body)
         send_mail(subject, plain_html, sender, recipient_email,
                   fail_silently=False, html_message=email_body)
@@ -79,8 +97,8 @@ def send_mail_sender(task):
     # TODO implement mail
     subject = ''
     sender = ''
-    email = [(EMAIL_SENDER, '')]
-    send_emails(subject, sender, email)
+    email = [(subject, EMAIL_SENDER, '')]
+    send_emails(sender, email)
 
 
 class CycleAddForm(forms.ModelForm):
@@ -121,13 +139,14 @@ class CycleEmailTemplateTestForm(forms.Form):
         email = [self.data['email'].strip()]
         values = {}
         for param in emailtemplate.get_parameters():
-            values[param] = self.data[param.lower()]
+            values[param] = self.data.get(param.lower(), None)
 
         body_html = body_html.format(**values)
+        subject = subject.format(**values)
         if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-            send_emails(subject, EMAIL_SENDER, [(email, body_html)])
+            send_emails(EMAIL_SENDER, [(subject, email, body_html)])
         else:
-            async(send_emails, *(subject, EMAIL_SENDER, [(email, body_html)]),
+            async(send_emails, *(EMAIL_SENDER, [(subject, email, body_html)]),
                   hook='notifications.forms.send_mail_sender')
 
 
@@ -141,9 +160,9 @@ class CycleEmailTemplateTriggerForm(forms.Form):
             sender = EMAIL_SENDER
             emails_to_send = make_messages(recipients, emailtemplate)
             if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-                send_emails(subject, sender, emails_to_send)
+                send_emails(sender, emails_to_send)
             else:
-                async(send_emails, *(subject, sender, emails_to_send),
+                async(send_emails, *(sender, emails_to_send),
                       hook='notifications.forms.send_mail_sender')
 
 
@@ -154,4 +173,4 @@ class ResendEmailForm(forms.Form):
             subject = emailtemplate.subject
             sender = EMAIL_SENDER
             email = make_messages([person], emailtemplate)
-            send_emails(subject, sender, email)
+            send_emails(sender, email)

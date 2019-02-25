@@ -26,3 +26,9 @@ pip-selfcheck.json
 
 .coverage
 .skip-loaddata
+
+# Docker
+docker-compose.override.yml
+docker/app.env
+docker/init.sql
+docker/redis.env

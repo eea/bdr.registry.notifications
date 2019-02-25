@@ -32,3 +32,5 @@ input[type='submit'] {background-color:#3065a6;border:1px solid #3065a6;color:#f
 input.my-input {margin-left:57px; width:300px}
 
 a.iter {margin:0 5px;}
+
+form input[name='subject'] { height:30px; width:100%; }

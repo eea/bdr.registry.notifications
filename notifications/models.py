@@ -227,8 +227,9 @@ class CycleEmailTemplate(models.Model):
         return self.history.first()
 
     def get_parameters(self):
-        return extract_parameters(self.body_html)
-
+        body_params = extract_parameters(self.body_html)
+        subject_params = extract_parameters(self.subject)
+        return body_params + subject_params
 
 class CycleNotification(models.Model):
     """ Base class for each sent email.
