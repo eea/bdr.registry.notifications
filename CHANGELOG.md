@@ -1,5 +1,9 @@
 Changelog
 =========
+1.0.9 (2019-02-25)
+-----------------
+* Fix email templates editing and creation
+  [dianaboiangiu]
 
 1.0.8 (2019-02-22)
 -----------------
