@@ -59,12 +59,18 @@ class BaseFetchCommand:
         """
         name = kwargs['name']
         username = kwargs['username']
-
-        person, created = Person.objects.update_or_create(
-            username=username,
-            defaults=kwargs
-        )
-
+        email = kwargs['email']
+        if Person.objects.filter(email=email).exists:
+            person, created = Person.objects.update_or_create(
+                email=email,
+                defaults=kwargs
+            )
+        else:
+            person, created = Person.objects.update_or_create(
+                username=username,
+                email=email,
+                defaults=kwargs
+            )
         if created:
             logger.info('Fetched person %s (%s)', name, username)
         else:
