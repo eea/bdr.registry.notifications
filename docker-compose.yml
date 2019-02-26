@@ -23,6 +23,7 @@ services:
     - docker/app.env
     environment:
       TZ: Europe/Copenhagen
+      UWSGI_PORT: 12301
     volumes:
     - appdata:/var/local/bdr.registry.notifications/static
 

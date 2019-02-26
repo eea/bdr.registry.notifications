@@ -37,12 +37,6 @@ case "$1" in
         exec python manage.py qcluster
         ;;
     *)
-        exec gunicorn bdr.wsgi:application \
-          --name bdr_registry_notifications \
-          --bind 0.0.0.0:$APP_HTTP_PORT \
-          --workers 3 \
-          --timeout 120 \
-          --access-logfile - \
-          --error-logfile -
+        uwsgi uwsgi.ini
         ;;
 esac

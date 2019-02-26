@@ -4,7 +4,7 @@ MAINTAINER "EEA: IDM2 C-TEAM" <eea-edw-c-team-alerts@googlegroups.com>
 
 ENV WORK_DIR=/var/local/bdr.registry.notifications
 
-RUN apk add --no-cache --update gcc postgresql-dev \
+RUN apk add --no-cache --update gcc linux-headers postgresql-dev \
                                 pcre-dev musl-dev
 
 RUN mkdir -p $WORK_DIR
