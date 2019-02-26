@@ -32,15 +32,6 @@ if [ ! -e .skip-loaddata ]; then
   python manage.py loaddata notifications/fixtures/emailtemplates.json
 fi
 
-if [ -z "$1" ]; then
-exec gunicorn bdr.wsgi:application \
-  --name bdr_registry_notifications \
-  --bind 0.0.0.0:$APP_HTTP_PORT \
-  --workers 3 \
-  --access-logfile - \
-  --error-logfile -
-fi
-
 case "$1" in
     qcluster)
         exec python manage.py qcluster
@@ -50,6 +41,7 @@ case "$1" in
           --name bdr_registry_notifications \
           --bind 0.0.0.0:$APP_HTTP_PORT \
           --workers 3 \
+          --timeout 120 \
           --access-logfile - \
           --error-logfile -
         ;;
