@@ -86,19 +86,28 @@ def make_messages(persons, emailtemplate):
     return emails
 
 
-def send_emails(sender, emails):
-    for subject, recipient_email, email_body in emails:
-        plain_html = strip_tags(email_body)
-        send_mail(subject, plain_html, sender, recipient_email,
-                  fail_silently=False, html_message=email_body)
+def send_emails(sender, emailtemplate, person=None):
+    with transaction.atomic() as atomic:
+        if person:
+            subject = emailtemplate.subject
+            sender = EMAIL_SENDER
+            emails = make_messages([person], emailtemplate)
+        else:
+            recipients = Person.objects.filter(
+                company__group=emailtemplate.group)
+            subject = emailtemplate.subject
+            sender = EMAIL_SENDER
+            emails = make_messages(recipients, emailtemplate)
+
+        for subject, recipient_email, email_body in emails:
+            plain_html = strip_tags(email_body)
+            send_mail(subject, plain_html, sender, recipient_email,
+                      fail_silently=False, html_message=email_body)
 
 
 def send_mail_sender(task):
     # TODO implement mail
-    subject = ''
-    sender = ''
-    email = [(subject, EMAIL_SENDER, '')]
-    send_emails(sender, email)
+    print("Done")
 
 
 class CycleAddForm(forms.ModelForm):
@@ -131,7 +140,7 @@ class CycleEmailTemplateTestForm(forms.Form):
 
     email = forms.CharField(validators=[validate_email])
 
-    def send_email(self, emailtemplate):
+    def send_emails(self, sender, emailtemplate):
         # send email using the self.cleaned_data dictionary
         subject = emailtemplate.subject
         body_html = emailtemplate.body_html
@@ -143,34 +152,31 @@ class CycleEmailTemplateTestForm(forms.Form):
 
         body_html = body_html.format(**values)
         subject = subject.format(**values)
+
+        for subject, recipient_email, email_body in [(subject, email, body_html)]:
+            plain_html = strip_tags(email_body)
+            send_mail(subject, plain_html, sender, recipient_email,
+                      fail_silently=False, html_message=email_body)
+
+    def send_email(self, emailtemplate):
         if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-            send_emails(EMAIL_SENDER, [(subject, email, body_html)])
+            self.send_emails(EMAIL_SENDER, emailtemplate)
         else:
-            async(send_emails, *(EMAIL_SENDER, [(subject, email, body_html)]),
+            async(self.send_emails, *(EMAIL_SENDER, emailtemplate),
                   hook='notifications.forms.send_mail_sender')
 
 
 class CycleEmailTemplateTriggerForm(forms.Form):
 
     def send_emails(self, emailtemplate):
-        with transaction.atomic() as atomic:
-            recipients = Person.objects.filter(
-                company__group=emailtemplate.group)
-            subject = emailtemplate.subject
-            sender = EMAIL_SENDER
-            emails_to_send = make_messages(recipients, emailtemplate)
-            if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-                send_emails(sender, emails_to_send)
-            else:
-                async(send_emails, *(sender, emails_to_send),
-                      hook='notifications.forms.send_mail_sender')
+        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+            send_emails(EMAIL_SENDER, emailtemplate)
+        else:
+            async(send_emails, *(EMAIL_SENDER, emailtemplate),
+                  hook='notifications.forms.send_mail_sender')
 
 
 class ResendEmailForm(forms.Form):
 
     def send_email(self, emailtemplate, person):
-        with transaction.atomic() as atomic:
-            subject = emailtemplate.subject
-            sender = EMAIL_SENDER
-            email = make_messages([person], emailtemplate)
-            send_emails(sender, email)
+        send_emails(sender, emailtemplate, person)
