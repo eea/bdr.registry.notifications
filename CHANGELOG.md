@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.1 (2019-02-26)
+-----------------
+* Optimize async
+  [dianaboiangiu]
+
 1.1.0 (2019-02-26)
 ------------------
 * Switch from gunicorn to uwsgi
