@@ -1,11 +1,17 @@
 Changelog
 =========
+
+1.1.0 (2019-02-26)
+------------------
+* Switch from gunicorn to uwsgi
+  [dianaboiangiu]
+
 1.0.11(2019-02-26)
 -----------------
 * Add timeout to gunicorn
   [dianaboiangiu]
 
-1.0.10(2019-02-25)
+1.0.10 (2019-02-25)
 -----------------
 * Add params to subject
   [dianaboiangiu]
