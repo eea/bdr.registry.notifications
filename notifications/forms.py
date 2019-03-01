@@ -10,91 +10,86 @@ from django.utils.html import strip_tags
 from django_q.tasks import async, result
 
 from bdr.settings import EMAIL_SENDER
-from .models import Cycle, CycleEmailTemplate, Person, CycleNotification
+from notifications import ACCEPTED_PARAMS
+from .models import (
+    Company,
+    Cycle,
+    CycleEmailTemplate,
+    CycleNotification,
+    Person
+)
 
+def set_values_for_parameters(person, company):
+    params = {}
+    for param, value in ACCEPTED_PARAMS.items():
+        if value:
+            params[param] = eval(value)
+        else:
+            params[param] = value
+    return params
 
-def format_body(body_html, person):
-    company = person.company.first()
-    """
-      Modify company model to record their repxx fields.
-    """
-    params = dict(
-        REPVAT='',
-        REPNAME='',
-        REPCOUNTRY='',
-        EXTERNAL_ID=company.external_id,
-        COUNTRY=company.country,
-        COMPANY=company.name,
-        CONTACT=person.name,
-        VAT=company.vat,
-        # XXX: how will these be handled?
-        USERID='randomid',
-        PASSWORD='supersecure',
-    )
-    body = body_html
-    email_body = body.format(**params)
+def format_body(body_html, person, company):
+    params = set_values_for_parameters(person, company)
+    email_body = body_html.format(**params)
     return email_body
 
-def format_subject(subject, person):
-    company = person.company.first()
-    params = dict(
-        REPVAT='',
-        REPNAME='',
-        REPCOUNTRY='',
-        EXTERNAL_ID=company.external_id,
-        COUNTRY=company.country,
-        COMPANY=company.name,
-        CONTACT=person.name,
-        VAT=company.vat,
-        # XXX: how will these be handled?
-        USERID='randomid',
-        PASSWORD='supersecure',
-    )
+def format_subject(subject, person, company):
+    params = set_values_for_parameters(person, company)
     subject = subject.format(**params)
     return subject
 
 def make_messages(persons, emailtemplate):
     emails = []
     for person in persons:
-        subject = format_subject(emailtemplate.subject, person)
-        email_body = format_body(emailtemplate.body_html, person)
-        recipient_email = [person.email]
+        companies =  person.company.filter(group=emailtemplate.group)
+        for company in companies:
+            subject = format_subject(emailtemplate.subject, person, company)
+            email_body = format_body(emailtemplate.body_html, person, company)
+            recipient_email = [person.email]
 
-        emails.append(( subject ,recipient_email, email_body))
+            emails.append(( subject ,recipient_email, email_body))
 
-        cycle_notification = CycleNotification.objects.filter(
-            email=person.email,
-            emailtemplate=emailtemplate
-        ).first()
+            cycle_notification = CycleNotification.objects.filter(
+                email=person.email,
+                emailtemplate=emailtemplate
+            ).first()
 
-        counter = 1
-        if cycle_notification:
-            counter = cycle_notification.counter + 1
-            cycle_notification.delete()
+            counter = 1
+            if cycle_notification:
+                counter = cycle_notification.counter + 1
+                cycle_notification.delete()
 
-        # store sent email
-        CycleNotification.objects.create(
-            subject=subject,
-            email=person.email,
-            body_html=email_body,
-            emailtemplate=emailtemplate,
-            counter=counter
-        )
+            # store sent email
+            CycleNotification.objects.create(
+                subject=subject,
+                email=person.email,
+                body_html=email_body,
+                emailtemplate=emailtemplate,
+                counter=counter
+            )
 
-    emailtemplate.is_triggered = True
-    emailtemplate.save()
+            emailtemplate.is_triggered = True
+            emailtemplate.save()
     return emails
 
 
-def send_emails(sender, emailtemplate, person=None):
+def send_emails(sender, emailtemplate, person=None, is_test=False, data=None):
     with transaction.atomic() as atomic:
         if person:
             subject = emailtemplate.subject
             sender = EMAIL_SENDER
             emails = make_messages([person], emailtemplate)
+        elif is_test:
+            company = Company.objects.filter(name=data.get('company')).first()
+            person = Person.objects.filter(name=data.get('contact')).first()
+            values = set_values_for_parameters(person, company)
+            email = [data['email'].strip()]
+            body_html = emailtemplate.body_html.format(**values)
+            subject = emailtemplate.subject.format(**values)
+            emails = [(subject, email, body_html)]
         else:
             recipients = Person.objects.filter(
-                company__group=emailtemplate.group)
+                company__group=emailtemplate.group).distinct()
             subject = emailtemplate.subject
             sender = EMAIL_SENDER
             emails = make_messages(recipients, emailtemplate)
@@ -140,29 +135,11 @@ class CycleEmailTemplateTestForm(forms.Form):
 
     email = forms.CharField(validators=[validate_email])
 
-    def send_emails(self, sender, emailtemplate):
-        # send email using the self.cleaned_data dictionary
-        subject = emailtemplate.subject
-        body_html = emailtemplate.body_html
-
-        email = [self.data['email'].strip()]
-        values = {}
-        for param in emailtemplate.get_parameters():
-            values[param] = self.data.get(param.lower(), None)
-
-        body_html = body_html.format(**values)
-        subject = subject.format(**values)
-
-        for subject, recipient_email, email_body in [(subject, email, body_html)]:
-            plain_html = strip_tags(email_body)
-            send_mail(subject, plain_html, sender, recipient_email,
-                      fail_silently=False, html_message=email_body)
-
     def send_email(self, emailtemplate):
         if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
-            self.send_emails(EMAIL_SENDER, emailtemplate)
+            send_emails(EMAIL_SENDER, emailtemplate, is_test=True, data=self.data)
         else:
-            async(self.send_emails, *(EMAIL_SENDER, emailtemplate),
+            async(send_emails, *(EMAIL_SENDER, emailtemplate,None, True, self.data),
                   hook='notifications.forms.send_mail_sender')
 
 

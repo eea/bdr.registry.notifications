@@ -11,10 +11,19 @@ from notifications.forms import (
     CycleEmailTemplateTriggerForm,
     ResendEmailForm,
     format_body,
-    format_subject
+    format_subject,
+    set_values_for_parameters
 )
 
-from notifications.models import CycleEmailTemplate, CycleNotification, Person, Company, EmailTemplate, Stage, CompaniesGroup
+from notifications.models import (
+    CycleEmailTemplate,
+    CycleNotification,
+    Company,
+    CompaniesGroup,
+    EmailTemplate,
+    Person,
+    Stage
+)
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
@@ -146,40 +155,41 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTest, self).get_context_data(**kwargs)
         template = self.get_object()
-        company = (
-            Company.objects
-            .filter(group=template.group)
-            .order_by('?').first()
-        )
+        company = self.request.GET.get('company_name')
+        person = self.request.GET.get('person_name')
+        if company and person:
+            company = Company.objects.filter(name=company).first()
+            person = Person.objects.filter(name=person).first()
+            context['sent'] = True
+        else:
+            company = (
+                Company.objects
+                .filter(group=template.group)
+                .order_by('?').first()
+            )
+            person = company.user.order_by('?').first()
         context['company'] = company
-        context['person'] = company.user.order_by('?').first()
-        context['params'] = template.get_parameters()
+        context['person'] = person
+
 
         # TODO Create a function that takes param values, body_html and returns the formatted text
-        params = dict(
-            REPVAT='',
-            REPNAME='',
-            REPCOUNTRY='',
-            COUNTRY=company.country,
-            COMPANY=company.name,
-            CONTACT=context['person'].name,
-            VAT=company.vat,
-            EXTERNAL_ID=company.external_id,
-            # XXX: how will these be handled?
-            USERID='randomid',
-            PASSWORD='TODO',
-        )
+        params = set_values_for_parameters(person, company)
         body = template.body_html
         template.body_html = body.format(**params)
         subject = template.subject
         template.subject = subject.format(**params)
+        context['params'] = params
         context['template'] = template
 
         return context
 
     def get_success_url(self):
+        query_args =  "?company_name={company}&person_name={person}".format(
+                company=self.request.POST['company'],
+                person=self.request.POST['contact']
+        )
         return reverse('notifications:template:test',
-                       args=[self.object.pk])
+                       args=[self.object.pk]) + query_args
 
     def breadcrumbs(self):
         self.object = self.get_object()
@@ -225,11 +235,13 @@ class ResendEmailDetail(ResendEmailBase, generic.DetailView):
         )
         context['template'].body_html = format_body(
             context['template'].body_html,
-            context['person']
+            context['person'],
+            self.get_company()
         )
         context['template'].subject = format_subject(
             context['template'].subject,
-            context['person']
+            context['person'],
+            self.get_company()
         )
         cycle_notification = CycleNotification.objects.filter(
             email=context['person'].email,
