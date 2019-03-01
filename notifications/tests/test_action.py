@@ -64,7 +64,7 @@ class BDRActionTest(BaseTest):
         # Check relation
         for person_data in persons_data:
             person = models.Person.objects.get(
-                username=person_data['userid'],
+                username=person_data['contactemail'],
                 name=person_data['contactname'],
                 email=person_data['contactemail']
             )

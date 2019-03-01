@@ -156,4 +156,4 @@ class CycleEmailTemplateTriggerForm(forms.Form):
 class ResendEmailForm(forms.Form):
 
     def send_email(self, emailtemplate, person):
-        send_emails(sender, emailtemplate, person)
+        send_emails(EMAIL_SENDER, emailtemplate, person)
