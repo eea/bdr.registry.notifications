@@ -10,9 +10,8 @@ from .models import (Stage, CompaniesGroup, Company, Person, EmailTemplate,
 
 
 class StageAdmin(admin.ModelAdmin):
-    list_display = ('title', 'code', 'can_edit', 'can_trigger')
-    prepopulated_fields = {'code': ('title',)}
-    ordering = ('id',)
+    list_display = ('cycle', 'title')
+    ordering = ('cycle',)
 
 
 class CompaniesGroupAdmin(admin.ModelAdmin):
@@ -52,7 +51,7 @@ class EmailTemplateAdmin(admin.ModelAdmin):
 
 class CycleAdmin(admin_simple_history.SimpleHistoryAdmin):
     exclude = ('year',)
-    list_display = ('year', 'stage', 'closing_date')
+    list_display = ('year', 'closing_date')
     ordering = ('-year',)
 
     def save_model(self, request, obj, form, change):
@@ -65,16 +64,14 @@ class CycleAdmin(admin_simple_history.SimpleHistoryAdmin):
 
 
 class CycleEmailTemplateAdmin(admin_simple_history.SimpleHistoryAdmin):
-    list_display = ('cycle', 'group', 'stage', 'is_triggered')
-    list_filter = ('cycle', 'emailtemplate__group', 'emailtemplate__stage')
-    ordering = ('cycle', 'emailtemplate__stage',)
+    list_display = ('stage', 'is_triggered')
+    list_filter = ()
+    ordering = ()
 
 
 class CycleNotificationAdmin(admin.ModelAdmin):
     list_display = ('cycle', 'group', 'stage', 'email', 'sent_date')
-    list_filter = ('emailtemplate__cycle',
-                   'emailtemplate__emailtemplate__group',
-                   'emailtemplate__emailtemplate__stage')
+    list_filter = ()
 
     readonly_fields = []
 

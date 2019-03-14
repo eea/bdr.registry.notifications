@@ -17,7 +17,6 @@
 	<thead>
 		<tr>
 			<th>Year</th>
-			<th>Stage</th>
 			<th>Closing date</th>
 			<th>Actions</th>
 		</tr>
@@ -26,7 +25,6 @@
 		{% for item in items %}
 			<tr>
 				<td>{{ item }}</td>
-				<td>{{ item.stage }}</td>
 				<td>{{ item.closing_date }}</td>
 				<td class="actions">
 					<a href="{% url 'notifications:cycle:view' item.id %}">View</a>

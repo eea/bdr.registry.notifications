@@ -1,0 +1,17 @@
+{% extends layout_template %}
+
+{% block head_title %}Add - Stage{% endblock %}
+
+{% block content %}
+
+<h1>Add - Stage</h1>
+
+<p>Add a new stage</p>
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Add" />
+</form>
+
+{% endblock %}

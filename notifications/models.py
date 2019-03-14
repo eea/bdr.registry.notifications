@@ -17,28 +17,28 @@ STAGE_CLOSED = 6
 
 
 class Stage(models.Model):
-    """ Base class for workflow's stages:
-        1 - INITIATED
-        2 - INVITATIONS
-        3 - REMINDER (one week before)
-        4 - DEADLINE
-        5 - AFTER (one week after)
-        6 - CLOSED
-    """
+    """A stage cycle."""
     title = models.CharField(max_length=64)
-    code = models.SlugField(max_length=64, unique=True)
-    can_edit = models.BooleanField(default=False)
-    can_trigger = models.BooleanField(default=False)
+    cycle = models.ForeignKey('Cycle', on_delete=models.CASCADE, related_name="stages")
+
+    class Meta:
+        unique_together = ('title', 'cycle')
+
+    def create_stage_templates(self):
+        for group in CompaniesGroup.objects.all():
+            cycle_template = CycleEmailTemplate(
+                stage=self,
+                group=group,
+                subject="",
+                body_html=""
+            )
+            cycle_template.save()
 
     def __str__(self):
         return self.title
 
     def __unicode__(self):
         return self.title
-
-    @staticmethod
-    def get_main_stages():
-        return ['invitations', 'reminder', 'deadline', 'after']
 
 
 class CompaniesGroup(models.Model):
@@ -120,8 +120,7 @@ class EmailTemplate(models.Model):
     subject = models.CharField(max_length=256)
     body_html = RichTextField(verbose_name='Body')
     group = models.ForeignKey(CompaniesGroup)
-    stage = models.ForeignKey(Stage, default=STAGE_INITIATED,
-                              limit_choices_to=Q(can_trigger=True))
+    stage = models.ForeignKey(Stage)
 
     def __str__(self):
         return '{} for {}'.format(self.stage, self.group)
@@ -140,7 +139,6 @@ class Cycle(models.Model):
     year = models.PositiveSmallIntegerField(unique=True,
                                             default=timezone.now().year)
     closing_date = models.DateField()
-    stage = models.ForeignKey(Stage, default=STAGE_INITIATED)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -159,22 +157,6 @@ class Cycle(models.Model):
 
     def last_action(self):
         return self.history.first()
-
-    def create_cycle_templates(self):
-        year = self.year
-        closing_date = self.closing_date.strftime('%d %B %Y')
-        for template in EmailTemplate.objects.all():
-            cycle_template = CycleEmailTemplate(
-                cycle=self,
-                emailtemplate=template,
-                subject=(template
-                         .subject
-                         .format(year=year, closing_date=closing_date)),
-                body_html=(template
-                           .body_html
-                           .format(year=year, closing_date=closing_date)),
-            )
-            cycle_template.save()
 
     @classmethod
     def can_initiate_new_cycle(cls):
@@ -196,32 +178,18 @@ class CycleEmailTemplate(models.Model):
 
     subject = models.CharField(max_length=256)
     body_html = RichTextField(verbose_name='Body')
-    cycle = models.ForeignKey(Cycle)
-    emailtemplate = models.ForeignKey(EmailTemplate)
+    stage = models.ForeignKey(Stage, on_delete=models.CASCADE,
+                              related_name="templates")
+    group = models.ForeignKey(CompaniesGroup, on_delete=models.CASCADE,
+                              related_name="templates")
     is_triggered = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     def __str__(self):
-        return '{}'.format(self.emailtemplate)
+        return '{} {} {}'.format(self.stage.cycle, self.stage, self.group)
 
     def __unicode__(self):
-        return '{}'.format(self.emailtemplate)
-
-    @property
-    def stage(self):
-        return self.emailtemplate.stage
-
-    @property
-    def group(self):
-        return self.emailtemplate.group
-
-    @property
-    def can_edit(self):
-        return self.cycle.can_edit
-
-    @property
-    def can_trigger(self):
-        return self.cycle.can_trigger
+        return '{} {} {}'.format(self.stage.cycle, self.stage, self.group)
 
     def last_action(self):
         return self.history.first()

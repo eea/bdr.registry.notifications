@@ -28,7 +28,7 @@ class DashboardView(NotificationsBaseView, generic.ListView):
     context_object_name = 'items'
 
     def get_queryset(self):
-        return Cycle.objects.order_by('-year').prefetch_related('stage')
+        return Cycle.objects.order_by('-year').prefetch_related('stages')
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)

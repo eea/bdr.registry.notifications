@@ -12,13 +12,15 @@ from django_q.tasks import async, result
 
 from bdr.settings import EMAIL_SENDER
 from notifications import ACCEPTED_PARAMS
+from notifications.models import Stage
 from .models import (
     Company,
     Cycle,
     CycleEmailTemplate,
     CycleNotification,
-    Person
+    Person,
 )
+
 
 def set_values_for_parameters(person, company):
     params = {}
@@ -29,26 +31,29 @@ def set_values_for_parameters(person, company):
             params[param] = value
     return params
 
+
 def format_body(body_html, person, company):
     params = set_values_for_parameters(person, company)
     email_body = body_html.format(**params)
     return email_body
+
 
 def format_subject(subject, person, company):
     params = set_values_for_parameters(person, company)
     subject = subject.format(**params)
     return subject
 
+
 def make_messages(persons, emailtemplate):
     emails = []
     for person in persons:
-        companies =  person.company.filter(group=emailtemplate.group)
+        companies = person.company.filter(group=emailtemplate.group)
         for company in companies:
             subject = format_subject(emailtemplate.subject, person, company)
             email_body = format_body(emailtemplate.body_html, person, company)
             recipient_email = [person.email]
 
-            emails.append(( subject ,recipient_email, email_body))
+            emails.append((subject, recipient_email, email_body))
 
             cycle_notification = CycleNotification.objects.filter(
                 email=person.email,
@@ -107,25 +112,32 @@ def send_mail_sender(task):
 
 
 class CycleAddForm(forms.ModelForm):
-
     class Meta:
         model = Cycle
         fields = ['year', 'closing_date']
-        exclude = ('id', 'stage')
+        exclude = ('id',)
+
+
+class StageAddForm(forms.ModelForm):
+    class Meta:
+        model = Stage
+        fields = ['cycle', 'title']
+        exclude = ('id', 'code')
 
     def save(self, commit=True, *args, **kwargs):
-        """ When a new reporting cycle is created, all the necessary
-            email templates are autmatically created.
+        """When a new stage is added to a cycle create a template
+        for each group.
         """
-        instance = super(CycleAddForm, self).save(commit=False, *args, **kwargs)
+        kwargs['commit'] = False
+        instance = super().save(*args, **kwargs)
         if commit:
             instance.save()
-            instance.create_cycle_templates()
+            instance.create_stage_templates()
         return instance
 
 
-class CycleEmailTemplateEditForm(forms.ModelForm):
 
+class CycleEmailTemplateEditForm(forms.ModelForm):
     class Meta:
         model = CycleEmailTemplate
         fields = ['subject', 'body_html']
@@ -133,14 +145,13 @@ class CycleEmailTemplateEditForm(forms.ModelForm):
 
 
 class CycleEmailTemplateTestForm(forms.Form):
-
     email = forms.CharField(validators=[validate_email])
 
     def send_email(self, emailtemplate):
         if not settings.ASYNC_EMAILS:  # TESTING
             send_emails(EMAIL_SENDER, emailtemplate, is_test=True, data=self.data)
         else:
-            async(send_emails, *(EMAIL_SENDER, emailtemplate,None, True, self.data),
+            async(send_emails, *(EMAIL_SENDER, emailtemplate, None, True, self.data),
                   hook='notifications.forms.send_mail_sender')
 
 
