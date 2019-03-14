@@ -6,6 +6,8 @@ from django.conf import settings
 from django.core.validators import validate_email
 from django.core.mail import send_mail
 from django.db import transaction
+from django.forms import CharField
+from django.forms import ModelChoiceField
 from django.utils.html import strip_tags
 
 from django_q.tasks import async, result
@@ -118,11 +120,20 @@ class CycleAddForm(forms.ModelForm):
         exclude = ('id',)
 
 
+class CustomModelChoiceField(ModelChoiceField):
+    """Workaround for https://code.djangoproject.com/ticket/30014"""
+    def to_python(self, value):
+        if isinstance(value, self.queryset.model):
+            value = getattr(value, self.to_field_name or 'pk')
+        return super().to_python(value)
+
+
 class StageAddForm(forms.ModelForm):
+    cycle = CustomModelChoiceField(Cycle.objects.all(), disabled=True)
+
     class Meta:
         model = Stage
         fields = ['cycle', 'title']
-        exclude = ('id', 'code')
 
     def save(self, commit=True, *args, **kwargs):
         """When a new stage is added to a cycle create a template
@@ -134,7 +145,6 @@ class StageAddForm(forms.ModelForm):
             instance.save()
             instance.create_stage_templates()
         return instance
-
 
 
 class CycleEmailTemplateEditForm(forms.ModelForm):

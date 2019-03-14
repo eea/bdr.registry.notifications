@@ -223,7 +223,7 @@ class CycleNotification(models.Model):
 
     @property
     def cycle(self):
-        return self.emailtemplate.cycle
+        return self.emailtemplate.stage.cycle
 
     @property
     def stage(self):
