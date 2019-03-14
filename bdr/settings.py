@@ -29,7 +29,8 @@ SECRET_KEY = env('SECRET_KEY', 'secret')
 DEBUG = env('DEBUG', False)
 
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', ['localhost', '127.0.0.1'])
-
+ASYNC_EMAILS = True
+ALLOW_EDITING_COMPANIES = False
 
 # Application definition
 

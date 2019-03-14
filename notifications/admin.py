@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib import admin
 from simple_history import admin as admin_simple_history
 
@@ -25,10 +26,10 @@ class CompanyAdmin(admin.ModelAdmin):
     search_fields = ('id', 'external_id', 'name', 'vat', 'country')
 
     def has_add_permission(self, request):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -37,10 +38,10 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = ('username', 'name', 'email', 'company__name')
 
     def has_add_permission(self, request):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
 
 class EmailTemplateAdmin(admin.ModelAdmin):

@@ -231,6 +231,7 @@ class CycleEmailTemplate(models.Model):
         subject_params = extract_parameters(self.subject)
         return list(set(body_params).union(set(subject_params)))
 
+
 class CycleNotification(models.Model):
     """ Base class for each sent email.
     """

@@ -2,6 +2,7 @@ import sys
 import time
 
 from django import forms
+from django.conf import settings
 from django.core.validators import validate_email
 from django.core.mail import send_mail
 from django.db import transaction
@@ -136,7 +137,7 @@ class CycleEmailTemplateTestForm(forms.Form):
     email = forms.CharField(validators=[validate_email])
 
     def send_email(self, emailtemplate):
-        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+        if not settings.ASYNC_EMAILS:  # TESTING
             send_emails(EMAIL_SENDER, emailtemplate, is_test=True, data=self.data)
         else:
             async(send_emails, *(EMAIL_SENDER, emailtemplate,None, True, self.data),
@@ -146,7 +147,7 @@ class CycleEmailTemplateTestForm(forms.Form):
 class CycleEmailTemplateTriggerForm(forms.Form):
 
     def send_emails(self, emailtemplate):
-        if len(sys.argv) > 1 and sys.argv[1] == 'test':  # TESTING
+        if not settings.ASYNC_EMAILS:  # TESTING
             send_emails(EMAIL_SENDER, emailtemplate)
         else:
             async(send_emails, *(EMAIL_SENDER, emailtemplate),
