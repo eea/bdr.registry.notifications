@@ -35,8 +35,8 @@ class CycleEmailTemplateBase(NotificationsBaseView):
         breadcrumbs.extend([
             Breadcrumb(
                 reverse('notifications:cycle:view',
-                        kwargs={'pk': self.object.cycle.pk}),
-                'Reporting cycle for year {}'.format(self.object.cycle)),
+                        kwargs={'pk': self.object.stage.cycle.pk}),
+                'Reporting cycle for year {}'.format(self.object.stage.cycle)),
             Breadcrumb(
                 reverse('notifications:template:view',
                         kwargs={'pk': self.object.pk}),
