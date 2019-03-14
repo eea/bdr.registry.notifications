@@ -8,6 +8,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from simple_history.models import HistoricalRecords
 
+from notifications import ACCEPTED_PARAMS
 from .managers import GetOrNoneManager
 from .toolz import extract_parameters
 
@@ -195,9 +196,7 @@ class CycleEmailTemplate(models.Model):
         return self.history.first()
 
     def get_parameters(self):
-        body_params = extract_parameters(self.body_html)
-        subject_params = extract_parameters(self.subject)
-        return list(set(body_params).union(set(subject_params)))
+        return ACCEPTED_PARAMS
 
 
 class CycleNotification(models.Model):
