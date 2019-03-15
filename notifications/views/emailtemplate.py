@@ -124,7 +124,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
 
         context["companies_filtered"] = False
         if company_ids is not None:
-            found_companies = set(companies.values_list("external_id"))
+            found_companies = set(map(lambda x: x[0], companies.values_list("external_id")))
             not_found = list(set(company_ids).difference(found_companies))
             context["companies_filtered"] = True
             context["not_found_companies"] = not_found
