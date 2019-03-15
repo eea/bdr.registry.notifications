@@ -81,12 +81,12 @@ def make_messages(persons, emailtemplate):
     return emails
 
 
-def send_emails(sender, emailtemplate, person=None, is_test=False, data=None):
+def send_emails(sender, emailtemplate, people=None, is_test=False, data=None):
     with transaction.atomic() as atomic:
-        if person:
+        if people:
             subject = emailtemplate.subject
             sender = EMAIL_SENDER
-            emails = make_messages([person], emailtemplate)
+            emails = make_messages(people, emailtemplate)
         elif is_test:
             company = Company.objects.filter(name=data.get('company')).first()
             person = Person.objects.filter(name=data.get('contact')).first()
@@ -167,15 +167,15 @@ class CycleEmailTemplateTestForm(forms.Form):
 
 class CycleEmailTemplateTriggerForm(forms.Form):
 
-    def send_emails(self, emailtemplate):
+    def send_emails(self, emailtemplate, people):
         if not settings.ASYNC_EMAILS:  # TESTING
-            send_emails(EMAIL_SENDER, emailtemplate)
+            send_emails(EMAIL_SENDER, emailtemplate, people)
         else:
-            async(send_emails, *(EMAIL_SENDER, emailtemplate),
+            async(send_emails, *(EMAIL_SENDER, emailtemplate, people),
                   hook='notifications.forms.send_mail_sender')
 
 
 class ResendEmailForm(forms.Form):
 
     def send_email(self, emailtemplate, person):
-        send_emails(EMAIL_SENDER, emailtemplate, person)
+        send_emails(EMAIL_SENDER, emailtemplate, [person])

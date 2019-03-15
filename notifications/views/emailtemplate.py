@@ -1,3 +1,6 @@
+import csv
+import json
+
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
@@ -12,7 +15,7 @@ from notifications.forms import (
     ResendEmailForm,
     format_body,
     format_subject,
-    set_values_for_parameters
+    set_values_for_parameters,
 )
 
 from notifications.models import (
@@ -22,7 +25,7 @@ from notifications.models import (
     CompaniesGroup,
     EmailTemplate,
     Person,
-    Stage
+    Stage,
 )
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
@@ -44,13 +47,21 @@ class CycleEmailTemplateBase(NotificationsBaseView):
         ])
         return breadcrumbs
 
-    def get_recipients(self):
-        return Person.objects.filter(
-            company__group=self.object.group)
+    def get_recipients(self, company_ids=None):
+        qs = Person.objects.filter(
+            company__group=self.object.group
+        )
+        if company_ids is not None:
+            qs = qs.filter(company__external_id__in=company_ids)
+        return qs
 
-    def get_recipient_companies(self):
-        return Company.objects.filter(
-            group=self.object.group).order_by("name")
+    def get_recipient_companies(self, company_ids=None):
+        qs = Company.objects.filter(
+            group=self.object.group
+        ).order_by("name")
+        if company_ids is not None:
+            qs = qs.filter(external_id__in=company_ids)
+        return qs
 
 
 class CycleEmailTemplateView(CycleEmailTemplateBase, generic.DetailView):
@@ -84,9 +95,9 @@ class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
         return breadcrumbs
 
 
-class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView):
+class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateView):
     template_name = 'notifications/template/trigger.html'
-    context_object_name = 'template'
+    http_method_names = ["get", "post"]
 
     def breadcrumbs(self):
         breadcrumbs = super(CycleEmailTemplateTriggerDetail, self).breadcrumbs()
@@ -95,13 +106,28 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
         ])
         return breadcrumbs
 
+    def get_company_ids(self):
+        if 'csv_file' not in self.request.FILES:
+            return None
+        reader = csv.reader(self.request.FILES["csv_file"].read().decode().splitlines())
+        return [row[0] for row in reader if row]
+
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTriggerDetail, self).get_context_data(**kwargs)
+        company_ids = self.get_company_ids()
         context['form'] = CycleEmailTemplateTriggerForm()
-        context['recipients'] = self.get_recipients()
+        context['recipients'] = self.get_recipients(company_ids)
+        context['recipient_json'] = json.dumps([r.id for r in context['recipients']])
 
-        companies = self.get_recipient_companies()
+        companies = self.get_recipient_companies(company_ids)
         context['companies'] = companies.prefetch_related('user')
+
+        context["companies_filtered"] = False
+        if company_ids is not None:
+            found_companies = set(companies.values_list("external_id"))
+            not_found = list(set(company_ids).difference(found_companies))
+            context["companies_filtered"] = True
+            context["not_found_companies"] = not_found
 
         return context
 
@@ -109,6 +135,14 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.DetailView
         return (CycleNotification.objects
                 .filter(emailtemplate=self.object)
                 .order_by('-sent_date'))
+
+    def get(self, request, *args, **kwargs):
+        self.object = CycleEmailTemplate.objects.get(pk=kwargs["pk"])
+        return render(request, self.template_name, context=self.get_context_data(**kwargs))
+
+    def post(self, request, *args, **kwargs):
+        self.object = CycleEmailTemplate.objects.get(pk=kwargs["pk"])
+        return render(request, self.template_name, context=self.get_context_data(**kwargs))
 
 
 class CycleEmailTemplateTriggerSend(generic.detail.SingleObjectMixin, generic.FormView):
@@ -124,7 +158,8 @@ class CycleEmailTemplateTriggerSend(generic.detail.SingleObjectMixin, generic.Fo
         )
 
     def form_valid(self, form):
-        form.send_emails(self.get_object())
+        people = Person.objects.filter(id__in=json.loads(self.request.POST['recipients']))
+        form.send_emails(self.get_object(), people)
         return super(CycleEmailTemplateTriggerSend, self).form_valid(form)
 
 
@@ -135,7 +170,10 @@ class CycleEmailTemplateTrigger(View):
         return view(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        view = CycleEmailTemplateTriggerSend.as_view()
+        if "recipients" in self.request.POST:
+            view = CycleEmailTemplateTriggerSend.as_view()
+        else:
+            view = CycleEmailTemplateTriggerDetail.as_view()
         return view(request, *args, **kwargs)
 
 
@@ -164,13 +202,12 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         else:
             company = (
                 Company.objects
-                .filter(group=template.group)
-                .order_by('?').first()
+                    .filter(group=template.group)
+                    .order_by('?').first()
             )
             person = company.user.order_by('?').first()
         context['company'] = company
         context['person'] = person
-
 
         # TODO Create a function that takes param values, body_html and returns the formatted text
         params = set_values_for_parameters(person, company)
@@ -184,9 +221,9 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         return context
 
     def get_success_url(self):
-        query_args =  "?company_name={company}&person_name={person}".format(
-                company=self.request.POST['company'],
-                person=self.request.POST['contact']
+        query_args = "?company_name={company}&person_name={person}".format(
+            company=self.request.POST['company'],
+            person=self.request.POST['contact']
         )
         return reverse('notifications:template:test',
                        args=[self.object.pk]) + query_args
@@ -337,7 +374,8 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
             obj['stages'] = []
 
             for stage_code in Stage.get_main_stages():
-                cycle_notification = self.get_cycle_notification_template(stage_code, company, person)
+                cycle_notification = self.get_cycle_notification_template(stage_code, company,
+                                                                          person)
                 stage = dict()
                 stage['value'] = self.verify_cycle_notification(cycle_notification)
                 stage['email_template_id'] = self.email_template_id_list.pop(0)
@@ -358,4 +396,3 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
         context['persons_info'] = persons_info
 
         return context
-

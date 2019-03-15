@@ -1,8 +1,9 @@
 {% extends layout_template %}
 {% load static %}
 
-{% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
-  - {% endblock %}
+{% block head_title %}
+  Trigger - {{ template.group }} - Reporting cycle for year {{ template.stage.cycle }} -
+{% endblock %}
 
 {% block head %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
@@ -11,29 +12,34 @@
 
 {% block content %}
 
-<h1>Trigger - {{ template.emailtemplate }}</h1>
+  <h1>Trigger - {{ template.emailtemplate }}</h1>
 
-<h2>Send notifications</h2>
-{% if template.is_triggered %}
-  <p>This stage has been triggered.</p>
-{% else %}
-  <p style="color:red;">Things to consider when implementing this:</p>
-  <ul style="color:red;">
-    <li>Fetch the list of emails and corresponding email template parameters based on the specific<strong>GROUP</strong>.</li>
-    <li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
-    <li>Don't send an email twice!</li>
-  </ul>
-  {% with recipients as persons %}
-    <form action="" method="post">
+  <h2>Send notifications</h2>
+  {% if template.is_triggered %}
+    <p>This stage has been triggered.</p>
+  {% else %}
+    <form action="" method="post" id="send-emails">
       {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="I Understand, send {{ persons|length }} emails."/>
+      <input type="text" name="recipients" value="{{ recipient_json|safe }}" hidden readonly/>
+      <input type="submit" value="I Understand, send {{ recipients|length }} emails."/>
     </form>
-  {% endwith %}
-{% endif %}
+    <br/>
+    {% if companies_filtered %}
+      <p>Companies have been filtered using the </p>
+    {% endif %}
 
-{% if template.is_triggered %}
-  <h2>Sent emails</h2>
+    <form action="" method="POST" id="filter-with-csv" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="csv_file" value="csv_file" required/>
+      <input type="submit" value="Filter companies"/>
+    </form>
+  {% endif %}
+
+  {% if template.is_triggered %}
+    <h2>Sent emails</h2>
+  {% else %}
+    <h2>Review contact list</h2>
+  {% endif %}
 
   <table id="myTable" class="brn-table">
     <thead>
@@ -48,14 +54,16 @@
       {% for person in company.user.all %}
         <tr>
           <td>{{ company.name }}</td>
-          <td><a href="{% url 'notifications:template:resend' template.id company.id person.id %}">{{ person.name }}</a></td>
-          <td>{{ person.email }}</td>
+          <td>{{ person.name }}
+          </td>
+          <td>
+            {{ person.email }}
+          </td>
         </tr>
       {% endfor %}
     {% endfor %}
     </tbody>
   </table>
-{% endif %}
 
 {% endblock %}
 
@@ -63,13 +71,13 @@
   <script src="{% static 'js/jquery.dataTables.js' %}"></script>
 
   <script>
-    $(document).ready(function () {
-      var table = $('#myTable').DataTable();
+	$(document).ready(function () {
+		var table = $("#myTable").DataTable();
 
-      $('#myInputTextField').on('keyup change', function () {
-        table.search($(this).val()).draw();
-      })
-    });
+		$("#myInputTextField").on("keyup change", function () {
+			table.search($(this).val()).draw();
+		});
+	});
   </script>
 
 {% endblock %}
