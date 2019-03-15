@@ -117,9 +117,14 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
         company_ids = self.get_company_ids()
         context['template'] = self.object
         context['form'] = CycleEmailTemplateTriggerForm()
-        context['recipients'] = self.get_recipients(company_ids)
-        context['recipient_json'] = json.dumps([r.id for r in context['recipients']])
+        if self.object.is_triggered:
+            context['recipients'] = Person.objects.filter(
+                notifications__emailtemplate=self.object
+            )
+        else:
+            context['recipients'] = self.get_recipients(company_ids)
 
+        context['recipient_json'] = json.dumps([r.id for r in context['recipients']])
         companies = self.get_recipient_companies(company_ids)
         context['companies'] = companies.prefetch_related('user')
 

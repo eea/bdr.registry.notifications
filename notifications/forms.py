@@ -49,35 +49,34 @@ def format_subject(subject, person, company):
 def make_messages(persons, emailtemplate):
     emails = []
     for person in persons:
-        companies = person.company.filter(group=emailtemplate.group)
-        for company in companies:
-            subject = format_subject(emailtemplate.subject, person, company)
-            email_body = format_body(emailtemplate.body_html, person, company)
-            recipient_email = [person.email]
+        subject = format_subject(emailtemplate.subject, person, person.company)
+        email_body = format_body(emailtemplate.body_html, person, person.company)
+        recipient_email = [person.email]
 
-            emails.append((subject, recipient_email, email_body))
+        emails.append((subject, recipient_email, email_body))
 
-            cycle_notification = CycleNotification.objects.filter(
-                email=person.email,
-                emailtemplate=emailtemplate
-            ).first()
+        cycle_notification = CycleNotification.objects.filter(
+            email=person.email,
+            emailtemplate=emailtemplate
+        ).first()
 
-            counter = 1
-            if cycle_notification:
-                counter = cycle_notification.counter + 1
-                cycle_notification.delete()
+        counter = 1
+        if cycle_notification:
+            counter = cycle_notification.counter + 1
+            cycle_notification.delete()
 
-            # store sent email
-            CycleNotification.objects.create(
-                subject=subject,
-                email=person.email,
-                body_html=email_body,
-                emailtemplate=emailtemplate,
-                counter=counter
-            )
+        # store sent email
+        CycleNotification.objects.create(
+            subject=subject,
+            email=person.email,
+            body_html=email_body,
+            emailtemplate=emailtemplate,
+            counter=counter,
+            person=person,
+        )
 
-            emailtemplate.is_triggered = True
-            emailtemplate.save()
+        emailtemplate.is_triggered = True
+        emailtemplate.save()
     return emails
 
 

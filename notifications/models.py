@@ -211,8 +211,9 @@ class CycleNotification(models.Model):
     body_html = models.TextField()
     sent_date = models.DateTimeField(db_index=True,
                                      default=timezone.now)
-    emailtemplate = models.ForeignKey(CycleEmailTemplate)
+    emailtemplate = models.ForeignKey(CycleEmailTemplate, related_name='emails')
     counter = models.IntegerField(default=1)
+    person = models.ForeignKey(Person, related_name='notifications')
 
     def __str__(self):
         return '{} for {}'.format(self.emailtemplate, self.email)
