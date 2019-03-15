@@ -17,6 +17,7 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 ASYNC_EMAILS = False
 ALLOW_EDITING_COMPANIES = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SECRET_KEY = 'app_tests_secret_key'
 
