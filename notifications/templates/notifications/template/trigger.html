@@ -12,12 +12,20 @@
 
 {% block content %}
 
-  <h1>Trigger - {{ template.emailtemplate }}</h1>
+  <h1>
+    Trigger - {{ template.group }} - Reporting cycle for year {{ template.stage.cycle }} -
+  </h1>
 
   <h2>Send notifications</h2>
   {% if template.is_triggered %}
     <p>This stage has been triggered.</p>
   {% else %}
+    <p>
+      Trigger notification for {{ template.group }}
+      for {{ template.stage }}-{{ template.stage.cycle }}.
+      Please review the list of contacts bellow before sending the notification. You can filter
+      the if required.
+    </p>
     <form action="" method="post" id="send-emails">
       {% csrf_token %}
       <input type="text" name="recipients" value="{{ recipient_json|safe }}" hidden readonly/>

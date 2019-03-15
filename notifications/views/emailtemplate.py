@@ -115,6 +115,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTriggerDetail, self).get_context_data(**kwargs)
         company_ids = self.get_company_ids()
+        context['template'] = self.object
         context['form'] = CycleEmailTemplateTriggerForm()
         context['recipients'] = self.get_recipients(company_ids)
         context['recipient_json'] = json.dumps([r.id for r in context['recipients']])
