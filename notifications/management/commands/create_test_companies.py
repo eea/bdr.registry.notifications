@@ -24,9 +24,9 @@ class Command(BaseCommand):
                     for j in range(5):
                         person = Person.objects.create(
                             username="%s Comp-%s User %s" % (group.code, i, j),
+                            company=company,
                             email="%s-%s-%s@example.com" % (group.code, i, j)
                         )
-                        person.company.add(company)
                         person.save()
                 except IntegrityError:
                     continue
