@@ -17,6 +17,7 @@ from notifications.forms import (
     format_subject,
     set_values_for_parameters,
 )
+from notifications.models import Cycle
 
 from notifications.models import (
     CycleEmailTemplate,
@@ -371,34 +372,10 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
         else:
             return False
 
-    def get_persons_info(self, company, persons):
-        persons_info = []
-
-        for person in persons:
-            obj = dict()
-            obj['person'] = person
-            obj['stages'] = []
-
-            for stage_code in Stage.get_main_stages():
-                cycle_notification = self.get_cycle_notification_template(stage_code, company,
-                                                                          person)
-                stage = dict()
-                stage['value'] = self.verify_cycle_notification(cycle_notification)
-                stage['email_template_id'] = self.email_template_id_list.pop(0)
-                obj['stages'].append(stage)
-
-            persons_info.append(obj)
-
-        return persons_info
-
     def get_context_data(self, **kwargs):
         context = super(NotificationsBaseView, self).get_context_data(**kwargs)
 
         company = self.get_company()
-        persons = company.user.all()
-        persons_info = self.get_persons_info(company, persons)
-
         context['company'] = company
-        context['persons_info'] = persons_info
-
+        context['cycles'] = Cycle.objects.all()
         return context

@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.db import models
 
 from ckeditor.fields import RichTextField
+from django.utils.functional import cached_property
 from simple_history.models import HistoricalRecords
 
 from notifications import ACCEPTED_PARAMS
@@ -92,7 +93,7 @@ class Person(models.Model):
     username = models.CharField(max_length=128, db_index=True, unique=True)
     name = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True, unique=True)
-    company = models.ForeignKey(Company, related_name='user')
+    company = models.ForeignKey(Company, related_name='users')
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.username)
@@ -102,6 +103,10 @@ class Person(models.Model):
 
     def admin_company(self):
         return ', '.join([c.name for c in self.company.all()])
+
+    @cached_property
+    def stages(self):
+        return [notification.emailtemplate.stage for notification in self.notifications.all()]
     admin_company.short_description = 'Company'
 
 
