@@ -21,18 +21,32 @@
     <form action="" method="post" id="send-emails">
       {% csrf_token %}
       <input type="text" name="recipients" value="{{ recipient_json|safe }}" hidden readonly/>
-      <input type="submit" value="I Understand, send {{ recipients|length }} emails."/>
+      <input type="submit" value="Send {{ recipients|length }} emails."/>
     </form>
-    <br/>
+    <h2>Filter companies</h2>
     {% if companies_filtered %}
-      <p>Companies have been filtered using the </p>
+      <p>Companies have been filtered using the provided file</p>
+      {% if not_found_companies %}
+        <div class="warning">
+          Warning! Could not find {{ not_found_companies|length }} company ids:
+        </div>
+        <ul>
+          {% for company_id in not_found_companies %}
+            <li>{{ company_id }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% else %}
+      Upload a list of company IDs to filter the results.
     {% endif %}
-
-    <form action="" method="POST" id="filter-with-csv" enctype="multipart/form-data">
-      {% csrf_token %}
-      <input type="file" name="csv_file" value="csv_file" required/>
-      <input type="submit" value="Filter companies"/>
-    </form>
+    <br/>
+    <div>
+      <form action="" method="POST" id="filter-with-csv" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="csv_file" value="csv_file" required/>
+        <input type="submit" value="Filter companies"/>
+      </form>
+    </div>
   {% endif %}
 
   {% if template.is_triggered %}

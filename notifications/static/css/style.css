@@ -151,3 +151,7 @@ form input[name='subject'] {
     height: 30px;
     width: 100%;
 }
+
+.warning {
+    color: #cc3300;
+}
