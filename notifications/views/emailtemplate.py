@@ -122,7 +122,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
         if self.object.is_triggered:
             context['recipients'] = Person.objects.filter(
                 notifications__emailtemplate=self.object
-            )
+            ).prefetch_related('company')
         else:
             context['recipients'] = self.get_recipients(company_ids)
 
