@@ -187,7 +187,7 @@ class CycleEmailTemplateTrigger(View):
 class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     form_class = CycleEmailTemplateTestForm
     template_name = 'notifications/template/test.html'
-    success_message = 'Email was send successfully'
+    success_message = 'Emails were successfully sent'
 
     def get_object(self):
         obj = get_object_or_404(CycleEmailTemplate,
@@ -212,7 +212,7 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
                     .filter(group=template.group)
                     .order_by('?').first()
             )
-            person = company.user.order_by('?').first()
+            person = company.users.order_by('?').first()
         context['company'] = company
         context['person'] = person
 
