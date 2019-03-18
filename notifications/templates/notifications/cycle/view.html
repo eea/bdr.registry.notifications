@@ -3,36 +3,56 @@
 {% block head_title %}Reporting cycle for year {{ cycle }} - {% endblock %}
 
 {% block content %}
-<div class="cycle-actions">
-  <a href="{% url 'notifications:cycle:stage_add' pk=cycle.pk %}">Add new stage</a>
-</div>
+  <div id="cycle-actions" class="btn btn-add">
+    <a href="{% url 'notifications:cycle:stage_add' pk=cycle.pk %}">Add new stage</a>
+  </div>
 
 
-<h1>Reporting cycle for year {{ cycle }}</h1>
+  <h1>Reporting cycle for year {{ cycle }}</h1>
 
-{% for stage in cycle.stages.all %}
-  <h2>{{ stage }}</h2>
+  {% for stage in cycle.stages.all %}
+    <h2>{{ stage }}</h2>
 
-  <table class="brn-table">
-    <thead>
+    <table class="brn-table">
+      <thead>
       <tr>
         <th>Obligation</th>
         <th>Status</th>
         <th>Last updated</th>
+        <th>Actions</th>
       </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
       {% for template in stage.templates.all %}
         <tr>
-        <td><a href="{% url 'notifications:template:view' template.pk %}">{{ template.group }}</a></td>
-        <td>{{ template.is_triggered|yesno:"Sent,Draft" }}</td>
-        <td>{{ template.last_action.history_date.date }}</td>
+          <td>
+            {{ template.group }}
+          </td>
+          <td>
+            <div>
+              {% if template.is_triggered %}
+                Sent &#10004;
+              {% else %}
+                Draft
+              {% endif %}
+            </div>
+          </td>
+          <td>{{ template.last_action.history_date.date }}</td>
+          <td>
+            <div class="btn btn-default">
+              {% if template.is_triggered %}
+                <a href="{% url 'notifications:template:view' template.pk %}">View</a>
+              {% else %}
+                <a href="{% url 'notifications:template:edit' template.pk %}">Edit and send</a>
+              {% endif %}
+            </div>
+          </td>
         </tr>
       {% endfor %}
-    </tbody>
-  </table>
-{% empty %}
-  No stages for Cycle {{ cycle }}.
-{% endfor %}
+      </tbody>
+    </table>
+  {% empty %}
+    No stages for Cycle {{ cycle }}.
+  {% endfor %}
 
 {% endblock %}
