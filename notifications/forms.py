@@ -1,16 +1,13 @@
-import sys
-import time
-
 from django import forms
 from django.conf import settings
+from django.core.mail import get_connection
 from django.core.validators import validate_email
 from django.core.mail import send_mail
 from django.db import transaction
-from django.forms import CharField
 from django.forms import ModelChoiceField
 from django.utils.html import strip_tags
 
-from django_q.tasks import async, result
+from django_q.tasks import async
 
 from bdr.settings import EMAIL_SENDER
 from notifications import ACCEPTED_PARAMS
@@ -46,44 +43,31 @@ def format_subject(subject, person, company):
     return subject
 
 
-def make_messages(persons, emailtemplate):
+def make_messages(people, emailtemplate):
     emails = []
-    for person in persons:
+    notifications = []
+    for person in people:
         subject = format_subject(emailtemplate.subject, person, person.company)
         email_body = format_body(emailtemplate.body_html, person, person.company)
         recipient_email = [person.email]
 
         emails.append((subject, recipient_email, email_body))
-
-        cycle_notification = CycleNotification.objects.filter(
-            email=person.email,
-            emailtemplate=emailtemplate
-        ).first()
-
-        counter = 1
-        if cycle_notification:
-            counter = cycle_notification.counter + 1
-            cycle_notification.delete()
-
         # store sent email
-        CycleNotification.objects.create(
+        notifications.append(CycleNotification(
             subject=subject,
             email=person.email,
             body_html=email_body,
             emailtemplate=emailtemplate,
-            counter=counter,
             person=person,
-        )
+        ))
 
-        emailtemplate.is_triggered = True
-        emailtemplate.save()
+    CycleNotification.objects.bulk_create(notifications)
     return emails
 
 
 def send_emails(sender, emailtemplate, people=None, is_test=False, data=None):
     with transaction.atomic() as atomic:
         if people:
-            subject = emailtemplate.subject
             sender = EMAIL_SENDER
             emails = make_messages(people, emailtemplate)
         elif is_test:
@@ -97,14 +81,24 @@ def send_emails(sender, emailtemplate, people=None, is_test=False, data=None):
         else:
             recipients = Person.objects.filter(
                 company__group=emailtemplate.group).distinct()
-            subject = emailtemplate.subject
             sender = EMAIL_SENDER
             emails = make_messages(recipients, emailtemplate)
 
-        for subject, recipient_email, email_body in emails:
-            plain_html = strip_tags(email_body)
-            send_mail(subject, plain_html, sender, recipient_email,
-                      fail_silently=False, html_message=email_body)
+    connection = get_connection()
+    for subject, recipient_email, email_body in emails:
+        plain_html = strip_tags(email_body)
+        send_mail(subject, plain_html, sender, recipient_email,
+                  fail_silently=False, html_message=email_body,
+                  connection=connection)
+
+    try:
+        connection.close()
+    except:
+        pass
+
+    if not is_test:
+        emailtemplate.status = emailtemplate.SENT
+        emailtemplate.save()
 
 
 def send_mail_sender(task):
@@ -121,6 +115,7 @@ class CycleAddForm(forms.ModelForm):
 
 class CustomModelChoiceField(ModelChoiceField):
     """Workaround for https://code.djangoproject.com/ticket/30014"""
+
     def to_python(self, value):
         if isinstance(value, self.queryset.model):
             value = getattr(value, self.to_field_name or 'pk')
@@ -167,8 +162,13 @@ class CycleEmailTemplateTestForm(forms.Form):
 class CycleEmailTemplateTriggerForm(forms.Form):
 
     def send_emails(self, emailtemplate, people):
+        emailtemplate.status = emailtemplate.PROCESSING
+        emailtemplate.save()
+
         if not settings.ASYNC_EMAILS:  # TESTING
             send_emails(EMAIL_SENDER, emailtemplate, people)
+            emailtemplate.status = emailtemplate.SENT
+            emailtemplate.save()
         else:
             async(send_emails, *(EMAIL_SENDER, emailtemplate, people),
                   hook='notifications.forms.send_mail_sender')

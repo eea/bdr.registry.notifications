@@ -8,10 +8,16 @@ from notifications.models import *
 class Command(BaseCommand):
     help = 'Generates some test companies and people.'
 
+    def add_arguments(self, parser):
+        parser.add_argument('-c', '--companies', default=100, type=int,
+                            help="Number of companies to generate")
+        parser.add_argument('-p', '--people', default=5, type=int,
+                            help="Number of people to generate per company")
+
     def handle(self, *args, **options):
         call_command('loaddata', 'companiesgroups.json')
         for group in CompaniesGroup.objects.all():
-            for i in range(100):
+            for i in range(options['companies']):
                 try:
                     company = Company.objects.create(
                         external_id="%s-%s" % (group.code, i),
@@ -21,7 +27,7 @@ class Command(BaseCommand):
                         vat="No VAT",
                     )
                     company.save()
-                    for j in range(5):
+                    for j in range(options['people']):
                         person = Person.objects.create(
                             username="%s Comp-%s User %s" % (group.code, i, j),
                             name="%s Comp-%s Name %s" % (group.code, i, j),

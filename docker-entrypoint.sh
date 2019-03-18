@@ -32,8 +32,11 @@ if [ ! -e .skip-loaddata ]; then
   python manage.py loaddata notifications/fixtures/emailtemplates.json
 fi
 
+/usr/sbin/postconf relayhost=$MAIL_HOST
+
 case "$1" in
     qcluster)
+        /usr/sbin/postfix start
         exec python manage.py qcluster
         ;;
     *)

@@ -54,6 +54,7 @@ class CycleEmailTemplateBase(NotificationsBaseView):
         )
         if company_ids is not None:
             qs = qs.filter(company__external_id__in=company_ids)
+        qs = qs.prefetch_related('company')
         return qs
 
     def get_recipient_companies(self, company_ids=None):

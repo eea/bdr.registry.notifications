@@ -178,6 +178,16 @@ class CycleEmailTemplate(models.Model):
         and group.
     """
 
+    DRAFT = 0
+    PROCESSING = 1
+    SENT = 2
+
+    STATUS = (
+        (DRAFT, 'draft'),
+        (PROCESSING, 'processing'),
+        (SENT, 'sent'),
+    )
+
     class Meta:
         verbose_name_plural = '> Cycles email templates'
 
@@ -187,7 +197,8 @@ class CycleEmailTemplate(models.Model):
                               related_name="templates")
     group = models.ForeignKey(CompaniesGroup, on_delete=models.CASCADE,
                               related_name="templates")
-    is_triggered = models.BooleanField(default=False)
+    status = models.SmallIntegerField(choices=STATUS, default=DRAFT)
+
     history = HistoricalRecords()
 
     def __str__(self):
@@ -201,6 +212,10 @@ class CycleEmailTemplate(models.Model):
 
     def get_parameters(self):
         return ACCEPTED_PARAMS
+
+    @property
+    def is_triggered(self):
+        return self.status in (self.PROCESSING, self.SENT)
 
 
 class CycleNotification(models.Model):

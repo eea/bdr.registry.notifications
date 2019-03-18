@@ -28,3 +28,10 @@ INSTALLED_APPS = INSTALLED_APPS + [
 MIDDLEWARE = MIDDLEWARE + [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+Q_CLUSTER = {
+    'redis': {
+        'host': os.environ.get('REDIS_HOST', 'localhost'),
+        'port': int(os.environ.get('REDIS_PORT', 6379)),
+    }
+}

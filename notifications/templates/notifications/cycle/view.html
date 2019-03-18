@@ -30,20 +30,16 @@
           </td>
           <td>
             <div>
-              {% if template.is_triggered %}
-                Sent &#10004;
-              {% else %}
-                Draft
-              {% endif %}
+              {{  template.get_status_display }}
             </div>
           </td>
           <td>{{ template.last_action.history_date.date }}</td>
           <td>
             <div class="btn btn-default">
-              {% if template.is_triggered %}
-                <a href="{% url 'notifications:template:view' template.pk %}">View</a>
-              {% else %}
+              {% if template.status == template.DRAFT %}
                 <a href="{% url 'notifications:template:edit' template.pk %}">Edit and send</a>
+              {% else %}
+                <a href="{% url 'notifications:template:view' template.pk %}">View</a>
               {% endif %}
             </div>
           </td>

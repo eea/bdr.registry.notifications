@@ -17,9 +17,14 @@
   </h1>
 
   <h2>Send notifications</h2>
-  {% if template.is_triggered %}
+  {% if template.status == template.SENT %}
     <p>
       This stage has been triggered. You can review the users contacted during this stage here.
+    </p>
+  {% elif template.status == template.PROCESSING %}
+    <p>
+      This stage is currently being processes. Check back here in a few minutes to review the
+      list of contacted users.
     </p>
   {% else %}
     <p>
@@ -59,22 +64,23 @@
     </div>
   {% endif %}
 
-  {% if template.is_triggered %}
+  {% if template.status == template.SENT %}
     <h2>Sent emails</h2>
-  {% else %}
+  {% elif template.status == template.DRAFT %}
     <h2>Review contact list</h2>
   {% endif %}
 
-  <table id="myTable" class="brn-table">
-    <thead>
-    <tr>
-      <th>Company</th>
-      <th>Person</th>
-      <th>Email</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for person in recipients %}
+  {% if template.status == template.SENT or template.status == template.DRAFT %}
+    <table id="myTable" class="brn-table">
+      <thead>
+      <tr>
+        <th>Company</th>
+        <th>Person</th>
+        <th>Email</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for person in recipients %}
         <tr>
           <td>{{ person.company }}</td>
           <td>{{ person.name }}
@@ -83,9 +89,10 @@
             {{ person.email }}
           </td>
         </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
 
 {% endblock %}
 
