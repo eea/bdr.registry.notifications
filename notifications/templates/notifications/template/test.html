@@ -36,7 +36,9 @@
         {% endwith %}
       <p>Email: <input class="my-input" type="text" name="email" id="email" required=""/></p>
       <input type="submit" value="Send email"/>
-      <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
+      <a class="button a-no-style" href="{% url 'notifications:template:view' template.pk %}">
+        Cancel
+      </a>
     </form>
   {% endif %}
 {% endif %}

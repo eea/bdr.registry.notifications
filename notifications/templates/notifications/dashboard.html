@@ -1,13 +1,15 @@
 {% extends layout_template %}
 
 {% block content %}
-<div class="cycle-actions">
-  <a href="{% url 'notifications:cycle:add' %}">Add new reporting cycle</a>
-</div>
+
 
 <h1>Welcome to BDR Registry Notifications</h1>
 
-<div class="clear"></div>
+<div class="cycle-actions">
+	<a class="a-no-style button" href="{% url 'notifications:cycle:add' %}">
+		Add new reporting cycle
+	</a>
+</div>
 
 <h2>Reporting cycles</h2>
 
@@ -25,7 +27,7 @@
 				<td>{{ item }}</td>
 				<td>{{ item.closing_date }}</td>
 				<td class="actions">
-					<a href="{% url 'notifications:cycle:view' item.id %}">View</a>
+					<a class="a-no-style button" href="{% url 'notifications:cycle:view' item.id %}">View</a>
 				</td>
 			</tr>
 		{% endfor %}

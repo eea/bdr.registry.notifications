@@ -161,6 +161,28 @@ form input[name='subject'] {
     width: 100%;
 }
 
+.button {
+    background-color: #3065a6;
+    border: 1px solid #3065a6;
+    color: #fff !important;
+    border-radius: 3px;
+    padding: 3px 7px;
+    font-size: 12px;
+}
 .warning {
     color: #cc3300;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.a-no-style {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.input-style {
+    margin: 6px;
+    padding: 6px;
 }

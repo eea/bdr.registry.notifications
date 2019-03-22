@@ -2,14 +2,39 @@
 
 {% block head_title %}Add - Reporting cycle - {% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% endblock %}
 {% block content %}
 
 <h1>Add - Reporting cycle</h1>
 
 <form action="" method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+    <div class="input-style">
+        {{ form.year.label_tag }}
+        {{ form.year }}
+        {{ form.year.errors }}
+    </div>
+
+    <div class="input-style">
+        <label for="id_closing_date">Closing date:</label>
+        <input class="datepicker" type="text" name="closing_date" required="" id="id_closing_date" autocomplete="off">
+        {{ form.data.errors }}
+    </div>
+
     <input type="submit" value="Add" />
 </form>
 
+{% endblock %}
+
+{% block style %}
+<script>
+    $( function() {
+        $( ".datepicker" ).datepicker();
+    });
+</script>
 {% endblock %}

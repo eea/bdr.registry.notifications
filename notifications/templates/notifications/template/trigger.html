@@ -74,6 +74,7 @@
     <table id="myTable" class="brn-table">
       <thead>
       <tr>
+        <th>Company ID</th>
         <th>Company</th>
         <th>Person</th>
         <th>Email</th>
@@ -83,7 +84,10 @@
       {% for person in recipients %}
         <tr>
           <td>
-              {{ person.company.all.0.name }}
+             {{ person.company.all }}
+          </td>
+          <td>
+              {{ person.company.all }}
           </td>
           <td>{{ person.name }}
           </td>

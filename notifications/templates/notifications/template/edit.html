@@ -9,7 +9,7 @@
 
 {% with params=template.get_parameters %}
   {% if params %}
-    <p>Parameters:</p>
+    <p class="bold">Parameters:</p>
     <ul>
       {% for param in params %}
         <li>{% templatetag openbrace %}{{ param }}{% templatetag closebrace %}</li>
@@ -24,15 +24,18 @@
 
   {% for field in form %}
     <div class="fieldWrapper">
-        {{ field.errors }}
-        {{ field.label_tag }} {{ field }}
-        {% if field.help_text %}
+        <p class="bold">{{ field.errors }}</p>
+        <p class="bold">{{ field.label_tag }}</p>
+        <p class="bold">{{ field }}</p>
+        <p class="bold">
+          {% if field.help_text %}
           <p class="help">{{ field.help_text|safe }}</p>
         {% endif %}
+        </p>
     </div>
   {% endfor %}
   <input type="submit" value="Save"/>
-  <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
+  <a class="button a-no-style" href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
 </form>
 
 {% endblock %}

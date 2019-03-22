@@ -17,9 +17,15 @@
 {% if template.is_triggered %}
   <a href="{% url 'notifications:template:trigger' object.id %}"><input type="button" value="View details" /></a>
 {% else %}
-  <a href="{% url 'notifications:template:trigger' object.id %}"><input type="button" value="Send" /></a>
-  <a href="{% url 'notifications:template:edit' object.id %}">Edit</a>
-  <a href="{% url 'notifications:template:test' object.id %}">Test</a>
+  <a class="a-no-style" href="{% url 'notifications:template:trigger' object.id %}">
+    <input type="button" value="Filter companies and send emails"/>
+  </a>
+  <a class="a-no-style" href="{% url 'notifications:template:edit' object.id %}">
+    <input type="button" value="Edit"/>
+  </a>
+  <a class="a-no-style" href="{% url 'notifications:template:test' object.id %}">
+    <input type="button" value="Test"/>
+  </a>
 {% endif %}
 
 {% endblock %}
