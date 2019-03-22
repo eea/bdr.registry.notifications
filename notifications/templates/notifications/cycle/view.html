@@ -3,32 +3,52 @@
 {% block head_title %}Reporting cycle for year {{ cycle }} - {% endblock %}
 
 {% block content %}
+  <div id="cycle-actions" class="btn btn-add">
+    <a href="{% url 'notifications:cycle:stage_add' pk=cycle.pk %}">Add new stage</a>
+  </div>
 
-<h1>Reporting cycle for year {{ cycle }}</h1>
 
-{% for stage in stages %}
-  <h2>{{ stage }}</h2>
+  <h1>Reporting cycle for year {{ cycle }}</h1>
 
-  <table class="brn-table">
-    <thead>
+  {% for stage in cycle.stages.all %}
+    <h2>{{ stage }}</h2>
+
+    <table class="brn-table">
+      <thead>
       <tr>
         <th>Obligation</th>
         <th>Status</th>
         <th>Last updated</th>
+        <th>Actions</th>
       </tr>
-    </thead>
-    <tbody>
-      {% for template in templates %}
-        {% if template.stage.title == stage %}
-          <tr>
-          <td><a href="{% url 'notifications:template:view' template.pk %}">{{ template.group }}</a></td>
-          <td>{{ template.is_triggered|yesno:"Sent,Draft" }}</td>
+      </thead>
+      <tbody>
+      {% for template in stage.templates.all %}
+        <tr>
+          <td>
+            {{ template.group }}
+          </td>
+          <td>
+            <div>
+              {{  template.get_status_display }}
+            </div>
+          </td>
           <td>{{ template.last_action.history_date.date }}</td>
-          </tr>
-        {% endif %}
+          <td>
+            <div class="btn btn-default">
+              {% if template.status == template.DRAFT %}
+                <a href="{% url 'notifications:template:edit' template.pk %}">Edit and send</a>
+              {% else %}
+                <a href="{% url 'notifications:template:view' template.pk %}">View</a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
       {% endfor %}
-    </tbody>
-  </table>
-{% endfor %}
+      </tbody>
+    </table>
+  {% empty %}
+    No stages for Cycle {{ cycle }}.
+  {% endfor %}
 
 {% endblock %}

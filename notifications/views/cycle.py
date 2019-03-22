@@ -1,8 +1,11 @@
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views import generic
 
 from notifications.forms import CycleAddForm
+from notifications.forms import StageAddForm
 from notifications.models import Cycle, CycleEmailTemplate
+from notifications.models import Stage
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
 
@@ -19,6 +22,40 @@ class CycleAdd(NotificationsBaseView, generic.CreateView):
         breadcrumbs = super(CycleAdd, self).breadcrumbs()
         breadcrumbs.extend([
             Breadcrumb('', 'Add reporting cycle'),
+        ])
+        return breadcrumbs
+
+
+class StageAdd(NotificationsBaseView, generic.CreateView):
+    model = Stage
+    form_class = StageAddForm
+    template_name = 'notifications/stage/add.html'
+    success_message = 'Stage added successfully'
+
+    def get(self, request, *args, **kwargs):
+        self.cycle = get_object_or_404(Cycle, pk=kwargs['pk'])
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.cycle = get_object_or_404(Cycle, pk=kwargs['pk'])
+        return super().post(request, *args, **kwargs)
+
+    def get_initial(self):
+        return {
+            "cycle": self.cycle
+        }
+
+    def get_success_url(self):
+        return reverse('notifications:cycle:view', kwargs={"pk": self.cycle.pk})
+
+    def breadcrumbs(self):
+        breadcrumbs = super(StageAdd, self).breadcrumbs()
+        breadcrumbs.extend([
+            Breadcrumb(
+                reverse('notifications:cycle:view',
+                        kwargs={'pk': self.cycle.pk}),
+                'Reporting cycle for year {}'.format(self.cycle)),
+            Breadcrumb('', 'Add stage'),
         ])
         return breadcrumbs
 
@@ -42,10 +79,8 @@ class CycleDetailView(NotificationsBaseView, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(CycleDetailView, self).get_context_data(**kwargs)
         context['templates'] = (CycleEmailTemplate.objects
-            .filter(cycle=self.object)
-            .order_by('emailtemplate__group')
-            .prefetch_related('emailtemplate__group',
-                              'emailtemplate__stage')
+            .filter(stage__cycle=self.object)
+            .order_by('group')
+            .prefetch_related('group', 'stage')
         )
-        context['stages'] = ['Invitations', 'Reminder', 'Deadline', 'After']
         return context

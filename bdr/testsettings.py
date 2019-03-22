@@ -10,4 +10,7 @@ DATABASES = {
     }
 }
 
+ASYNC_EMAILS = False
+ALLOW_EDITING_COMPANIES = True
+
 SECRET_KEY = 'app_tests_secret_key'

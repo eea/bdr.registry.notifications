@@ -32,3 +32,4 @@ docker-compose.override.yml
 docker/app.env
 docker/init.sql
 docker/redis.env
+/.venv/

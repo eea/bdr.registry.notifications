@@ -13,32 +13,34 @@
       <th>Username</th>
       <th>Name</th>
       <th>Email</th>
-      <th>Invitation</th>
-      <th>Reminder</th>
-      <th>Deadline</th>
-      <th>After</th>
+      <th>Sent</th>
     </tr>
     </thead>
-    <tbody>
-    {% for obj in persons_info %}
-      <tr>
-        <td>{{ obj.person.username }}</td>
-        <td>{{ obj.person.name }}</td>
-        <td>{{ obj.person.email }}</td>
-        {% for stage in obj.stages %}
-          <td>
-            {% if stage.value %}
-              <a href="{% url 'notifications:template:resend' stage.email_template_id company.id obj.person.id %}">
-                &#10004;
-              </a>
-            {% else %}
-              &#10006;
-            {% endif %}
-          </td>
+    {% for cycle in cycles %}
+      {% for stage in cycle.stages.all %}
+        <tbody>
+        <tr>
+          <th colspan="4">Cycle: {{ cycle }} - Stage: {{ stage }}</th>
+        </tr>
+        {% for person in company.users.all %}
+          <tr>
+            <td>{{ person.username }}</td>
+            <td>{{ person.name }}</td>
+            <td>{{ person.email }}</td>
+            <td>
+              {% if stage in person.stages %}
+{#                <a href="{% url 'notifications:template:resend' stage.email_template_id company.id obj.person.id %}">#}
+                  &#10004;
+{#                </a>#}
+              {% else %}
+                &#10006;
+              {% endif %}
+            </td>
+          </tr>
         {% endfor %}
-      </tr>
-    {% endfor %}
+      {% endfor %}
     </tbody>
+    {% endfor %}
   </table>
 
 {% endblock %}

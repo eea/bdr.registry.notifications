@@ -28,10 +28,8 @@
     {% csrf_token %}
       {% with params=params %}
       {% if params %}
-        <input type="text" name="company" id="company" value="{{ params.COMPANY }}" hidden
-               required=""/>
-        <input type="text" name="contact" id="contact" value="{{ params.CONTACT }}" hidden
-               required=""/>
+        <input type="text" name="company" id="company" value="{{ params.COMPANY }}" hidden/>
+        <input type="text" name="contact" id="contact" value="{{ params.CONTACT }}" hidden/>
       {% endif %}
       {% endwith %}
     <p>Email: <input class="my-input" type="text" name="email" id="email" required=""/></p>

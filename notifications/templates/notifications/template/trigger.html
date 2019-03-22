@@ -1,8 +1,9 @@
 {% extends layout_template %}
 {% load static %}
 
-{% block head_title %}Trigger - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
-  - {% endblock %}
+{% block head_title %}
+  Trigger - {{ template.group }} - Reporting cycle for year {{ template.stage.cycle }} -
+{% endblock %}
 
 {% block head %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
@@ -11,51 +12,87 @@
 
 {% block content %}
 
-<h1>Trigger - {{ template.emailtemplate }}</h1>
+  <h1>
+    Trigger - {{ template.group }} - Reporting cycle for year {{ template.stage.cycle }} -
+  </h1>
 
-<h2>Send notifications</h2>
-{% if template.is_triggered %}
-  <p>This stage has been triggered.</p>
-{% else %}
-  <p style="color:red;">Things to consider when implementing this:</p>
-  <ul style="color:red;">
-    <li>Fetch the list of emails and corresponding email template parameters based on the specific<strong>GROUP</strong>.</li>
-    <li>When sending an email, don't forget to save a <strong>CycleNotification</strong> to keep track.</li>
-    <li>Don't send an email twice!</li>
-  </ul>
-  {% with recipients as persons %}
-    <form action="" method="post">
+  <h2>Send notifications</h2>
+  {% if template.status == template.SENT %}
+    <p>
+      This stage has been triggered. You can review the users contacted during this stage here.
+    </p>
+  {% elif template.status == template.PROCESSING %}
+    <p>
+      This stage is currently being processes. Check back here in a few minutes to review the
+      list of contacted users.
+    </p>
+  {% else %}
+    <p>
+      Trigger notification for {{ template.group }}
+      for {{ template.stage }}-{{ template.stage.cycle }}.
+      Please review the list of contacts bellow before sending the notification. You can filter
+      the list if required.
+    </p>
+    <form action="" method="post" id="send-emails">
       {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="I Understand, send {{ persons|length }} emails."/>
+      <input type="text" name="recipients" value="{{ recipient_json|safe }}" hidden readonly/>
+      <input type="submit" value="Send {{ recipients|length }} emails."/>
     </form>
-  {% endwith %}
-{% endif %}
+    <h2>Filter companies</h2>
+    {% if companies_filtered %}
+      <p>Companies have been filtered using the provided file</p>
+      {% if not_found_companies %}
+        <div class="warning">
+          Warning! Could not find {{ not_found_companies|length }} company ids:
+        </div>
+        <ul>
+          {% for company_id in not_found_companies %}
+            <li>{{ company_id }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% else %}
+      Upload a list of company IDs to filter the results.
+    {% endif %}
+    <br/>
+    <div>
+      <form action="" method="POST" id="filter-with-csv" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="csv_file" value="csv_file" required/>
+        <input type="submit" value="Filter companies"/>
+      </form>
+    </div>
+  {% endif %}
 
-{% if template.is_triggered %}
-  <h2>Sent emails</h2>
+  {% if template.status == template.SENT %}
+    <h2>Sent emails</h2>
+  {% elif template.status == template.DRAFT %}
+    <h2>Review contact list</h2>
+  {% endif %}
 
-  <table id="myTable" class="brn-table">
-    <thead>
-    <tr>
-      <th>Company</th>
-      <th>Person</th>
-      <th>Email</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for company in companies %}
-      {% for person in company.user.all %}
+  {% if template.status == template.SENT or template.status == template.DRAFT %}
+    <table id="myTable" class="brn-table">
+      <thead>
+      <tr>
+        <th>Company</th>
+        <th>Person</th>
+        <th>Email</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for person in recipients %}
         <tr>
-          <td>{{ company.name }}</td>
-          <td><a href="{% url 'notifications:template:resend' template.id company.id person.id %}">{{ person.name }}</a></td>
-          <td>{{ person.email }}</td>
+          <td>{{ person.company }}</td>
+          <td>{{ person.name }}
+          </td>
+          <td>
+            {{ person.email }}
+          </td>
         </tr>
       {% endfor %}
-    {% endfor %}
-    </tbody>
-  </table>
-{% endif %}
+      </tbody>
+    </table>
+  {% endif %}
 
 {% endblock %}
 
@@ -63,13 +100,13 @@
   <script src="{% static 'js/jquery.dataTables.js' %}"></script>
 
   <script>
-    $(document).ready(function () {
-      var table = $('#myTable').DataTable();
+	$(document).ready(function () {
+		var table = $("#myTable").DataTable();
 
-      $('#myInputTextField').on('keyup change', function () {
-        table.search($(this).val()).draw();
-      })
-    });
+		$("#myInputTextField").on("keyup change", function () {
+			table.search($(this).val()).draw();
+		});
+	});
   </script>
 
 {% endblock %}

@@ -21,6 +21,10 @@ cycle_patterns = [
     url(r'^(?P<pk>\d+)/view/$',
         views.CycleDetailView.as_view(),
         name='view'),
+
+    url(r'^(?P<pk>\d+)/stage/add/$',
+        views.StageAdd.as_view(),
+        name='stage_add'),
 ]
 
 email_template_patterns = [

@@ -1,0 +1,37 @@
+from .settings import *
+
+DEBUG = True
+ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ["127.0.0.1"]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "bdr",
+        'HOST': "localhost",
+        'USER': "bdr",
+        'PASSWORD': "bdr",
+    }
+}
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
+ASYNC_EMAILS = False
+ALLOW_EDITING_COMPANIES = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SECRET_KEY = 'app_tests_secret_key'
+
+INSTALLED_APPS = INSTALLED_APPS + [
+    'debug_toolbar',
+]
+
+MIDDLEWARE = MIDDLEWARE + [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+]
+
+Q_CLUSTER = {
+    'redis': {
+        'host': os.environ.get('REDIS_HOST', 'localhost'),
+        'port': int(os.environ.get('REDIS_PORT', 6379)),
+    }
+}

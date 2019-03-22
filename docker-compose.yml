@@ -42,6 +42,7 @@ services:
       TZ: Europe/Copenhagen
     volumes:
     - ./:/var/local/bdr.registry.notifications/
+    - /var/spool/postfix/
     command: ['qcluster']
 
 

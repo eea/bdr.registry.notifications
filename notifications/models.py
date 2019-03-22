@@ -6,8 +6,10 @@ from django.db.models import Q
 from django.db import models
 
 from ckeditor.fields import RichTextField
+from django.utils.functional import cached_property
 from simple_history.models import HistoricalRecords
 
+from notifications import ACCEPTED_PARAMS
 from .managers import GetOrNoneManager
 from .toolz import extract_parameters
 
@@ -17,28 +19,28 @@ STAGE_CLOSED = 6
 
 
 class Stage(models.Model):
-    """ Base class for workflow's stages:
-        1 - INITIATED
-        2 - INVITATIONS
-        3 - REMINDER (one week before)
-        4 - DEADLINE
-        5 - AFTER (one week after)
-        6 - CLOSED
-    """
+    """A stage cycle."""
     title = models.CharField(max_length=64)
-    code = models.SlugField(max_length=64, unique=True)
-    can_edit = models.BooleanField(default=False)
-    can_trigger = models.BooleanField(default=False)
+    cycle = models.ForeignKey('Cycle', on_delete=models.CASCADE, related_name="stages")
+
+    class Meta:
+        unique_together = ('title', 'cycle')
+
+    def create_stage_templates(self):
+        for group in CompaniesGroup.objects.all():
+            cycle_template = CycleEmailTemplate(
+                stage=self,
+                group=group,
+                subject="",
+                body_html=""
+            )
+            cycle_template.save()
 
     def __str__(self):
         return self.title
 
     def __unicode__(self):
         return self.title
-
-    @staticmethod
-    def get_main_stages():
-        return ['invitations', 'reminder', 'deadline', 'after']
 
 
 class CompaniesGroup(models.Model):
@@ -91,8 +93,7 @@ class Person(models.Model):
     username = models.CharField(max_length=128, db_index=True, unique=True)
     name = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True, unique=True)
-    company = models.ManyToManyField(Company,
-                                     related_name='user')
+    company = models.ForeignKey(Company, related_name='users')
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.username)
@@ -102,6 +103,10 @@ class Person(models.Model):
 
     def admin_company(self):
         return ', '.join([c.name for c in self.company.all()])
+
+    @cached_property
+    def stages(self):
+        return [notification.emailtemplate.stage for notification in self.notifications.all()]
     admin_company.short_description = 'Company'
 
 
@@ -120,8 +125,7 @@ class EmailTemplate(models.Model):
     subject = models.CharField(max_length=256)
     body_html = RichTextField(verbose_name='Body')
     group = models.ForeignKey(CompaniesGroup)
-    stage = models.ForeignKey(Stage, default=STAGE_INITIATED,
-                              limit_choices_to=Q(can_trigger=True))
+    stage = models.ForeignKey(Stage)
 
     def __str__(self):
         return '{} for {}'.format(self.stage, self.group)
@@ -140,7 +144,6 @@ class Cycle(models.Model):
     year = models.PositiveSmallIntegerField(unique=True,
                                             default=timezone.now().year)
     closing_date = models.DateField()
-    stage = models.ForeignKey(Stage, default=STAGE_INITIATED)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -160,22 +163,6 @@ class Cycle(models.Model):
     def last_action(self):
         return self.history.first()
 
-    def create_cycle_templates(self):
-        year = self.year
-        closing_date = self.closing_date.strftime('%d %B %Y')
-        for template in EmailTemplate.objects.all():
-            cycle_template = CycleEmailTemplate(
-                cycle=self,
-                emailtemplate=template,
-                subject=(template
-                         .subject
-                         .format(year=year, closing_date=closing_date)),
-                body_html=(template
-                           .body_html
-                           .format(year=year, closing_date=closing_date)),
-            )
-            cycle_template.save()
-
     @classmethod
     def can_initiate_new_cycle(cls):
         cycles = cls.objects.order_by('-year')
@@ -191,45 +178,45 @@ class CycleEmailTemplate(models.Model):
         and group.
     """
 
+    DRAFT = 0
+    PROCESSING = 1
+    SENT = 2
+
+    STATUS = (
+        (DRAFT, 'draft'),
+        (PROCESSING, 'processing'),
+        (SENT, 'sent'),
+    )
+
     class Meta:
         verbose_name_plural = '> Cycles email templates'
 
     subject = models.CharField(max_length=256)
     body_html = RichTextField(verbose_name='Body')
-    cycle = models.ForeignKey(Cycle)
-    emailtemplate = models.ForeignKey(EmailTemplate)
-    is_triggered = models.BooleanField(default=False)
+    stage = models.ForeignKey(Stage, on_delete=models.CASCADE,
+                              related_name="templates")
+    group = models.ForeignKey(CompaniesGroup, on_delete=models.CASCADE,
+                              related_name="templates")
+    status = models.SmallIntegerField(choices=STATUS, default=DRAFT)
+
     history = HistoricalRecords()
 
     def __str__(self):
-        return '{}'.format(self.emailtemplate)
+        return '{} {} {}'.format(self.stage.cycle, self.stage, self.group)
 
     def __unicode__(self):
-        return '{}'.format(self.emailtemplate)
-
-    @property
-    def stage(self):
-        return self.emailtemplate.stage
-
-    @property
-    def group(self):
-        return self.emailtemplate.group
-
-    @property
-    def can_edit(self):
-        return self.cycle.can_edit
-
-    @property
-    def can_trigger(self):
-        return self.cycle.can_trigger
+        return '{} {} {}'.format(self.stage.cycle, self.stage, self.group)
 
     def last_action(self):
         return self.history.first()
 
     def get_parameters(self):
-        body_params = extract_parameters(self.body_html)
-        subject_params = extract_parameters(self.subject)
-        return list(set(body_params).union(set(subject_params)))
+        return ACCEPTED_PARAMS
+
+    @property
+    def is_triggered(self):
+        return self.status in (self.PROCESSING, self.SENT)
+
 
 class CycleNotification(models.Model):
     """ Base class for each sent email.
@@ -244,8 +231,9 @@ class CycleNotification(models.Model):
     body_html = models.TextField()
     sent_date = models.DateTimeField(db_index=True,
                                      default=timezone.now)
-    emailtemplate = models.ForeignKey(CycleEmailTemplate)
+    emailtemplate = models.ForeignKey(CycleEmailTemplate, related_name='emails')
     counter = models.IntegerField(default=1)
+    person = models.ForeignKey(Person, related_name='notifications')
 
     def __str__(self):
         return '{} for {}'.format(self.emailtemplate, self.email)
@@ -255,7 +243,7 @@ class CycleNotification(models.Model):
 
     @property
     def cycle(self):
-        return self.emailtemplate.cycle
+        return self.emailtemplate.stage.cycle
 
     @property
     def stage(self):

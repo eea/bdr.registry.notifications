@@ -14,6 +14,4 @@ ACCEPTED_PARAMS = {
     'COMPANY': 'company.name',
     'CONTACT': 'person.name',
     'VAT': 'company.vat',
-    'USERID': '',
-    'PASSWORD': ''
 }

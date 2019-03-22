@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib import admin
 from simple_history import admin as admin_simple_history
 
@@ -9,9 +10,8 @@ from .models import (Stage, CompaniesGroup, Company, Person, EmailTemplate,
 
 
 class StageAdmin(admin.ModelAdmin):
-    list_display = ('title', 'code', 'can_edit', 'can_trigger')
-    prepopulated_fields = {'code': ('title',)}
-    ordering = ('id',)
+    list_display = ('cycle', 'title')
+    ordering = ('cycle',)
 
 
 class CompaniesGroupAdmin(admin.ModelAdmin):
@@ -25,10 +25,10 @@ class CompanyAdmin(admin.ModelAdmin):
     search_fields = ('id', 'external_id', 'name', 'vat', 'country')
 
     def has_add_permission(self, request):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -37,10 +37,10 @@ class PersonAdmin(admin.ModelAdmin):
     search_fields = ('username', 'name', 'email', 'company__name')
 
     def has_add_permission(self, request):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return settings.ALLOW_EDITING_COMPANIES
 
 
 class EmailTemplateAdmin(admin.ModelAdmin):
@@ -51,7 +51,7 @@ class EmailTemplateAdmin(admin.ModelAdmin):
 
 class CycleAdmin(admin_simple_history.SimpleHistoryAdmin):
     exclude = ('year',)
-    list_display = ('year', 'stage', 'closing_date')
+    list_display = ('year', 'closing_date')
     ordering = ('-year',)
 
     def save_model(self, request, obj, form, change):
@@ -64,16 +64,14 @@ class CycleAdmin(admin_simple_history.SimpleHistoryAdmin):
 
 
 class CycleEmailTemplateAdmin(admin_simple_history.SimpleHistoryAdmin):
-    list_display = ('cycle', 'group', 'stage', 'is_triggered')
-    list_filter = ('cycle', 'emailtemplate__group', 'emailtemplate__stage')
-    ordering = ('cycle', 'emailtemplate__stage',)
+    list_display = ('stage', 'is_triggered')
+    list_filter = ()
+    ordering = ()
 
 
 class CycleNotificationAdmin(admin.ModelAdmin):
     list_display = ('cycle', 'group', 'stage', 'email', 'sent_date')
-    list_filter = ('emailtemplate__cycle',
-                   'emailtemplate__emailtemplate__group',
-                   'emailtemplate__emailtemplate__stage')
+    list_filter = ()
 
     readonly_fields = []
 

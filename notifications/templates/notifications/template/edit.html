@@ -12,7 +12,7 @@
     <p>Parameters:</p>
     <ul>
       {% for param in params %}
-        <li>{{ param }}</li>
+        <li>{% templatetag openbrace %}{{ param }}{% templatetag closebrace %}</li>
       {% endfor %}
     </ul>
   {% endif %}
