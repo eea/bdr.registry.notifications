@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.1.2 (2019-03-22)
+-----------------
+* Add mail filtering
+* Fix bugs
+  [dianaboiangiu]
+
 1.1.1 (2019-02-26)
 -----------------
 * Optimize async
