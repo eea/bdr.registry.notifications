@@ -27,9 +27,7 @@ fi
 if [ ! -e .skip-loaddata ]; then
   touch .skip-loaddata
   echo "Loading fixtures"
-  python manage.py loaddata notifications/fixtures/stages.json
   python manage.py loaddata notifications/fixtures/companiesgroups.json
-  python manage.py loaddata notifications/fixtures/emailtemplates.json
 fi
 
 /usr/sbin/postconf relayhost=$MAIL_HOST

@@ -139,7 +139,6 @@ Local development and deployment without Docker
 7. Load fixtures data into the database:
     ```
     $ python manage.py loaddata notifications/fixtures/companiesgroups.json
-    $ python manage.py loaddata notifications/fixtures/emailtemplates.json
     ```
 
 8. Create a super user to gain access:
