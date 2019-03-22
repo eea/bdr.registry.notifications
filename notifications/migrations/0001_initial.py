@@ -131,7 +131,7 @@ class Migration(migrations.Migration):
                 ('username', models.CharField(db_index=True, max_length=128, unique=True)),
                 ('name', models.CharField(max_length=256)),
                 ('email', models.CharField(db_index=True, max_length=128, unique=True)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='users', to='notifications.Company')),
+                ('company', models.ManyToManyField(related_name='user', to='notifications.Company')),
             ],
         ),
         migrations.CreateModel(

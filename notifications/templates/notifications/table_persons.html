@@ -19,11 +19,13 @@
       <td>{{ item.username }}</td>
       <td>
         <ul>
-          <li>
-            {{ item.company.name }}
-            <br/>
-            <small>{{ item.company.country }}</small>
-          </li>
+          {% for company in item.company.all %}
+            <li>
+              {{ company.name }}
+              <br/>
+              <small>{{ company.country }}</small>
+            </li>
+          {% endfor %}
         </ul>
       </td>
       <td>

@@ -55,8 +55,8 @@ class Command(BaseFetchCommand, BaseCommand):
                 person_count += 1
                 companies = Company.objects.filter(
                     name=item['companyname'],
-                    country=item['country']).first()
-                companies.users.add(person)
+                    country=item['country'])
+                person.company.add(*companies)
             except IntegrityError as e:
                 logger.info('Skipped person: %s (%s)', item['contactemail'], e)
                 errors.append((e, item['contactemail']))

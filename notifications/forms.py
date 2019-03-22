@@ -47,21 +47,24 @@ def make_messages(people, emailtemplate):
     emails = []
     notifications = []
     for person in people:
-        subject = format_subject(emailtemplate.subject, person, person.company)
-        email_body = format_body(emailtemplate.body_html, person, person.company)
-        recipient_email = [person.email]
+        companies = person.company.filter(group=emailtemplate.group)
+        for company in companies:
+            subject = format_subject(emailtemplate.subject, person, company)
+            email_body = format_body(emailtemplate.body_html, person, company)
+            recipient_email = [person.email]
 
-        emails.append((subject, recipient_email, email_body))
-        # store sent email
-        notifications.append(CycleNotification(
-            subject=subject,
-            email=person.email,
-            body_html=email_body,
-            emailtemplate=emailtemplate,
-            person=person,
-        ))
+            emails.append((subject, recipient_email, email_body))
 
-    CycleNotification.objects.bulk_create(notifications)
+             # store sent email
+            # notifications.append(CycleNotification(
+            #     subject=subject,
+            #     email=person.email,
+            #     body_html=email_body,
+            #     emailtemplate=emailtemplate,
+            #     person=person,
+            # ))
+
+    # CycleNotification.objects.bulk_create(notifications)
     return emails
 
 

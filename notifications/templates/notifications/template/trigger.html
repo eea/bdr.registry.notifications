@@ -82,7 +82,9 @@
       <tbody>
       {% for person in recipients %}
         <tr>
-          <td>{{ person.company }}</td>
+          <td>
+              {{ person.company.all.0.name }}
+          </td>
           <td>{{ person.name }}
           </td>
           <td>
