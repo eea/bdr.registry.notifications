@@ -93,7 +93,7 @@ class Person(models.Model):
     username = models.CharField(max_length=128, db_index=True, unique=True)
     name = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True, unique=True)
-    company = models.ForeignKey(Company, related_name='users')
+    company = models.ForeignKey(Company, related_name='users', null=True)
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.username)

@@ -138,7 +138,6 @@ Local development and deployment without Docker
 
 7. Load fixtures data into the database:
     ```
-    $ python manage.py loaddata notifications/fixtures/stages.json
     $ python manage.py loaddata notifications/fixtures/companiesgroups.json
     $ python manage.py loaddata notifications/fixtures/emailtemplates.json
     ```
@@ -150,10 +149,10 @@ Local development and deployment without Docker
 
 9. Start server in debug more:
     ```
-    $ python manage.py runserver 0.0.0.0:5000
+    $ python manage.py runserver 0.0.0.0:12301
     ```
 
-10. In your browser type http://localhost:5000/notifications/.
+10. In your browser type http://localhost:12301/notifications/.
 
 Testing
 -------

@@ -4,37 +4,40 @@
 {% endblock %}
 
 {% block content %}
-
-<h1>Preview {{ template.stage|lower }} for {{ template.group }}</h1>
-
-<h2>Provide the following parameters</h2>
-{% for param, value in params.items %}
-  {% if value %}
-    <p>{{ param }}: {{ value }}</p>
-  {% endif %}
-{% endfor %}
-
-<h2>Subject</h2>
-<div class="preview-body">{{ template.subject|safe }}</div>
-
-<h2>Body</h2>
-<div class="preview-body">{{ template.body_html|safe }}</div>
-{% if sent %}
-  <h2>Test was successful!</h2>
-  <a href="{% url 'notifications:template:test' template.pk %}">Make another test</a>
+{% if info %}
+  <h2>{{ info }}</h2>
 {% else %}
-  <h2>Send email</h2>
-  <form action="" method="post">
-    {% csrf_token %}
-      {% with params=params %}
-      {% if params %}
-        <input type="text" name="company" id="company" value="{{ params.COMPANY }}" hidden/>
-        <input type="text" name="contact" id="contact" value="{{ params.CONTACT }}" hidden/>
-      {% endif %}
-      {% endwith %}
-    <p>Email: <input class="my-input" type="text" name="email" id="email" required=""/></p>
-    <input type="submit" value="Send email"/>
-    <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
-  </form>
+  <h1>Preview {{ template.stage|lower }} for {{ template.group }}</h1>
+
+  <h2>Provide the following parameters</h2>
+  {% for param, value in params.items %}
+    {% if value %}
+      <p>{{ param }}: {{ value }}</p>
+    {% endif %}
+  {% endfor %}
+
+  <h2>Subject</h2>
+  <div class="preview-body">{{ template.subject|safe }}</div>
+
+  <h2>Body</h2>
+  <div class="preview-body">{{ template.body_html|safe }}</div>
+  {% if sent %}
+    <h2>Test was successful!</h2>
+    <a href="{% url 'notifications:template:test' template.pk %}">Make another test</a>
+  {% else %}
+    <h2>Send email</h2>
+    <form action="" method="post">
+      {% csrf_token %}
+        {% with params=params %}
+        {% if params %}
+          <input type="text" name="company" id="company" value="{{ params.COMPANY }}" hidden/>
+          <input type="text" name="contact" id="contact" value="{{ params.CONTACT }}" hidden/>
+        {% endif %}
+        {% endwith %}
+      <p>Email: <input class="my-input" type="text" name="email" id="email" required=""/></p>
+      <input type="submit" value="Send email"/>
+      <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
+    </form>
+  {% endif %}
 {% endif %}
 {% endblock %}

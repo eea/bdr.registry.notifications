@@ -213,6 +213,9 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
                     .filter(group=template.group)
                     .order_by('?').first()
             )
+            if not company:
+                context["info"] = "The database does not provide any company for this obligation."
+                return context
             person = company.users.order_by('?').first()
         context['company'] = company
         context['person'] = person

@@ -65,7 +65,7 @@ class Command(BaseFetchCommand, BaseCommand):
                     **self.parse_company_data(item))
                 username_list = [user["username"] for user in item["users"]]
                 persons = Person.objects.filter(username__in=username_list)
-                company.user.add(*persons)
+                company.users.add(*persons)
                 company_count += 1
             except IntegrityError as e:
                 logger.info('Skipped company: %s (%s)', item['name'], e)
