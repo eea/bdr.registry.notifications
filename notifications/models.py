@@ -224,7 +224,7 @@ class CycleNotification(models.Model):
 
     class Meta:
         verbose_name_plural = '> Cycles notifications'
-        unique_together = ('email', 'emailtemplate')
+
 
     subject = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True)
@@ -234,6 +234,7 @@ class CycleNotification(models.Model):
     emailtemplate = models.ForeignKey(CycleEmailTemplate, related_name='emails')
     counter = models.IntegerField(default=1)
     person = models.ForeignKey(Person, related_name='notifications')
+    company = models.ForeignKey(Company, related_name='notifications')
 
     def __str__(self):
         return '{} for {}'.format(self.emailtemplate, self.email)

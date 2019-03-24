@@ -114,21 +114,30 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
         reader = csv.reader(self.request.FILES["csv_file"].read().decode().splitlines())
         return [row[0] for row in reader if row]
 
+    def get_number_of_emails_to_send(self, companies):
+        emails_count = 0
+        for company in companies:
+            emails_count += company.users.all().count()
+        return emails_count
+
     def get_context_data(self, **kwargs):
         context = super(CycleEmailTemplateTriggerDetail, self).get_context_data(**kwargs)
         company_ids = self.get_company_ids()
         context['template'] = self.object
         context['form'] = CycleEmailTemplateTriggerForm()
+        companies = self.get_recipient_companies(company_ids)
+        context['companies'] = companies.prefetch_related('users')
         if self.object.is_triggered:
-            context['recipients'] = Person.objects.filter(
+            context['companies'] = Company.objects.filter(
                 notifications__emailtemplate=self.object
-            ).prefetch_related('company')
+            ).prefetch_related('users').distinct()
+            context['recipients'] = context['companies']
         else:
-            context['recipients'] = self.get_recipients(company_ids)
+            context['recipients'] = context['companies']
+            context['no_of_emails'] = self.get_number_of_emails_to_send(companies)
 
         context['recipient_json'] = json.dumps([r.id for r in context['recipients']])
-        companies = self.get_recipient_companies(company_ids)
-        context['companies'] = companies.prefetch_related('user')
+
 
         context["companies_filtered"] = False
         if company_ids is not None:
@@ -166,8 +175,8 @@ class CycleEmailTemplateTriggerSend(generic.detail.SingleObjectMixin, generic.Fo
         )
 
     def form_valid(self, form):
-        people = Person.objects.filter(id__in=json.loads(self.request.POST['recipients']))
-        form.send_emails(self.get_object(), people)
+        companies = Company.objects.filter(id__in=json.loads(self.request.POST['recipients']))
+        form.send_emails(self.get_object(), companies)
         return super(CycleEmailTemplateTriggerSend, self).form_valid(form)
 
 

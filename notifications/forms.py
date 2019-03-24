@@ -43,36 +43,36 @@ def format_subject(subject, person, company):
     return subject
 
 
-def make_messages(people, emailtemplate):
+def make_messages(companies, emailtemplate):
     emails = []
     notifications = []
-    for person in people:
-        companies = person.company.filter(group=emailtemplate.group)
-        for company in companies:
+    for company in companies:
+        for person in company.users.all():
             subject = format_subject(emailtemplate.subject, person, company)
             email_body = format_body(emailtemplate.body_html, person, company)
             recipient_email = [person.email]
 
             emails.append((subject, recipient_email, email_body))
 
-             # store sent email
-            # notifications.append(CycleNotification(
-            #     subject=subject,
-            #     email=person.email,
-            #     body_html=email_body,
-            #     emailtemplate=emailtemplate,
-            #     person=person,
-            # ))
+            # store sent email
+            notifications.append(CycleNotification(
+                subject=subject,
+                email=person.email,
+                body_html=email_body,
+                emailtemplate=emailtemplate,
+                person=person,
+                company=company
+            ))
 
-    # CycleNotification.objects.bulk_create(notifications)
+    CycleNotification.objects.bulk_create(notifications)
     return emails
 
 
-def send_emails(sender, emailtemplate, people=None, is_test=False, data=None):
+def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None):
     with transaction.atomic() as atomic:
-        if people:
+        if companies:
             sender = EMAIL_SENDER
-            emails = make_messages(people, emailtemplate)
+            emails = make_messages(companies, emailtemplate)
         elif is_test:
             company = Company.objects.filter(name=data.get('company')).first()
             person = Person.objects.filter(name=data.get('contact')).first()
@@ -82,8 +82,8 @@ def send_emails(sender, emailtemplate, people=None, is_test=False, data=None):
             subject = emailtemplate.subject.format(**values)
             emails = [(subject, email, body_html)]
         else:
-            recipients = Person.objects.filter(
-                company__group=emailtemplate.group).distinct()
+            recipients = Company.objects.filter(
+                group=emailtemplate.group)
             sender = EMAIL_SENDER
             emails = make_messages(recipients, emailtemplate)
 
@@ -164,16 +164,16 @@ class CycleEmailTemplateTestForm(forms.Form):
 
 class CycleEmailTemplateTriggerForm(forms.Form):
 
-    def send_emails(self, emailtemplate, people):
+    def send_emails(self, emailtemplate, companies):
         emailtemplate.status = emailtemplate.PROCESSING
         emailtemplate.save()
 
         if not settings.ASYNC_EMAILS:  # TESTING
-            send_emails(EMAIL_SENDER, emailtemplate, people)
+            send_emails(EMAIL_SENDER, emailtemplate, companies)
             emailtemplate.status = emailtemplate.SENT
             emailtemplate.save()
         else:
-            async(send_emails, *(EMAIL_SENDER, emailtemplate, people),
+            async(send_emails, *(EMAIL_SENDER, emailtemplate, companies),
                   hook='notifications.forms.send_mail_sender')
 
 

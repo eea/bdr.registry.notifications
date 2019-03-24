@@ -36,11 +36,11 @@
     <form action="" method="post" id="send-emails">
       {% csrf_token %}
       <input type="text" name="recipients" value="{{ recipient_json|safe }}" hidden readonly/>
-      <input type="submit" value="Send {{ recipients|length }} emails."/>
+      <input type="submit" value="Send {{ no_of_emails }} emails."/>
     </form>
     <h2>Filter companies</h2>
     {% if companies_filtered %}
-      <p>Companies have been filtered using the provided file</p>
+      <p class="bold">Companies have been filtered using the provided file.</p>
       {% if not_found_companies %}
         <div class="warning">
           Warning! Could not find {{ not_found_companies|length }} company ids:
@@ -51,17 +51,22 @@
           {% endfor %}
         </ul>
       {% endif %}
+
+      <a class="a-no-style" href="{% url 'notifications:template:trigger' template.id %}">
+        <input type="button" value="Cancel filtering"/>
+      </a>
     {% else %}
       Upload a list of company IDs to filter the results.
+      <div>
+          <form action="" method="POST" id="filter-with-csv" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="csv_file" value="csv_file" required/>
+            <input type="submit" value="Filter companies"/>
+          </form>
+      </div>
     {% endif %}
     <br/>
-    <div>
-      <form action="" method="POST" id="filter-with-csv" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="csv_file" value="csv_file" required/>
-        <input type="submit" value="Filter companies"/>
-      </form>
-    </div>
+
   {% endif %}
 
   {% if template.status == template.SENT %}
@@ -81,20 +86,23 @@
       </tr>
       </thead>
       <tbody>
-      {% for person in recipients %}
-        <tr>
-          <td>
-             {{ person.company.all }}
-          </td>
-          <td>
-              {{ person.company.all }}
-          </td>
-          <td>{{ person.name }}
-          </td>
-          <td>
-            {{ person.email }}
-          </td>
-        </tr>
+      {% for company in companies %}
+        {% for person in company.users.all %}
+          <tr>
+            <td>
+              {{ company.external_id }}
+            </td>
+            <td>
+              {{ company.name }}
+            </td>
+            <td>
+              {{ person.name }}
+            </td>
+            <td>
+              {{ person.email }}
+            </td>
+          </tr>
+        {% endfor %}
       {% endfor %}
       </tbody>
     </table>

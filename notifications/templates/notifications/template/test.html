@@ -23,7 +23,9 @@
   <div class="preview-body">{{ template.body_html|safe }}</div>
   {% if sent %}
     <h2>Test was successful!</h2>
-    <a href="{% url 'notifications:template:test' template.pk %}">Make another test</a>
+    <a class="a-no-style" href="{% url 'notifications:template:test' template.pk %}">
+        <input type="button" value="Make another test"/>
+    </a>
   {% else %}
     <h2>Send email</h2>
     <form action="" method="post">
