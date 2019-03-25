@@ -34,7 +34,7 @@
               class="badge badge-success"
               {% elif template.get_status_display == 'draft' %}
               class="badge badge-light"
-              {& else &}
+              {% else %}
               class="badge badge-warning"
               {% endif %}
               >{{  template.get_status_display }}

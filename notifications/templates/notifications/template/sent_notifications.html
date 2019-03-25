@@ -11,37 +11,39 @@
   <p>Obligation: {{ company.group }}</p>
 
   <h2>Reporting cycles</h2>
-
-  {% for cycle in cycles %}
-    {% for stage in cycle.stages.all %}
-      <h4>{{ stage }}, {{ cycle.year }}</h4>
-      <table id="myTable" class="brn-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Sent</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for person in company.users.all %}
-          <tr>
-            <td>{{ person.name }}</td>
-            <td>{{ person.email }}</td>
-            <td>
-              {% if stage in person.stages %}
-{#                <a href="{% url 'notifications:template:resend' stage.email_template_id company.id obj.person.id %}">#}
-                  &#10004;
-{#                </a>#}
-              {% else %}
-                &#10006;
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+  {% if cycles %}
+    {% for cycle in cycles %}
+      {% for stage in cycle.stages.all %}
+        <h4>{{ stage }}, {{ cycle.year }}</h4>
+        <table id="myTable" class="brn-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Sent</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for person in company.users.all %}
+            <tr>
+              <td>{{ person.name }}</td>
+              <td>{{ person.email }}</td>
+              <td>
+                {% if stage in person.stages %}
+  {#                <a href="{% url 'notifications:template:resend' stage.email_template_id company.id obj.person.id %}">#}
+                    &#10004;
+  {#                </a>#}
+                {% else %}
+                  &#10006;
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      {% endfor %}
     {% endfor %}
-  {% endfor %}
-
+  {% else %}
+    <p>No reporting cycles available.</p>
+  {% endif %}
 {% endblock %}
