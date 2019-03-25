@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.1.3 (2019-03-25)
+-----------------
+* Fix mail filtering for many-to-many relations
+* Improve frontend
+  [dianaboiangiu]
+
 1.1.2 (2019-03-22)
 -----------------
 * Add mail filtering
