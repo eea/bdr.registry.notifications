@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.6 (2019-03-25)
+-----------------
+* Remove buttons from ckeditor
+  [dianaboiangiu]
+
 1.1.5 (2019-03-25)
 -----------------
 * Fix companies title
