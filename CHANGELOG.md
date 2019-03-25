@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.4 (2019-03-25)
+-----------------
+* Refactor design
+  [dianaboiangiu]
+
 1.1.3 (2019-03-25)
 -----------------
 * Fix mail filtering for many-to-many relations
