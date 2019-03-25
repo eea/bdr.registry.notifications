@@ -1,12 +1,14 @@
 {% extends layout_template %}
 
-{% block head_title %}Add - Stage{% endblock %}
+{% block head_title %}Add notification{% endblock %}
 
 {% block content %}
 
-<h1>Add - Stage</h1>
+<h1>Add notification</h1>
 
-<p>Add a new stage</p>
+<p>The email templates are grouped by notification. Add a new notification in order to manage the email
+    templates and companies.
+</p>
 
 <form action="" method="post">
     {% csrf_token %}
@@ -18,10 +20,12 @@
 
     <div class="input-style">
         {{ form.title.label_tag }}
-        {{ form.title }}
+        {{ form.title }} <i>e.g. Invitation</i>
         {{ form.title.errors }}
     </div>
-    <input type="submit" value="Add" />
+    <p>* All fields are mandatory.</p>
+    <input type="submit" value="Add notification" />
+    <a href="{% url 'notifications:cycle:view' cycle.id %}">Cancel</a>
 </form>
 
 {% endblock %}

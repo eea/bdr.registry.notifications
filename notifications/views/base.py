@@ -45,7 +45,7 @@ class CompaniesView(NotificationsBaseView, PaginatedDataViewBase,
         breadcrumbs.extend([
             Breadcrumb(
                 reverse('notifications:companies'),
-                'Companies'),
+                'Statistics'),
         ])
         return breadcrumbs
 

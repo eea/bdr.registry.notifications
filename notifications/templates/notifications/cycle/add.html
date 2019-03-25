@@ -10,8 +10,10 @@
 {% endblock %}
 {% block content %}
 
-<h1>Add - Reporting cycle</h1>
-
+<h1>Add Reporting cycle</h1>
+<p>The notifications are grouped by the reporting cycle.
+   Add a new reporting cycle in order to manage the notifications,
+    companies and the email templates.</p>
 <form action="" method="post">
     {% csrf_token %}
     <div class="input-style">
@@ -25,8 +27,9 @@
         <input class="datepicker" type="text" name="closing_date" required="" id="id_closing_date" autocomplete="off">
         {{ form.data.errors }}
     </div>
-
+    <p>* All fields are mandatory.</p>
     <input type="submit" value="Add" />
+    <a href="{% url 'notifications:dashboard' %}">Cancel</a>
 </form>
 
 {% endblock %}

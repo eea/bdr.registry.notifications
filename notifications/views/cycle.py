@@ -30,7 +30,12 @@ class StageAdd(NotificationsBaseView, generic.CreateView):
     model = Stage
     form_class = StageAddForm
     template_name = 'notifications/stage/add.html'
-    success_message = 'Stage added successfully'
+    success_message = 'Notification added successfully'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['cycle'] = self.cycle
+        return context
 
     def get(self, request, *args, **kwargs):
         self.cycle = get_object_or_404(Cycle, pk=kwargs['pk'])
@@ -54,8 +59,8 @@ class StageAdd(NotificationsBaseView, generic.CreateView):
             Breadcrumb(
                 reverse('notifications:cycle:view',
                         kwargs={'pk': self.cycle.pk}),
-                'Reporting cycle for year {}'.format(self.cycle)),
-            Breadcrumb('', 'Add stage'),
+                'Reporting cycle for {}'.format(self.cycle)),
+            Breadcrumb('', 'Add notification'),
         ])
         return breadcrumbs
 
@@ -72,7 +77,7 @@ class CycleDetailView(NotificationsBaseView, generic.DetailView):
             Breadcrumb(
                 reverse('notifications:cycle:view',
                         kwargs={'pk': cycle.pk}),
-                'Reporting cycle for year {}'.format(cycle)),
+                'Reporting cycle for {}'.format(cycle)),
         ])
         return breadcrumbs
 

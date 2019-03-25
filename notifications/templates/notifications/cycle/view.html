@@ -1,14 +1,14 @@
 {% extends layout_template %}
 
-{% block head_title %}Reporting cycle for year {{ cycle }} - {% endblock %}
+{% block head_title %}Reporting cycle for {{ cycle }} - {% endblock %}
 
 {% block content %}
-  <div id="cycle-actions" class="btn btn-add">
-    <a href="{% url 'notifications:cycle:stage_add' pk=cycle.pk %}">Add new stage</a>
-  </div>
 
+  <h1>Reporting cycle for {{ cycle }}</h1>
 
-  <h1>Reporting cycle for year {{ cycle }}</h1>
+  <p>Manage the notifications for each obligation. The obligations are predefined and for each of them you can see
+     the status, edit the email template and start sending the emails.
+  </p>
 
   {% for stage in cycle.stages.all %}
     <h2>{{ stage }}</h2>
@@ -19,7 +19,7 @@
         <th>Obligation</th>
         <th>Status</th>
         <th>Last updated</th>
-        <th>Actions</th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
@@ -29,9 +29,16 @@
             {{ template.group }}
           </td>
           <td>
-            <div>
-              {{  template.get_status_display }}
-            </div>
+            <span
+              {% if template.get_status_display == 'sent' %}
+              class="badge badge-success"
+              {% elif template.get_status_display == 'draft' %}
+              class="badge badge-light"
+              {& else &}
+              class="badge badge-warning"
+              {% endif %}
+              >{{  template.get_status_display }}
+            </span>
           </td>
           <td>{{ template.last_action.history_date.date }}</td>
           <td>
@@ -48,7 +55,9 @@
       </tbody>
     </table>
   {% empty %}
-    No stages for Cycle {{ cycle }}.
+    No notifications defined for this cycle.
   {% endfor %}
-
+  <div class="spacing">
+      <a class="a-no-style button" href="{% url 'notifications:cycle:stage_add' pk=cycle.pk %}">Add notification</a>
+  </div>
 {% endblock %}

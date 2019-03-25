@@ -55,11 +55,12 @@ div.cycle-stage p {
     margin: 0;
 }
 
-#cycle-actions {
+/* #cycle-actions {
     float: right;
     margin: 4px 0 0;
     color: #fff;
 }
+*/
 
 div.btn a {
     margin: 0;
@@ -185,4 +186,52 @@ form input[name='subject'] {
 .input-style {
     margin: 6px;
     padding: 6px;
+}
+
+.spacing {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 90%;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.badge-warning {
+    color: #212529;
+    background-color: #ffc107;
+}
+
+.badge-success {
+    color: #fff;
+    background-color: #28a745;
+}
+
+.badge-light {
+    color: #212529;
+    background-color: #f8f9fa;
+}
+
+.horizontal-spacing {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.sorting:after {
+    content: "" !important;
+}
+
+.sorting_asc:after {
+    content: "" !important;
+}
+
+.sorting_desc:after {
+    content: "" !important;
 }

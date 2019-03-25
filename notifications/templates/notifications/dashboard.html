@@ -3,35 +3,44 @@
 {% block content %}
 
 
-<h1>Welcome to BDR Registry Notifications</h1>
+<h1>BDR Registry Notifications</h1>
 
-<div class="cycle-actions">
-	<a class="a-no-style button" href="{% url 'notifications:cycle:add' %}">
-		Add new reporting cycle
-	</a>
-</div>
+<p>Send notifications (invitations, reminders, warnings, etc.) to the
+   companies reporting under FGAS/ODS/Cars and Vans obligations using custom email templates.
+   Please add a reporting cycle before sending the notifications.</p>
 
 <h2>Reporting cycles</h2>
-
-<table class="brn-table">
-	<thead>
-		<tr>
-			<th>Year</th>
-			<th>Closing date</th>
-			<th>Actions</th>
-		</tr>
-	</thead>
-	<tbody>
-		{% for item in items %}
+{% if items %}
+	<table class="brn-table">
+		<thead>
 			<tr>
-				<td>{{ item }}</td>
-				<td>{{ item.closing_date }}</td>
-				<td class="actions">
-					<a class="a-no-style button" href="{% url 'notifications:cycle:view' item.id %}">View</a>
-				</td>
+				<th>Year</th>
+				<th>Closing date</th>
+				<th></th>
 			</tr>
-		{% endfor %}
-	</tbody>
-</table>
+		</thead>
+		<tbody>
+			{% for item in items %}
+				<tr>
+					<td>{{ item }}</td>
+					<td>{{ item.closing_date }}</td>
+					<td>
+						<div class="btn btn-default">
+							<a href="{% url 'notifications:cycle:view' item.id %}">Manage notification</a>
+						</div>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% else %}
+	<p>No reporting cycles available.</p>
+{% endif %}
+
+<div class="cycle-actions spacing">
+	<a class="a-no-style button" href="{% url 'notifications:cycle:add' %}">
+		Add reporting cycle
+	</a>
+</div>
 
 {% endblock %}

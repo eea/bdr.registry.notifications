@@ -21,7 +21,7 @@ from .models import (
 )
 
 
-def set_values_for_parameters(person, company):
+def set_values_for_parameters(emailtemplate, person, company):
     params = {}
     for param, value in ACCEPTED_PARAMS.items():
         if value:
@@ -31,15 +31,15 @@ def set_values_for_parameters(person, company):
     return params
 
 
-def format_body(body_html, person, company):
-    params = set_values_for_parameters(person, company)
-    email_body = body_html.format(**params)
+def format_body(emailtemplate, person, company):
+    params = set_values_for_parameters(emailtemplate, person, company)
+    email_body = emailtemplate.body_html.format(**params)
     return email_body
 
 
-def format_subject(subject, person, company):
-    params = set_values_for_parameters(person, company)
-    subject = subject.format(**params)
+def format_subject(emailtemplate, person, company):
+    params = set_values_for_parameters(emailtemplate, person, company)
+    subject = emailtemplate.subject.format(**params)
     return subject
 
 
@@ -48,8 +48,8 @@ def make_messages(companies, emailtemplate):
     notifications = []
     for company in companies:
         for person in company.users.all():
-            subject = format_subject(emailtemplate.subject, person, company)
-            email_body = format_body(emailtemplate.body_html, person, company)
+            subject = format_subject(emailtemplate, person, company)
+            email_body = format_body(emailtemplate, person, company)
             recipient_email = [person.email]
 
             emails.append((subject, recipient_email, email_body))
@@ -76,7 +76,7 @@ def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None)
         elif is_test:
             company = Company.objects.filter(name=data.get('company')).first()
             person = Person.objects.filter(name=data.get('contact')).first()
-            values = set_values_for_parameters(person, company)
+            values = set_values_for_parameters(emailtemplate, person, company)
             email = [data['email'].strip()]
             body_html = emailtemplate.body_html.format(**values)
             subject = emailtemplate.subject.format(**values)
@@ -132,6 +132,10 @@ class StageAddForm(forms.ModelForm):
         model = Stage
         fields = ['cycle', 'title']
 
+    def __init__(self, *args, **kwargs):
+        super(StageAddForm, self).__init__(*args, **kwargs)
+        self.fields['title'].label = "Name"
+
     def save(self, commit=True, *args, **kwargs):
         """When a new stage is added to a cycle create a template
         for each group.
@@ -150,6 +154,10 @@ class CycleEmailTemplateEditForm(forms.ModelForm):
         fields = ['subject', 'body_html']
         exclude = ('id', 'cycle', 'emailtemplate')
 
+    def __init__(self, *args, **kwargs):
+        super(CycleEmailTemplateEditForm, self).__init__(*args, **kwargs)
+        self.fields['subject'].label = "Email subject"
+        self.fields['body_html'].label = "Email body"
 
 class CycleEmailTemplateTestForm(forms.Form):
     email = forms.CharField(validators=[validate_email])

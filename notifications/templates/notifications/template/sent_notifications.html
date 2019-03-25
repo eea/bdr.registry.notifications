@@ -1,30 +1,31 @@
 {% extends layout_template %}
 
 {% block content %}
+  <h1>Statistics for {{ company.name }}</h1>
+
+  <h2>Company details</h2>
 
   <p>Company: {{ company.name }}</p>
   <p>VAT: {{ company.vat }}</p>
   <p>Country: {{ company.country }}</p>
-  <p>Group: {{ company.group }}</p>
+  <p>Obligation: {{ company.group }}</p>
 
-  <table id="myTable" class="brn-table">
-    <thead>
-    <tr>
-      <th>Username</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Sent</th>
-    </tr>
-    </thead>
-    {% for cycle in cycles %}
-      {% for stage in cycle.stages.all %}
+  <h2>Reporting cycles</h2>
+
+  {% for cycle in cycles %}
+    {% for stage in cycle.stages.all %}
+      <h4>{{ stage }}, {{ cycle.year }}</h4>
+      <table id="myTable" class="brn-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Sent</th>
+          </tr>
+        </thead>
         <tbody>
-        <tr>
-          <th colspan="4">Cycle: {{ cycle }} - Stage: {{ stage }}</th>
-        </tr>
         {% for person in company.users.all %}
           <tr>
-            <td>{{ person.username }}</td>
             <td>{{ person.name }}</td>
             <td>{{ person.email }}</td>
             <td>
@@ -38,9 +39,9 @@
             </td>
           </tr>
         {% endfor %}
-      {% endfor %}
-    </tbody>
+        </tbody>
+      </table>
     {% endfor %}
-  </table>
+  {% endfor %}
 
 {% endblock %}

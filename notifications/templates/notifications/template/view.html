@@ -1,11 +1,16 @@
 {% extends layout_template %}
 
-{% block head_title %}{{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }} - {% endblock %}
+{% block head_title %}
+  Email template for {{ template.group }} obligation ({{ template.stage }}, {{ template.stage.cycle.year }})
+{% endblock %}
 
 {% block content %}
 
-<h1>Email {{ template.stage|lower }} for {{ template.group }}</h1>
+<h1>Email template for {{ template.group }} obligation ({{ template.stage }}, {{ template.stage.cycle.year }})</h1>
 
+<p>Use this form to see how the companies will see the emails. Edit the email template as you like and be sure to
+   test it before sending the emails. When ready, filter the companies and start sending the emails.
+</p>
 <h2>Subject</h2>
 <div class="preview-body">{{ template.subject }}</div>
 
@@ -17,14 +22,16 @@
 {% if template.is_triggered %}
   <a href="{% url 'notifications:template:trigger' object.id %}"><input type="button" value="View details" /></a>
 {% else %}
-  <a class="a-no-style" href="{% url 'notifications:template:trigger' object.id %}">
-    <input type="button" value="Filter companies and send emails"/>
-  </a>
-  <a class="a-no-style" href="{% url 'notifications:template:edit' object.id %}">
-    <input type="button" value="Edit"/>
-  </a>
-  <a class="a-no-style" href="{% url 'notifications:template:test' object.id %}">
-    <input type="button" value="Test"/>
+
+  <span class="spacing">
+    <a class="a-no-style button" href="{% url 'notifications:template:edit' object.id %}">Edit template</a>
+    <a class="a-no-style button" href="{% url 'notifications:template:test' object.id %}">Test email</a>
+    <a class="a-no-style button" href="{% url 'notifications:template:trigger' object.id %}">
+      Filter companies and send emails
+    </a>
+  </span>
+  <a class="horizontal-spacing" href="{% url 'notifications:cycle:view' object.id %}">
+      Back
   </a>
 {% endif %}
 

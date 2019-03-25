@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head_title %}
-  Trigger - {{ template.group }} - Reporting cycle for year {{ template.stage.cycle }} -
+  Filter companies for {{ template.group }} obligation ({{ template.stage }}, {{ template.stage.cycle.year }})
 {% endblock %}
 
 {% block head %}
@@ -13,7 +13,7 @@
 {% block content %}
 
   <h1>
-    Trigger - {{ template.group }} - Reporting cycle for year {{ template.stage.cycle }} -
+    Filter companies for {{ template.group }} obligation ({{ template.stage }}, {{ template.stage.cycle.year }})
   </h1>
 
   <h2>Send notifications</h2>
@@ -23,15 +23,14 @@
     </p>
   {% elif template.status == template.PROCESSING %}
     <p>
-      This stage is currently being processes. Check back here in a few minutes to review the
+      This notification is currently in progress. Check back here in a few minutes to review the
       list of contacted users.
     </p>
   {% else %}
     <p>
-      Trigger notification for {{ template.group }}
-      for {{ template.stage }}-{{ template.stage.cycle }}.
-      Please review the list of contacts bellow before sending the notification. You can filter
-      the list if required.
+      Send email notification to all companies reporting under {{ template.group }} obligation
+      ({{ template.stage }}, {{ template.stage.cycle }}).
+      Please review the list of contacts bellow before sending the emails.
     </p>
     <form action="" method="post" id="send-emails">
       {% csrf_token %}
@@ -53,10 +52,13 @@
       {% endif %}
 
       <a class="a-no-style" href="{% url 'notifications:template:trigger' template.id %}">
-        <input type="button" value="Cancel filtering"/>
+        <input type="button" value="Reset filtering"/>
       </a>
     {% else %}
-      Upload a list of company IDs to filter the results.
+      <p>
+        Upload a CSV file containing the list of companies IDs to be notified. The filtered list will be
+        displayed in the section below.
+      </p>
       <div>
           <form action="" method="POST" id="filter-with-csv" enctype="multipart/form-data">
             {% csrf_token %}
@@ -72,7 +74,7 @@
   {% if template.status == template.SENT %}
     <h2>Sent emails</h2>
   {% elif template.status == template.DRAFT %}
-    <h2>Review contact list</h2>
+    <h2>Review contacts</h2>
   {% endif %}
 
   {% if template.status == template.SENT or template.status == template.DRAFT %}

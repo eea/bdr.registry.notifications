@@ -40,11 +40,11 @@ class CycleEmailTemplateBase(NotificationsBaseView):
             Breadcrumb(
                 reverse('notifications:cycle:view',
                         kwargs={'pk': self.object.stage.cycle.pk}),
-                'Reporting cycle for year {}'.format(self.object.stage.cycle)),
+                'Reporting cycle for {}'.format(self.object.stage.cycle)),
             Breadcrumb(
                 reverse('notifications:template:view',
                         kwargs={'pk': self.object.pk}),
-                self.object),
+                'Email template for {}'.format(self.object.group.title )),
         ])
         return breadcrumbs
 
@@ -74,7 +74,7 @@ class CycleEmailTemplateView(CycleEmailTemplateBase, generic.DetailView):
 class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
     form_class = CycleEmailTemplateEditForm
     template_name = 'notifications/template/edit.html'
-    success_message = 'Reporting cycle notification edited successfully'
+    success_message = 'Email template saved succesfully.'
     context_object_name = 'template'
 
     def get_object(self):
@@ -92,7 +92,7 @@ class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
     def breadcrumbs(self):
         breadcrumbs = super(CycleEmailTemplateEdit, self).breadcrumbs()
         breadcrumbs.extend([
-            Breadcrumb('', 'Edit'),
+            Breadcrumb('', 'Edit email template'),
         ])
         return breadcrumbs
 
@@ -104,7 +104,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
     def breadcrumbs(self):
         breadcrumbs = super(CycleEmailTemplateTriggerDetail, self).breadcrumbs()
         breadcrumbs.extend([
-            Breadcrumb('', 'Trigger'),
+            Breadcrumb('', 'Filter/Send emails'),
         ])
         return breadcrumbs
 
@@ -197,7 +197,7 @@ class CycleEmailTemplateTrigger(View):
 class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
     form_class = CycleEmailTemplateTestForm
     template_name = 'notifications/template/test.html'
-    success_message = 'Emails were successfully sent'
+    success_message = 'Test email was succesfully sent.'
 
     def get_object(self):
         obj = get_object_or_404(CycleEmailTemplate,
@@ -230,7 +230,7 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         context['person'] = person
 
         # TODO Create a function that takes param values, body_html and returns the formatted text
-        params = set_values_for_parameters(person, company)
+        params = set_values_for_parameters(template, person, company)
         body = template.body_html
         template.body_html = body.format(**params)
         subject = template.subject
@@ -252,7 +252,7 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         self.object = self.get_object()
         breadcrumbs = super(CycleEmailTemplateTest, self).breadcrumbs()
         breadcrumbs.extend([
-            Breadcrumb('', 'Test'),
+            Breadcrumb('', 'Test email template'),
         ])
         return breadcrumbs
 
@@ -291,12 +291,12 @@ class ResendEmailDetail(ResendEmailBase, generic.DetailView):
             company=self.get_company()
         )
         context['template'].body_html = format_body(
-            context['template'].body_html,
+            context['template'],
             context['person'],
             self.get_company()
         )
         context['template'].subject = format_subject(
-            context['template'].subject,
+            context['template'],
             context['person'],
             self.get_company()
         )
@@ -350,6 +350,14 @@ class ResendEmail(View):
 class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
     template_name = 'notifications/template/sent_notifications.html'
     email_template_id_list = []
+
+    def breadcrumbs(self):
+        breadcrumbs = super(ViewSentNotificationForCompany, self).breadcrumbs()
+        breadcrumbs.extend([
+            Breadcrumb(reverse('notifications:companies'), 'Statistics'),
+            Breadcrumb('', '{}'.format(self.get_company().name)),
+        ])
+        return breadcrumbs
 
     def get_object(self):
         return get_object_or_404(CompaniesGroup,

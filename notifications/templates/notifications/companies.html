@@ -4,6 +4,10 @@
 
 {% load static %}
 
+{% block head_title %}
+  Statistics
+{% endblock %}
+
 {% block head %}
   <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.css' %}">
@@ -12,7 +16,7 @@
 {% block content %}
 
 <h1>Companies</h1>
-
+<p>Use this page to find email notifications sent to companies reporting under a specific obligation.</p>
 {% with groups=view.get_groups %}
 
 <p style="display: inline">Choose obligation: </p>
@@ -21,16 +25,17 @@
     <option value="#{{ group.code }}">{{ group.title }}</option>
   {% endfor %}
 </select>
-<input id="button" type="button" value="Show Companies!" />
+<input class="button" id="button" type="button" value="Display companies" />
 
 {% for group in groups %}
   <div id={{ group.code }}>
-    <h2 id="{{ group.code }}">{{ group.title }}</h2>
+    <h2 id="{{ group.code }}">{{ group.title }} obligation</h2>
     {% get_group_companies view group.code as items %}
     {% include 'notifications/_page_controls.html' with items=items %}
     <table id="{{ group.code }}-table" class="brn-table">
       <thead>
         <tr>
+          <th>ID</th>
           <th>Name</th>
           <th>VAT</th>
           <th>Country</th>
@@ -39,6 +44,7 @@
       <tbody>
         {% for item in items %}
           <tr>
+            <td>{{ item.external_id }}</td>
             <td><a href="{% url 'notifications:template:sent_notifications' group.pk item.id %}">{{ item.name }}</a></td>
             <td>{{ item.vat|default_if_none:'' }}</td>
             <td>{{ item.country }}</td>

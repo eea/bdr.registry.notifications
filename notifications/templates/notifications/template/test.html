@@ -1,33 +1,43 @@
 {% extends layout_template %}
 
-{% block head_title %}Test - {{ template.emailtemplate }} - Reporting cycle for year {{ template.cycle.year }}
+{% block head_title %}
+  Test email template for {{ template.group }} obligation ({{ template.stage }}, {{ template.stage.cycle.year }})
 {% endblock %}
 
 {% block content %}
 {% if info %}
   <h2>{{ info }}</h2>
 {% else %}
-  <h1>Preview {{ template.stage|lower }} for {{ template.group }}</h1>
+  <h1>
+    Test email template for {{ template.group }} obligation ({{ template.stage }}, {{ template.stage.cycle.year }})
+  </h1>
+  <p>
+    A random company details are used to fill in all the variables used in the email template. Send a test email to see how
+    it will look in your inbox.
+  </p>
 
-  <h2>Provide the following parameters</h2>
+  <h2>Random company details</h2>
   {% for param, value in params.items %}
     {% if value %}
       <p>{{ param }}: {{ value }}</p>
     {% endif %}
   {% endfor %}
 
-  <h2>Subject</h2>
+  <h2>Email subject</h2>
   <div class="preview-body">{{ template.subject|safe }}</div>
 
-  <h2>Body</h2>
+  <h2>Email body</h2>
   <div class="preview-body">{{ template.body_html|safe }}</div>
   {% if sent %}
     <h2>Test was successful!</h2>
     <a class="a-no-style" href="{% url 'notifications:template:test' template.pk %}">
         <input type="button" value="Make another test"/>
     </a>
+    <a href="{% url 'notifications:template:view' template.pk %}">
+        Back
+    </a>
   {% else %}
-    <h2>Send email</h2>
+    <h2>Test email</h2>
     <form action="" method="post">
       {% csrf_token %}
         {% with params=params %}
@@ -37,8 +47,8 @@
         {% endif %}
         {% endwith %}
       <p>Email: <input class="my-input" type="text" name="email" id="email" required=""/></p>
-      <input type="submit" value="Send email"/>
-      <a class="button a-no-style" href="{% url 'notifications:template:view' template.pk %}">
+      <input type="submit" value="Send test email"/>
+      <a href="{% url 'notifications:template:view' template.pk %}">
         Cancel
       </a>
     </form>
