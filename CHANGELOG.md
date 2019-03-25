@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.5 (2019-03-25)
+-----------------
+* Fix companies title
+  [dianaboiangiu]
+
 1.1.4 (2019-03-25)
 -----------------
 * Refactor design
