@@ -70,6 +70,7 @@ def make_messages(companies, emailtemplate):
 
 def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None):
     with transaction.atomic() as atomic:
+        bcc = BCC
         if companies:
             sender = EMAIL_SENDER
             emails = make_messages(companies, emailtemplate)
@@ -81,6 +82,7 @@ def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None)
             body_html = emailtemplate.body_html.format(**values)
             subject = emailtemplate.subject.format(**values)
             emails = [(subject, email, body_html)]
+            bcc = None
         else:
             recipients = Company.objects.filter(
                 group=emailtemplate.group)
@@ -93,7 +95,7 @@ def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None)
         email_message = send_mail(
             subject, plain_html, sender, recipient_email,
             fail_silently=True,
-            bcc=BCC, html_message=email_body,
+            bcc=bcc, html_message=email_body,
             connection=connection)
 
     try:
