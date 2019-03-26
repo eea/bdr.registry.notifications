@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.8 (2019-03-26)
+-----------------
+* Add details on template trigger page
+  [dianaboiangiu]
+
 1.1.7 (2019-03-26)
 -----------------
 * Add BCC to send mail
