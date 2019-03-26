@@ -81,6 +81,7 @@ TEMPLATES = [
                 #custom
                 'notifications.layout.layout_context_processor',
                 'notifications.context.sentry',
+                'notifications.context.debug',
             ],
         },
     },

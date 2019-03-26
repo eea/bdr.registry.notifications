@@ -9,3 +9,9 @@ def sentry(request):
         'sentry_id': sentry_id,
         'sentry_public_id': env('SENTRY_PUBLIC_DSN', ''),
     }
+
+
+def debug(request):
+    return {
+        'debug': env('DEBUG')
+    }
