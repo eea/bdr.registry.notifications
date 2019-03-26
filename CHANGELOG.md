@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.1.11 (2019-03-26)
+------------------
+* Add DEBUG to context
+
 1.1.10 (2019-03-26)
 ------------------
 * Fix text trigger page
