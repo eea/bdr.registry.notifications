@@ -241,6 +241,7 @@ ECRREGISTRY_TOKEN = env('ECR_REGISTRY_TOKEN', '')
 ECR_DOMAINS = env('ECR_DOMAINS', '').split(',')
 
 EMAIL_SENDER = env('EMAIL_SENDER', '')
+BCC = [env('BCC', '')]
 
 Q_CLUSTER = {
     'redis': {

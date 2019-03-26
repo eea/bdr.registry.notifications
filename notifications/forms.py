@@ -2,14 +2,13 @@ from django import forms
 from django.conf import settings
 from django.core.mail import get_connection
 from django.core.validators import validate_email
-from django.core.mail import send_mail
 from django.db import transaction
 from django.forms import ModelChoiceField
 from django.utils.html import strip_tags
 
 from django_q.tasks import async
 
-from bdr.settings import EMAIL_SENDER
+from bdr.settings import EMAIL_SENDER, BCC
 from notifications import ACCEPTED_PARAMS
 from notifications.models import Stage
 from .models import (
@@ -19,6 +18,7 @@ from .models import (
     CycleNotification,
     Person,
 )
+from .mail_send import send_mail
 
 
 def set_values_for_parameters(emailtemplate, person, company):
@@ -90,9 +90,11 @@ def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None)
     connection = get_connection()
     for subject, recipient_email, email_body in emails:
         plain_html = strip_tags(email_body)
-        send_mail(subject, plain_html, sender, recipient_email,
-                  fail_silently=False, html_message=email_body,
-                  connection=connection)
+        email_message = send_mail(
+            subject, plain_html, sender, recipient_email,
+            fail_silently=True,
+            bcc=BCC, html_message=email_body,
+            connection=connection)
 
     try:
         connection.close()

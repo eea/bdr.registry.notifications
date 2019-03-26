@@ -111,7 +111,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
     def get_company_ids(self):
         if 'csv_file' not in self.request.FILES:
             return None
-        reader = csv.reader(self.request.FILES["csv_file"].read().decode().splitlines())
+        reader = csv.reader(self.request.FILES["csv_file"].read().decode("utf-8-sig").splitlines())
         return [row[0] for row in reader if row]
 
     def get_number_of_emails_to_send(self, companies):

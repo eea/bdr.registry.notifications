@@ -235,3 +235,7 @@ form input[name='subject'] {
 .sorting_desc:after {
     content: "" !important;
 }
+
+.green {
+    color: green;
+}
