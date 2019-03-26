@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.1.10 (2019-03-26)
+------------------
+* Fix text trigger page
+
 1.1.9 (2019-03-26)
 -----------------
 * Do not send bcc in test template
