@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.7 (2019-03-26)
+-----------------
+* Add BCC to send mail
+  [dianaboiangiu]
+
 1.1.6 (2019-03-25)
 -----------------
 * Remove buttons from ckeditor
