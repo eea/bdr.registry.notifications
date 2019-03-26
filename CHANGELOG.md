@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.9 (2019-03-26)
+-----------------
+* Do not send bcc in test template
+  [dianaboiangiu]
+
 1.1.8 (2019-03-26)
 -----------------
 * Add details on template trigger page
