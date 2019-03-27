@@ -1,13 +1,20 @@
 Changelog
 =========
 
+1.1.12 (2019-03-27)
+------------------
+* Fix details in pages
+  [dianaboiangiu]
+
 1.1.11 (2019-03-26)
 ------------------
 * Add DEBUG to context
+  [dianaboiangiu]
 
 1.1.10 (2019-03-26)
 ------------------
 * Fix text trigger page
+  [dianaboiangiu]
 
 1.1.9 (2019-03-26)
 -----------------
