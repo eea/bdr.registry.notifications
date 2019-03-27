@@ -13,11 +13,11 @@
 {% with params=template.get_parameters %}
   {% if params %}
       {% for param in params %}
-        {{ param }} {% if not forloop.last %}, {% endif %}
+        <small>{{ param }}</small> {% if not forloop.last %}, {% endif %}
       {% endfor %}
   {% endif %}
 {% endwith %}
-(e.g {COUNTRY} OR {CONTACT}). When ready press the "Continue" button.
+<small>(e.g {COUNTRY} OR {CONTACT})</small>. When ready press the "Continue" button.
 </p>
 
 <form action="" method="post">

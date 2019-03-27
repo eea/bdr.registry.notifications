@@ -8,9 +8,18 @@
 
 <h1>Email template for {{ template.group }} obligation ({{ template.stage }}, {{ template.stage.cycle.year }})</h1>
 
-<p>Use this form to see how the companies will see the emails. Edit the email template as you like and be sure to
-   test it before sending the emails. When ready, filter the companies and start sending the emails.
-</p>
+{% if template.is_triggered %}
+  <p>The following email template was used to notify the companies. 
+     Please click on "View details" to see the list of contacted companies.
+  </p>
+{% else %}
+  <p>
+    Use this form to see how the companies will see the emails. 
+    Edit the email template as you like and be sure to test it before 
+    sending the emails. When ready, filter the companies and start sending the emails.
+  </p>
+{% endif %}
+
 <h2>Subject</h2>
 <div class="preview-body">{{ template.subject }}</div>
 
