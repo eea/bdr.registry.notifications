@@ -39,7 +39,7 @@
       Filter companies and send emails
     </a>
   </span>
-  <a class="horizontal-spacing" href="{% url 'notifications:cycle:view' object.id %}">
+  <a class="horizontal-spacing" href="{% url 'notifications:cycle:view' object.stage.cycle.id %}">
       Back
   </a>
 {% endif %}

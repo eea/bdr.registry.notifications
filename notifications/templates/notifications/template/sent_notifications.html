@@ -9,6 +9,11 @@
   <p>VAT: {{ company.vat }}</p>
   <p>Country: {{ company.country }}</p>
   <p>Obligation: {{ company.group }}</p>
+  {% if company.group.id ==  3 %}
+  <p>Representing Organisation name: {{ company.representative_name }}</p>
+  <p>Representing Organisation VAT: {{ company.representative_vat }} </p>
+  <p>Representing Organisation country: {{ company.representative_country_name }}</p>
+  {% endif %}
 
   <h2>Reporting cycles</h2>
   {% if cycles %}

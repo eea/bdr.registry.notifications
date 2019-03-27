@@ -55,7 +55,7 @@ class BaseFetchCommand:
         return company
 
     def create_person(self, **kwargs):
-        """ Create or update a company.
+        """ Create or update a person.
         """
         name = kwargs['name']
         username = kwargs['username']
@@ -63,6 +63,13 @@ class BaseFetchCommand:
         if Person.objects.filter(email=email).exists:
             person, created = Person.objects.update_or_create(
                 email=email,
+                defaults=kwargs
+            )
+        elif Person.objects.filter(username=username).exists:
+            person, created = Person.objects.update_or_create(
+                username=username,
+                email=email,
+                name=name,
                 defaults=kwargs
             )
         else:
