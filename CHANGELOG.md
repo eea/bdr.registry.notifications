@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.13 (2019-03-27)
+------------------
+* Add representative details to company
+  [dianaboiangiu]
+
 1.1.12 (2019-03-27)
 ------------------
 * Fix details in pages
