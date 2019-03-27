@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.14 (2019-03-27)
+------------------
+* Fix fetch ecr persons
+  [dianaboiangiu]
+
 1.1.13 (2019-03-27)
 ------------------
 * Add representative details to company
