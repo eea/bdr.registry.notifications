@@ -77,6 +77,9 @@ class Company(models.Model):
     vat = models.CharField(max_length=64, blank=True, null=True)
     country = models.CharField(max_length=256)
     group = models.ForeignKey(CompaniesGroup)
+    representative_name = models.CharField(max_length=256, blank=True, null=True)
+    representative_vat = models.CharField(max_length=256, blank=True, null=True)
+    representative_country_name = models.CharField(max_length=256, blank=True, null=True)
 
     objects = GetOrNoneManager()
 

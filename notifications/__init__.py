@@ -15,4 +15,7 @@ ACCEPTED_PARAMS = {
     'CONTACT': 'person.name',
     'VAT': 'company.vat',
     'CLOSING_DATE': 'emailtemplate.stage.cycle.closing_date.strftime("%d %B %Y")',
+    'OR_NAME': 'company.representative_name',
+    'OR_VAT': 'company.representative_vat',
+    'OR_COUNTRY': 'company.representative_country_name',
 }

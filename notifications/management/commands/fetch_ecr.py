@@ -40,12 +40,23 @@ class Command(BaseFetchCommand, BaseCommand):
 
 
     def parse_company_data(self, company):
+        representative_name = ''
+        representative_vat = ''
+        representative_country_name = ''
+        if company.get('representative'):
+            representative_name = company['representative']['name']
+            representative_vat = company['representative']['vatnumber']
+            representative_country_name = company['representative']['address']['country']['name']
         return dict(
             external_id=company['company_id'],
             name=company['name'],
             vat=company['vat'],
             country=company['address']['country']['name'],
-            group=self.get_group(company))
+            group=self.get_group(company),
+            representative_name=representative_name,
+            representative_vat=representative_vat,
+            representative_country_name=representative_country_name
+        )
 
     def parse_person_data(self, person):
         fmt_person_name = '{first_name} {last_name}'
