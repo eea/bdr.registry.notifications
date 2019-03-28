@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.16 (2019-03-28)
+------------------
+* Allow admin to delete cyclenotifications
+  [dianaboiangiu]
+
 1.1.15 (2019-03-28)
 ------------------
 * Fix person fetch email/username
