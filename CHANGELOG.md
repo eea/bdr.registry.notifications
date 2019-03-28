@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.15 (2019-03-28)
+------------------
+* Fix person fetch email/username
+  [dianaboiangiu]
+
 1.1.14 (2019-03-27)
 ------------------
 * Fix fetch ecr persons
