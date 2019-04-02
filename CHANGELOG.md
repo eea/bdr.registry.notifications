@@ -1,5 +1,11 @@
 Changelog
 =========
+
+1.1.18 (2019-04-02)
+-------------------
+* Remove unique from email
+  [dianaboiangiu]
+
 1.1.17 (2019-04-02)
 ------------------
 * Fix create person
