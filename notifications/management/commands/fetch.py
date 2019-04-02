@@ -64,8 +64,8 @@ class BaseFetchCommand:
         username_exists = Person.objects.filter(username=username).exists()
         if username_exists and email_exists:
             person, created = Person.objects.update_or_create(
-                email=email,
                 username=username,
+                email=email,
                 defaults=kwargs
             )
         elif username_exists:
