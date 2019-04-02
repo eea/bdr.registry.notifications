@@ -51,9 +51,7 @@ Create initial database structure:
 
 Load fixtures data into the database:
 
-    $ python manage.py loaddata notifications/fixtures/stages.json
     $ python manage.py loaddata notifications/fixtures/companiesgroups.json
-    $ python manage.py loaddata notifications/fixtures/emailtemplates.json
 
 Create a super user to be able to use the app:
 
