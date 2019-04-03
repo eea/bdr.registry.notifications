@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.19 (2019-04-03)
+------------------
+* Set OTRS email headers
+  [dianaboiangiu]
+
 1.1.18 (2019-04-02)
 -------------------
 * Remove unique from email
