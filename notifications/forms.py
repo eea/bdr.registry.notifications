@@ -8,7 +8,7 @@ from django.utils.html import strip_tags
 
 from django_q.tasks import async
 
-from bdr.settings import EMAIL_SENDER, BCC
+from bdr.settings import EMAIL_SENDER, BCC, OTRS_EMAIL_HEADERS
 from notifications import ACCEPTED_PARAMS
 from notifications.models import Stage
 from .models import (
@@ -95,7 +95,7 @@ def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None)
         email_message = send_mail(
             subject, plain_html, sender, recipient_email,
             fail_silently=True,
-            bcc=bcc, html_message=email_body,
+            bcc=bcc, html_message=email_body, headers=OTRS_EMAIL_HEADERS,
             connection=connection)
 
     try:

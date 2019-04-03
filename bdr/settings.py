@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'simple_history',
     'memoize',
     'notifications.apps.NotificationsConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -243,6 +244,13 @@ ECR_DOMAINS = env('ECR_DOMAINS', '').split(',')
 
 EMAIL_SENDER = env('EMAIL_SENDER', '')
 BCC = [env('BCC', '')]
+
+OTRS_EMAIL_HEADERS = {
+    'X-OTRS-ArticleType': 'email-internal',
+    'X-OTRS-Loop': 'True',
+    'X-OTRS-Queue': 'BDR requests::Invitations',
+    'X-OTRS-State': 'closed successful'
+}
 
 Q_CLUSTER = {
     'redis': {
