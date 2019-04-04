@@ -20,6 +20,24 @@
 <small>(e.g {COUNTRY} OR {CONTACT})</small>. When ready press the "Continue" button.
 </p>
 
+<p class="bold">Reuse email template:</p>
+<select id="oldemailtemplates">
+  <option value="">--</option>
+    {% for old_template in old_templates %}
+      <option value="{{ old_template.id }}"
+          {% if request.GET.old_template|add:0 == old_template.id %} selected {% endif %}
+      >
+      {{ old_template.group.title }} - {{ old_template.stage.title }} - {{ old_template.stage.cycle.year }}
+      </option>
+    {% endfor %}
+</select>
+
+<span class="spacing">
+  <a id="use_old_template" class="a-no-style button" href="{% url 'notifications:template:edit' object.id %}">
+    Use this template
+  </a>
+</span>
+
 <form action="" method="post">
   {% csrf_token %}
   {{ form.media }}
@@ -41,4 +59,14 @@
   <a href="{% url 'notifications:template:view' template.pk %}">Cancel</a>
 </form>
 
+{% endblock %}
+
+{% block footer_scripts %}
+  <script>
+    $('#use_old_template').click(function(event) {
+      event.preventDefault();
+      oldTemplate = "?old_template=" + $('#oldemailtemplates option:selected').val();
+      window.location.href = $(this).attr('href') + oldTemplate;
+    })
+  </script>
 {% endblock %}

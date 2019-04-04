@@ -77,6 +77,29 @@ class CycleEmailTemplateEdit(CycleEmailTemplateBase, generic.UpdateView):
     success_message = 'Email template saved succesfully.'
     context_object_name = 'template'
 
+
+    def get_initial(self):
+        old_template_id = self.request.GET.get('old_template', None)
+        try:
+            old_template =  CycleEmailTemplate.objects.get(id=old_template_id)
+            initial = {
+                'subject': old_template.subject,
+                'body_html': old_template.body_html,
+            }
+        except:
+            return {}
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(CycleEmailTemplateEdit, self).get_context_data(**kwargs)
+        last_2_cycles_ids = [ cycle.id for cycle in Cycle.objects.order_by('-closing_date')[:2]]
+        old_templates = CycleEmailTemplate.objects.filter(
+            status=CycleEmailTemplate.SENT,
+            stage__cycle_id__in=last_2_cycles_ids
+        ).order_by('group__title')
+        context['old_templates'] = old_templates
+        return context
+
     def get_object(self):
         obj = get_object_or_404(CycleEmailTemplate,
                                 id=self.kwargs['pk'])
