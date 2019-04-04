@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.20 (2019-04-04)
+------------------
+* Reuse email template
+  [dianaboiangiu]
+
 1.1.19 (2019-04-03)
 ------------------
 * Set OTRS email headers
