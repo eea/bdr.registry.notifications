@@ -34,9 +34,6 @@
       BCC to <i>bdr.helpdesk@eea.europa.eu</i>.
     </p>
 
-    <p class="green">
-        Important! Please make sure that you add and test OTRS PostMaster Filters before sending the emails!
-    </p>
     <form action="" method="post" id="send-emails">
       {% csrf_token %}
       <input type="text" name="recipients" value="{{ recipient_json|safe }}" hidden readonly/>
