@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.utils import timezone
 from django.db.models import Q
 from django.db import models
+from django.db.models.query import QuerySet
 
 from ckeditor.fields import RichTextField
 from django.utils.functional import cached_property
@@ -45,9 +46,10 @@ class Stage(models.Model):
 
 class CompaniesGroup(models.Model):
     """ Base class for the 3 groups of companies:
-        1 - ODS/Cars/Vans
+        1 - Cars/Vans
         2 - F-gases EU
         3 - F-gases NONEU
+        4 - ODS
     """
     title = models.CharField(max_length=256)
     code = models.SlugField(max_length=100, unique=True)
@@ -77,6 +79,7 @@ class Company(models.Model):
     vat = models.CharField(max_length=64, blank=True, null=True)
     country = models.CharField(max_length=256)
     group = models.ForeignKey(CompaniesGroup)
+    status = models.CharField(max_length=64, default='')
     representative_name = models.CharField(max_length=256, blank=True, null=True)
     representative_vat = models.CharField(max_length=256, blank=True, null=True)
     representative_country_name = models.CharField(max_length=256, blank=True, null=True)

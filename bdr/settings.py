@@ -242,6 +242,7 @@ ECR_PERSON_PATH = env('ECR_PERSON_PATH', '/misc/user/export/json')
 ECRREGISTRY_TOKEN = env('ECR_REGISTRY_TOKEN', '')
 ECR_DOMAINS = env('ECR_DOMAINS', '').split(',')
 
+DOUBLE_CHECK_COMPANIES = ['F-gases EU', 'F-gases NONEU', 'ODS']
 EMAIL_SENDER = env('EMAIL_SENDER', '')
 BCC = [env('BCC', '')]
 

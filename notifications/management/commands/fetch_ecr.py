@@ -8,7 +8,7 @@ from notifications import (
     FGASES_EU, FGASES_NONEU,
 )
 from notifications.management.commands.fetch import BaseFetchCommand
-from notifications.models import CompaniesGroup, Person
+from notifications.models import CompaniesGroup, Person, Company
 from notifications.registries import EuropeanCacheRegistry
 from notifications.tests.base.registry_mock import EuropeanCacheRegistryMock
 
@@ -53,6 +53,7 @@ class Command(BaseFetchCommand, BaseCommand):
             vat=company['vat'],
             country=company['address']['country']['name'],
             group=self.get_group(company),
+            status=company['status'],
             representative_name=representative_name,
             representative_vat=representative_vat,
             representative_country_name=representative_country_name
@@ -67,11 +68,23 @@ class Command(BaseFetchCommand, BaseCommand):
             email=person['email'],
         )
 
+    def check_company_is_valid(self, company):
+        if company['status'] == 'VALID':
+            return True
+        external_id = company['company_id']
+        company_obj = Company.objects.filter(external_id=external_id)
+        if company_obj.first():
+            company_obj.update(**self.parse_company_data(company))
+            logger.info(
+                'Company rejected %s (%s)', company_obj.first().name, company_obj.first().external_id)
+
     def fetch_companies(self, registry):
         company_count = 0
         errors = []
         for item in registry.get_companies():
             try:
+                if not self.check_company_is_valid(item):
+                    continue
                 company = self.create_company(
                     **self.parse_company_data(item))
                 username_list = [user["username"] for user in item["users"]]
