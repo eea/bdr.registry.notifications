@@ -45,6 +45,20 @@ services:
     - /var/spool/postfix/
     command: ['qcluster']
 
+  fetch:
+    image: eeacms/bdr.registry.notifications:latest
+    container_name: not.fetch
+    depends_on:
+    - app
+    - postgres
+    environment:
+    - TZ=Europe/Copenhagen
+    - DEBUG=False
+    env_file:
+    - docker/app.env
+    volumes:
+    - appdata:/var/local/bdr.registry.notifications/static
+    entrypoint: /bin/sh -c 'python manage.py fetch_bdr && python manage.py fetch_ecr'
 
   redis:
       image: redis:alpine
