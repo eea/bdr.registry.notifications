@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.1.21 (2019-04-09)
+------------------
+* Improve fetching
+* Check companies fetched from ECR
+  [dianaboiangiu]
+
 1.1.20 (2019-04-04)
 ------------------
 * Reuse email template
