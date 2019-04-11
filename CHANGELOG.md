@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.27 (2019-04-11)
+------------------
+* Fix ecr companies create or update
+  [dianaboiangiu]
+
 1.1.26 (2019-04-11)
 ------------------
 * Add command for fetching both BDR and ECR companies
