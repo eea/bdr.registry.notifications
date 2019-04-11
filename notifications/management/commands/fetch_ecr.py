@@ -72,7 +72,7 @@ class Command(BaseFetchCommand, BaseCommand):
         if company['status'] == 'VALID':
             return True
         external_id = company['company_id']
-        company_obj = Company.objects.filter(external_id=external_id)
+        company_obj = Company.objects.really_all().filter(external_id=external_id)
         if company_obj.first():
             company_obj.update(**self.parse_company_data(company))
             logger.info(
@@ -84,7 +84,7 @@ class Command(BaseFetchCommand, BaseCommand):
         name = kwargs['name']
         external_id = kwargs['external_id']
 
-        company = Company.objects.filter(external_id=external_id)
+        company = Company.objects.really_all().filter(external_id=external_id)
         if company.first():
 
             company.update(**kwargs)
