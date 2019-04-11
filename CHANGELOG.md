@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.1.23 (2019-04-11)
+------------------
+* Set logger for commands
+  [dianaboiangiu]
+
+1.1.22 (2019-04-11)
+------------------
+* Fix fetch service
+  [nico4]
+
 1.1.21 (2019-04-09)
 ------------------
 * Improve fetching
