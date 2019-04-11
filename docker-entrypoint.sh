@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-COMMANDS="qcluster"
+COMMANDS="qcluster fetch"
 
 if [ -z "$POSTGRES_ADDR" ]; then
   export POSTGRES_ADDR="postgres"
@@ -36,6 +36,9 @@ case "$1" in
     qcluster)
         /usr/sbin/postfix start
         exec python manage.py qcluster
+        ;;
+    fetch)
+        exec python manage.py fetch_bdr && python manage.py fetch_ecr
         ;;
     *)
         uwsgi uwsgi.ini
