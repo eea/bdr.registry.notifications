@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.25 (2019-04-11)
+------------------
+* Fix entrypoint for fetch service
+  [dianaboiangiu]
+
 1.1.24 (2019-04-11)
 ------------------
 * Take old commits

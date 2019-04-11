@@ -37,7 +37,7 @@ case "$1" in
         exec python manage.py qcluster
         ;;
     fetch)
-        exec python manage.py fetch_bdr && python manage.py fetch_ecr
+        python manage.py fetch_bdr && python manage.py fetch_ecr
         ;;
     *)
         uwsgi uwsgi.ini
