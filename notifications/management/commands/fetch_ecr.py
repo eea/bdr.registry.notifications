@@ -78,6 +78,25 @@ class Command(BaseFetchCommand, BaseCommand):
             logger.info(
                 'Company rejected %s (%s)', company_obj.first().name, company_obj.first().external_id)
 
+    def create_company(self, **kwargs):
+        """ Create or update a company.
+        """
+        name = kwargs['name']
+        external_id = kwargs['external_id']
+
+        company = Company.objects.filter(external_id=external_id)
+        if company.first():
+
+            company.update(**kwargs)
+            company = company.first()
+            logger.info(
+            'Updated company %s %s (%s)', company.id, name, external_id)
+        else:
+            company = Company.objects.create(**kwargs)
+            logger.info('Fetched company %s (%s)', name, external_id)
+
+        return company
+
     def fetch_companies(self, registry):
         company_count = 0
         errors = []
