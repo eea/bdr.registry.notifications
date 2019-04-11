@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.28 (2019-04-11)
+------------------
+* Grab all companies in fetch
+  [dianaboiangiu]
+
 1.1.27 (2019-04-11)
 ------------------
 * Fix ecr companies create or update
