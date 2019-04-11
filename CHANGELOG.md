@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.26 (2019-04-11)
+------------------
+* Add command for fetching both BDR and ECR companies
+  [dianaboiangiu]
+
 1.1.25 (2019-04-11)
 ------------------
 * Fix entrypoint for fetch service
