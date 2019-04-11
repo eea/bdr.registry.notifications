@@ -198,7 +198,7 @@ LOGGING = {
     'handlers': {
         'console': {
             'level': 'INFO',
-            'filters': ['require_debug_true'],
+            'filters': [],
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
@@ -206,11 +206,15 @@ LOGGING = {
     'loggers': {
         'notifications.registries': {
             'handlers': ['console'],
+            'level': 'ERROR',
+        },
+        'notifications.management': {
+            'handlers': ['console'],
             'level': 'INFO',
         },
         'notifications.views': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'ERROR',
         }
     }
 }

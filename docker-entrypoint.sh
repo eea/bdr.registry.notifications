@@ -24,8 +24,7 @@ if [ "x$DJANGO_COLLECT_STATIC" = "xyes" ]; then
   python manage.py collectstatic --noinput
 fi
 
-if [ ! -e .skip-loaddata ]; then
-  touch .skip-loaddata
+if [ "x$DJANGO_LOAD_FIXTURES" = "xyes" ]; then
   echo "Loading fixtures"
   python manage.py loaddata notifications/fixtures/companiesgroups.json
 fi
