@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.24 (2019-04-11)
+------------------
+* Take old commits
+  [dianaboiangiu]
+
 1.1.23 (2019-04-11)
 ------------------
 * Set logger for commands
