@@ -7,6 +7,7 @@ from notifications import (
     FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, ODS_GROUP_CODE,
     FGASES_EU, FGASES_NONEU,
 )
+from bdr.settings import ECR_ACCEPTED_COMPANIES_STATUS
 from notifications.management.commands.fetch import BaseFetchCommand
 from notifications.models import CompaniesGroup, Person, Company
 from notifications.registries import EuropeanCacheRegistry
@@ -69,7 +70,7 @@ class Command(BaseFetchCommand, BaseCommand):
         )
 
     def check_company_is_valid(self, company):
-        if company['status'] == 'VALID':
+        if company['status'] in ECR_ACCEPTED_COMPANIES_STATUS:
             return True
         external_id = company['company_id']
         company_obj = Company.objects.really_all().filter(external_id=external_id)

@@ -2,11 +2,13 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.query import QuerySet
 
+from bdr.settings import ECR_ACCEPTED_COMPANIES_STATUS
+
 class GetOrNoneManager(models.Manager):
     """ Adds get_or_none method to objects.
     """
     def get_queryset(self):
-        return QuerySet(self.model).filter(Q(group_id=1) | Q(status='VALID'))
+        return QuerySet(self.model).filter(Q(group_id=1) | Q(status__in=ECR_ACCEPTED_COMPANIES_STATUS))
 
     def really_all(self):
         return QuerySet(self.model).all()
