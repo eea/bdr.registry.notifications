@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.29 (2019-04-15)
+------------------
+* Allow ECR Revision companies in the application
+  [dianaboiangiu]
+
 1.1.28 (2019-04-11)
 ------------------
 * Grab all companies in fetch
