@@ -1,10 +1,14 @@
 #!/bin/sh
 set -e
 
-COMMANDS="qcluster fetch"
+COMMANDS="qcluster cronjob"
 
 if [ -z "$POSTGRES_ADDR" ]; then
   export POSTGRES_ADDR="postgres"
+fi
+
+if [ -z "$UWSGI_PORT" ]; then
+  export UWSGI_PORT=12301
 fi
 
 while ! nc -z $POSTGRES_ADDR 5432; do
@@ -36,8 +40,15 @@ case "$1" in
         /usr/sbin/postfix start
         exec python manage.py qcluster
         ;;
-    fetch)
-        exec python manage.py fetch_all
+    cronjob)
+        if [[ ! -z "$CRONTAB" ]]; then
+          echo "$CRONTAB" > /tmp/crontab
+          nc -lkp $UWSGI_PORT -e echo -e 'HTTP/1.1 200 OK\r\n' &>/dev/null &
+          crontab /tmp/crontab
+          crond -f -L -
+        else
+          exit 1
+        fi
         ;;
     *)
         uwsgi uwsgi.ini
