@@ -54,11 +54,13 @@ services:
     environment:
     - TZ=Europe/Copenhagen
     - DEBUG=False
+    - CRONTAB=*/5 * * * * /usr/bin/flock -n /tmp/apps.lockfile python manage.py fetch_bdr && python manage.py fetch_ecr
     env_file:
     - docker/app.env
     volumes:
     - appdata:/var/local/bdr.registry.notifications/static
-    entrypoint: /bin/sh -c 'python manage.py fetch_bdr && python manage.py fetch_ecr'
+    command: ['cronjob']
+
 
   redis:
       image: redis:alpine
