@@ -39,7 +39,6 @@ class Command(BaseFetchCommand, BaseCommand):
         elif company['address']['country']['type'] == FGASES_NONEU:
             return self.group_noneu
 
-
     def parse_company_data(self, company):
         representative_name = ''
         representative_vat = ''

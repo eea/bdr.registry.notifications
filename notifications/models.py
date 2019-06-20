@@ -46,10 +46,11 @@ class Stage(models.Model):
 
 class CompaniesGroup(models.Model):
     """ Base class for the 3 groups of companies:
-        1 - Cars/Vans
         2 - F-gases EU
         3 - F-gases NONEU
         4 - ODS
+        5 - Cars
+        6 - Vans
     """
     title = models.CharField(max_length=256)
     code = models.SlugField(max_length=100, unique=True)

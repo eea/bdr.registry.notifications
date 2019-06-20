@@ -38,6 +38,7 @@ class BaseFetchCommand:
     def create_company(self, **kwargs):
         """ Create or update a company.
         """
+
         name = kwargs['name']
         external_id = kwargs['external_id']
 
@@ -106,8 +107,10 @@ class BaseFetchCommand:
     def fetch_companies(self, registry):
         company_count = 0
         for item in registry.get_companies():
-            self.create_company(**self.parse_company_data(item))
-            company_count += 1
+            parsed_company_data = self.parse_company_data(item)
+            if parsed_company_data:
+                self.create_company(**parsed_company_data)
+                company_count += 1
         return company_count
 
     def fetch_persons(self, registry):

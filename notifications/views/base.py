@@ -2,7 +2,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.urls import reverse
 from django.views import generic
 
-from notifications import BDR_GROUP_CODE, ECR_GROUP_CODES
+from notifications import BDR_GROUP_CODES, ECR_GROUP_CODES
 from notifications.models import Cycle, CompaniesGroup, Person, Company
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
@@ -65,7 +65,7 @@ class PersonsView(NotificationsBaseView, PaginatedDataViewBase,
         page_bdr = self.request.GET.get('page_bdr', 1)
         return self.get_current_page(
             data=Person.objects
-                 .filter(company__group__code=BDR_GROUP_CODE)
+                 .filter(company__group__code__in=BDR_GROUP_CODES)
                  .prefetch_related('company')
                  .order_by('name')
                  .distinct(),

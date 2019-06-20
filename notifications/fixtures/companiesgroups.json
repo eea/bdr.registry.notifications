@@ -1,14 +1,6 @@
 [
   {
     "model": "notifications.companiesgroup",
-    "pk": 1,
-    "fields": {
-      "title": "Cars/Vans",
-      "code": "cars-vans"
-    }
-  },
-  {
-    "model": "notifications.companiesgroup",
     "pk": 2,
     "fields": {
       "title": "F-gases EU",
@@ -29,6 +21,22 @@
     "fields": {
       "title": "ODS",
       "code": "ods"
+    }
+  },
+  {
+    "model": "notifications.companiesgroup",
+    "pk": 5,
+    "fields": {
+      "title": "Cars",
+      "code": "cars"
+    }
+  },
+  {
+    "model": "notifications.companiesgroup",
+    "pk": 6,
+    "fields": {
+      "title": "Vans",
+      "code": "vans"
     }
   }
 ]
