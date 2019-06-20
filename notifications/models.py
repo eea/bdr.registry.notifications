@@ -51,7 +51,6 @@ class CompaniesGroup(models.Model):
         4 - ODS
         5 - Cars
         6 - Vans
-
     """
     title = models.CharField(max_length=256)
     code = models.SlugField(max_length=100, unique=True)
