@@ -13,7 +13,7 @@ from notifications import (
     FGASES_EU_GROUP_CODE,
     FGASES_NONEU_GROUP_CODE,
     FGASES_EU,
-    BDR_GROUP_CODE,
+    BDR_GROUP_CODES,
     ODS_GROUP_CODE, FGASES_NONEU)
 from notifications.models import Company, Person, CompaniesGroup
 from notifications.registries import EuropeanCacheRegistry, BDRRegistry
@@ -177,10 +177,10 @@ class ActionsBDRView(ActionsBaseView):
         """ Delete all persons and companies fetched from BDR registry.
         """
         Person.objects.filter(
-            company__group__code=BDR_GROUP_CODE
+            company__group__code__in=BDR_GROUP_CODES
         ).delete()
         Company.objects.filter(
-            group__code=BDR_GROUP_CODE
+            group__code__in=BDR_GROUP_CODES
         ).delete()
 
     def get(self, request, *args, **kwargs):
@@ -189,7 +189,9 @@ class ActionsBDRView(ActionsBaseView):
         else:
             registry = BDRRegistry()
 
-        group = CompaniesGroup.objects.get(code=BDR_GROUP_CODE)
+        # TODO This view has not usage, so it will be deleted in the future.
+        # For now, use cars group.
+        group = CompaniesGroup.objects.get(code='cars')
 
         # fetch companies
         company_count = 0

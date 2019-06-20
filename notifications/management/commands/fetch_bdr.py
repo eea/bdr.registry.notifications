@@ -3,7 +3,7 @@ import logging
 from django.core.management.base import BaseCommand
 from django.db import IntegrityError
 
-from notifications import BDR_GROUP_CODE
+from notifications import BDR_GROUP_CODES
 from notifications.management.commands.fetch import BaseFetchCommand
 from notifications.models import CompaniesGroup, Company
 from notifications.registries import BDRRegistry
@@ -23,19 +23,21 @@ class Command(BaseFetchCommand, BaseCommand):
 
     def __init__(self):
         super(Command, self).__init__()
-        self.group = CompaniesGroup.objects.get(code=BDR_GROUP_CODE)
 
     def get_group(self, company):
-        return self.group
+        return CompaniesGroup.objects.get(code=company['obligation'])
 
     def parse_company_data(self, company):
-        return dict(
-            external_id=company['userid'],
-            name=company['name'],
-            vat=company['vat_number'],
-            country=company['country_name'],
-            group=self.get_group(company)
-        )
+        if company['obligation'] in BDR_GROUP_CODES:
+            return dict(
+                external_id=company['userid'],
+                name=company['name'],
+                vat=company['vat_number'],
+                country=company['country_name'],
+                group=self.get_group(company)
+            )
+        else:
+            return dict()
 
     def parse_person_data(self, person):
         for key in person.keys():
