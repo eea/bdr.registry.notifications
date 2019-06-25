@@ -251,12 +251,22 @@ DOUBLE_CHECK_COMPANIES = ['F-gases EU', 'F-gases NONEU', 'ODS']
 EMAIL_SENDER = env('EMAIL_SENDER', '')
 BCC = [env('BCC', '')]
 
-OTRS_EMAIL_HEADERS = {
+BASE_OTRS_EMAIL_HEADERS = {
     'X-OTRS-ArticleType': 'email-internal',
     'X-OTRS-Loop': 'True',
-    'X-OTRS-Queue': 'BDR requests::Invitations',
     'X-OTRS-State': 'closed successful'
 }
+
+INVITATIONS_OTRS_EMAIL_HEADERS = {
+    **BASE_OTRS_EMAIL_HEADERS,
+    **{'X-OTRS-Queue': 'BDR requests::Invitations'}
+}
+
+CARSVANS_OTRS_EMAIL_HEADERS = {
+    **BASE_OTRS_EMAIL_HEADERS,
+    **{'X-OTRS-Queue': 'BDR requests::Cars and Vans'}
+}
+
 
 Q_CLUSTER = {
     'redis': {
