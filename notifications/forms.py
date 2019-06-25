@@ -8,8 +8,13 @@ from django.utils.html import strip_tags
 
 from django_q.tasks import async
 
-from bdr.settings import EMAIL_SENDER, BCC, OTRS_EMAIL_HEADERS
-from notifications import ACCEPTED_PARAMS
+from bdr.settings import (
+    EMAIL_SENDER,
+    BCC,
+    INVITATIONS_OTRS_EMAIL_HEADERS,
+    CARSVANS_OTRS_EMAIL_HEADERS,
+)
+from notifications import ACCEPTED_PARAMS, BDR_GROUP_CODES
 from notifications.models import Stage
 from .models import (
     Company,
@@ -42,6 +47,11 @@ def format_subject(emailtemplate, person, company):
     subject = emailtemplate.subject.format(**params)
     return subject
 
+def get_email_headers(group):
+    if group.code in BDR_GROUP_CODES:
+        return CARSVANS_OTRS_EMAIL_HEADERS
+    else:
+        return INVITATIONS_OTRS_EMAIL_HEADERS
 
 def make_messages(companies, emailtemplate):
     emails = []
@@ -51,8 +61,8 @@ def make_messages(companies, emailtemplate):
             subject = format_subject(emailtemplate, person, company)
             email_body = format_body(emailtemplate, person, company)
             recipient_email = [person.email]
-
-            emails.append((subject, recipient_email, email_body))
+            headers = get_email_headers(company.group)
+            emails.append((subject, recipient_email, email_body, headers))
 
             # store sent email
             notifications.append(CycleNotification(
@@ -81,7 +91,8 @@ def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None)
             email = [data['email'].strip()]
             body_html = emailtemplate.body_html.format(**values)
             subject = emailtemplate.subject.format(**values)
-            emails = [(subject, email, body_html)]
+            headers = get_email_headers(company.group)
+            emails = [(subject, email, body_html, headers)]
             bcc = None
         else:
             recipients = Company.objects.filter(
@@ -90,13 +101,14 @@ def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None)
             emails = make_messages(recipients, emailtemplate)
 
     connection = get_connection()
-    for subject, recipient_email, email_body in emails:
+    for subject, recipient_email, email_body, headers in emails:
         plain_html = strip_tags(email_body)
         email_message = send_mail(
             subject, plain_html, sender, recipient_email,
             fail_silently=True,
-            bcc=bcc, html_message=email_body, headers=OTRS_EMAIL_HEADERS,
-            connection=connection)
+            bcc=bcc, html_message=email_body, headers=headers,
+            connection=connection
+        )
 
     try:
         connection.close()
