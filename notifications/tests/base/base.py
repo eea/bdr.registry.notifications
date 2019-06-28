@@ -15,19 +15,13 @@ class BaseTest(TestCase):
 
     def prepare_email_testing(self):
         self.stage = factories.StageFactory()
-        self.group = factories.CompaniesGroupFactory()
-        self.cycle = factories.CycleFactory(stage=self.stage)
-        self.emailtemplate = factories.EmailTemplateFactory(
-            subject='Email template subject',
+        self.group = factories.CompaniesGroupFactory(code='vans')
+        self.cycle = factories.CycleFactory(year=2005)
+        self.cycle_template = factories.CycleEmailTemplateFactory(
+            subject='Cycle email template subject',
             body_html=self.BODY_FORMAT,
             group=self.group,
             stage=self.stage
-        )
-        self.cycle_template = factories.CycleEmailTemplateFactory(
-            cycle=self.cycle,
-            subject='Cycle email template subject',
-            body_html=self.BODY_FORMAT,
-            emailtemplate=self.emailtemplate
         )
         self.company = factories.CompanyFactory(group=self.group)
         self.persons = [

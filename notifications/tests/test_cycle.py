@@ -25,13 +25,9 @@ class CycleTest(BaseTest):
                          self._DATA['closing_date'])
 
     def test_cycle_view(self):
-        stage = factories.StageFactory(can_edit=True)
-        cycle = factories.CycleFactory(stage=stage)
-        emailtemplate = factories.CycleEmailTemplateFactory.create_email_template()
-        cycle_email_template = factories.CycleEmailTemplateFactory(
-            emailtemplate=emailtemplate,
-            cycle=cycle
-        )
+        cycle = factories.CycleFactory()
+        stage = factories.StageFactory(cycle=cycle)
+        cycle_email_template = factories.CycleEmailTemplateFactory(stage=stage)
         resp = self.client.get(
             reverse('notifications:cycle:view', kwargs={'pk': cycle.pk}),
             follow=True
@@ -40,4 +36,3 @@ class CycleTest(BaseTest):
         self.assertEqual(resp.context['object'], cycle)
         self.assertEqual(len(resp.context['templates']), 1)
         self.assertEqual(resp.context['templates'].first(), cycle_email_template)
-        self.assertEqual(resp.context['stages'], ['Invitations', 'Reminder', 'Deadline', 'After'])

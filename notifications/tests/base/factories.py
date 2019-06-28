@@ -8,10 +8,17 @@ from django.contrib.auth.models import User
 from notifications import models
 
 
+class CycleFactory(DjangoModelFactory):
+    closing_date = datetime.now()
+
+    class Meta:
+        model = models.Cycle
+
+
 class StageFactory(DjangoModelFactory):
 
     title = 'StageTest'
-    code = Sequence(lambda n: 'code{0}'.format(n))
+    cycle = SubFactory(CycleFactory)
 
     class Meta:
         model = models.Stage
@@ -53,31 +60,13 @@ class EmailTemplateFactory(DjangoModelFactory):
         model = models.EmailTemplate
 
 
-class CycleFactory(DjangoModelFactory):
-    stage = SubFactory(StageFactory)
-    closing_date = datetime.now()
-
-    class Meta:
-        model = models.Cycle
-
-
 class CycleEmailTemplateFactory(DjangoModelFactory):
     subject = 'CycleEmailTemplateTest'
-    cycle = SubFactory(CycleFactory)
-    emailtemplate = SubFactory(EmailTemplateFactory)
+    group = SubFactory(CompaniesGroupFactory)
+    stage = SubFactory(StageFactory)
 
     class Meta:
         model = models.CycleEmailTemplate
-
-    @staticmethod
-    def create_email_template(group=None, stage=None):
-        group = group or CompaniesGroupFactory()
-        stage = stage or StageFactory()
-        emailtemplate = EmailTemplateFactory(
-            group=group,
-            stage=stage
-        )
-        return emailtemplate
 
 
 class CycleNotification(DjangoModelFactory):

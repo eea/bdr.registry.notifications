@@ -43,7 +43,7 @@ class ECRActionTest(BaseTest):
 class BDRActionTest(BaseTest):
     fixtures = ['companiesgroups.json', ]
 
-    def test_fgases(self):
+    def test_bdr(self):
         call_command('fetch_bdr', '--test')
 
         # Check companies
