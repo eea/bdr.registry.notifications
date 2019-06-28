@@ -35,9 +35,7 @@
               <td>{{ person.email }}</td>
               <td>
                 {% if stage in person.stages %}
-  {#                <a href="{% url 'notifications:template:resend' stage.email_template_id company.id obj.person.id %}">#}
                     &#10004;
-  {#                </a>#}
                 {% else %}
                   &#10006;
                 {% endif %}

@@ -12,9 +12,6 @@ from notifications.forms import (
     CycleEmailTemplateEditForm,
     CycleEmailTemplateTestForm,
     CycleEmailTemplateTriggerForm,
-    ResendEmailForm,
-    format_body,
-    format_subject,
     set_values_for_parameters,
 )
 from notifications.models import Cycle
@@ -26,7 +23,6 @@ from notifications.models import (
     CompaniesGroup,
     EmailTemplate,
     Person,
-    Stage,
 )
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
@@ -283,91 +279,6 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         self.object = self.get_object()
         form.send_email(self.object)
         return super(CycleEmailTemplateTest, self).form_valid(form)
-
-
-class ResendEmailBase(NotificationsBaseView):
-    template_name = 'notifications/template/resend.html'
-    model = CycleEmailTemplate
-
-    def get_company(self):
-        company = get_object_or_404(Company,
-                                    id=self.kwargs['pk_company'])
-        return company
-
-
-class ResendEmailDetail(ResendEmailBase, generic.DetailView):
-    context_object_name = 'template'
-
-    def breadcrumbs(self):
-        breadcrumbs = super(ResendEmailDetail, self).breadcrumbs()
-        breadcrumbs.extend([
-            Breadcrumb('', 'Trigger'),
-        ])
-        return breadcrumbs
-
-    def get_context_data(self, **kwargs):
-        context = super(ResendEmailDetail, self).get_context_data(**kwargs)
-        context['person'] = get_object_or_404(
-            Person,
-            pk=self.kwargs['pk_person'],
-            company__group=context['template'].group,
-            company=self.get_company()
-        )
-        context['template'].body_html = format_body(
-            context['template'],
-            context['person'],
-            self.get_company()
-        )
-        context['template'].subject = format_subject(
-            context['template'],
-            context['person'],
-            self.get_company()
-        )
-        cycle_notification = CycleNotification.objects.filter(
-            email=context['person'].email,
-            emailtemplate=context['template']
-        ).first()
-        if cycle_notification:
-            context['counter'] = cycle_notification.counter
-        else:
-            context['counter'] = 0
-        return context
-
-
-class ResendEmailTrigger(ResendEmailBase, generic.FormView, generic.detail.SingleObjectMixin):
-    success_message = 'Email sent successfully!'
-    form_class = ResendEmailForm
-
-    def get_object(self):
-        return get_object_or_404(CycleEmailTemplate,
-                                 id=self.kwargs['pk'])
-
-    def get_person(self):
-        return get_object_or_404(Person,
-                                 id=self.kwargs['pk_person'],
-                                 company__group=self.get_object().group,
-                                 company=self.get_company())
-
-    def get_success_url(self):
-        return reverse(
-            'notifications:template:trigger',
-            args=[self.kwargs['pk']]
-        )
-
-    def form_valid(self, form):
-        form.send_email(self.get_object(), self.get_person())
-        return super(ResendEmailTrigger, self).form_valid(form)
-
-
-class ResendEmail(View):
-
-    def get(self, request, *args, **kwargs):
-        view = ResendEmailDetail.as_view()
-        return view(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        view = ResendEmailTrigger.as_view()
-        return view(request, *args, **kwargs)
 
 
 class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
