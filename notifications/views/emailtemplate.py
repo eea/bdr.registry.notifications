@@ -21,7 +21,6 @@ from notifications.models import (
     CycleNotification,
     Company,
     CompaniesGroup,
-    EmailTemplate,
     Person,
 )
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
@@ -301,25 +300,6 @@ class ViewSentNotificationForCompany(NotificationsBaseView, generic.DetailView):
         return get_object_or_404(Company,
                                  id=self.kwargs['pk_company'],
                                  group=self.get_object())
-
-    def get_cycle_notification_template(self, stage_code, company, person):
-        email_template = EmailTemplate.objects.get(
-            group=company.group,
-            stage__code=stage_code
-        )
-
-        cycle_email_template = CycleEmailTemplate.objects.get(
-            emailtemplate=email_template,
-            cycle__year=timezone.now().year
-        )
-        self.email_template_id_list.append(cycle_email_template.id)
-
-        cycle_notification = CycleNotification.objects.filter(
-            emailtemplate=cycle_email_template,
-            email=person.email
-        )
-
-        return cycle_notification
 
     def verify_cycle_notification(self, cycle_notification):
         if cycle_notification.count() > 0:

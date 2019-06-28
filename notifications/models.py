@@ -62,7 +62,7 @@ class CompaniesGroup(models.Model):
         return '%s' % self.title
 
     def count_emailtemplates(self):
-        return (EmailTemplate.objects
+        return (CycleEmailTemplate.objects
                 .filter(group=self)
                 .count())
     count_emailtemplates.short_description = '#Email templates'
@@ -115,30 +115,6 @@ class Person(models.Model):
     def stages(self):
         return [notification.emailtemplate.stage for notification in self.notifications.all()]
     admin_company.short_description = 'Company'
-
-
-class EmailTemplate(models.Model):
-    """ Base class for the 4 types of email templates. The corresponding
-        stage is:
-        2 - INVITATIONS
-        3 - REMINDER
-        4 - DEADLINE
-        5 - AFTER
-    """
-
-    class Meta:
-        unique_together = ('group', 'stage')
-
-    subject = models.CharField(max_length=256)
-    body_html = RichTextField(verbose_name='Body')
-    group = models.ForeignKey(CompaniesGroup)
-    stage = models.ForeignKey(Stage)
-
-    def __str__(self):
-        return '{} for {}'.format(self.stage, self.group)
-
-    def __unicode__(self):
-        return '{} for {}'.format(self.stage, self.group)
 
 
 class Cycle(models.Model):
