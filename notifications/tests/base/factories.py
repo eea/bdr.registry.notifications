@@ -51,15 +51,6 @@ class PersonFactory(DjangoModelFactory):
         model = models.Person
 
 
-class EmailTemplateFactory(DjangoModelFactory):
-    subject = 'EmailTemplateTest'
-    group = SubFactory(CompaniesGroupFactory)
-    stage = SubFactory(StageFactory)
-
-    class Meta:
-        model = models.EmailTemplate
-
-
 class CycleEmailTemplateFactory(DjangoModelFactory):
     subject = 'CycleEmailTemplateTest'
     group = SubFactory(CompaniesGroupFactory)
@@ -67,11 +58,6 @@ class CycleEmailTemplateFactory(DjangoModelFactory):
 
     class Meta:
         model = models.CycleEmailTemplate
-
-
-class CycleNotification(DjangoModelFactory):
-    subject = 'CycleNotificationTest'
-    emailtemplate = SubFactory(EmailTemplateFactory)
 
 
 class UserFactory(DjangoModelFactory):
