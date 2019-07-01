@@ -1,8 +1,20 @@
 [
   {
-    "username": "user1",
-    "first_name": "John",
-    "last_name": "Smith",
-    "email": "jhsm@mail.com"
+    "username": "test1_user",
+    "first_name": "Test1",
+    "last_name": "Test1",
+    "email": "test1@email.com"
+  },
+  {
+    "username": "test2_user",
+    "first_name": "Test2",
+    "last_name": "Test2",
+    "email": "test2@email.com"
+  },
+  {
+    "username": "test3_user",
+    "last_name": "Test3",
+    "first_name": "Test3",
+    "email": "test3@email.com"
   }
 ]
