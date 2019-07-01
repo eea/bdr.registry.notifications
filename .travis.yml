@@ -3,7 +3,7 @@ python:
   - "3.6"
 env:
   global:
-    - ECR_ACCEPTED_COMPANIES_STATUS=["VALID", "REVISION"]
+    - ECR_ACCEPTED_COMPANIES_STATUS=VALID,REVISION
 install:
   - pip install -r requirements-dev.txt
 script:
