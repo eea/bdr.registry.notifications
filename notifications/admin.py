@@ -5,8 +5,8 @@ from django.conf import settings
 from django.contrib import admin
 from simple_history import admin as admin_simple_history
 
-from .models import (Stage, CompaniesGroup, Company, Person, EmailTemplate,
-                     Cycle, CycleEmailTemplate, CycleNotification)
+from .models import (Stage, CompaniesGroup, Company, Person, Cycle,
+                     CycleEmailTemplate, CycleNotification)
 
 
 class StageAdmin(admin.ModelAdmin):
@@ -41,12 +41,6 @@ class PersonAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return settings.ALLOW_EDITING_COMPANIES
-
-
-class EmailTemplateAdmin(admin.ModelAdmin):
-    list_display = ('group', 'stage', 'subject')
-    list_filter = ('group', 'stage')
-    ordering = ('stage',)
 
 
 class CycleAdmin(admin_simple_history.SimpleHistoryAdmin):
@@ -89,7 +83,6 @@ admin.site.register(Stage, StageAdmin)
 admin.site.register(CompaniesGroup, CompaniesGroupAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Person, PersonAdmin)
-admin.site.register(EmailTemplate, EmailTemplateAdmin)
 admin.site.register(Cycle, CycleAdmin)
 admin.site.register(CycleEmailTemplate, CycleEmailTemplateAdmin)
 admin.site.register(CycleNotification, CycleNotificationAdmin)

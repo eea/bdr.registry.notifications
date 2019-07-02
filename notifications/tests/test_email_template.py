@@ -16,12 +16,11 @@ class CycleEmailTemplateTest(BaseTest):
         }
 
     def test_cycle_email_template_view(self):
-        stage = factories.StageFactory(can_edit=True)
-        cycle = factories.CycleFactory(stage=stage)
-        emailtemplate = factories.CycleEmailTemplateFactory.create_email_template()
+        cycle = factories.CycleFactory()
+        stage = factories.StageFactory(cycle=cycle)
         cycle_email_template = factories.CycleEmailTemplateFactory(
-            emailtemplate=emailtemplate,
-            cycle=cycle
+            subject='Test view cycle email template',
+            stage=stage
         )
         resp = self.client.get(
             reverse('notifications:template:view',
@@ -32,12 +31,11 @@ class CycleEmailTemplateTest(BaseTest):
         self.assertEqual(resp.context['object'], cycle_email_template)
 
     def test_cycle_edit(self):
-        stage = factories.StageFactory(can_edit=True)
-        cycle = factories.CycleFactory(stage=stage)
-        emailtemplate = factories.CycleEmailTemplateFactory.create_email_template()
+        cycle = factories.CycleFactory()
+        stage = factories.StageFactory(cycle=cycle)
         cycle_email_template = factories.CycleEmailTemplateFactory(
-            emailtemplate=emailtemplate,
-            cycle=cycle
+            subject='Test edit cycle',
+            stage=stage
         )
         resp = self.client.post(
             reverse('notifications:template:edit',
@@ -52,21 +50,16 @@ class CycleEmailTemplateTest(BaseTest):
                          self._EDIT_DATA['body_html'])
 
     def test_cycle_email_test(self):
-        self.stage = factories.StageFactory()
-        self.group = factories.CompaniesGroupFactory()
-        self.cycle = factories.CycleFactory(stage=self.stage)
-        self.emailtemplate = factories.EmailTemplateFactory(
+        self.cycle = factories.CycleFactory()
+        self.stage = factories.StageFactory(cycle=self.cycle)
+        self.group = factories.CompaniesGroupFactory(code='vans')
+        self.cycle_email_template = factories.CycleEmailTemplateFactory(
             subject=self._EDIT_DATA['subject'],
             body_html=self._EDIT_DATA['body_html'],
             group=self.group,
             stage=self.stage
         )
-        self.cycle_template = factories.CycleEmailTemplateFactory(
-            cycle=self.cycle,
-            subject=self._EDIT_DATA['subject'],
-            body_html=self._EDIT_DATA['body_html'],
-            emailtemplate=self.emailtemplate
-        )
+
         self.company = factories.CompanyFactory(group=self.group)
         self.persons = [
             factories.PersonFactory(),
@@ -78,7 +71,7 @@ class CycleEmailTemplateTest(BaseTest):
 
         resp = self.client.post(
             reverse('notifications:template:test',
-                    kwargs={'pk': self.cycle_template.pk}),
+                    kwargs={'pk': self.cycle_email_template.pk}),
             self._EDIT_DATA,
             follow=True
         )
@@ -103,7 +96,8 @@ class CycleEmailTemplateTest(BaseTest):
         resp = self.client.post(
             reverse('notifications:template:trigger',
                     kwargs={'pk': self.cycle_template.pk}),
-            follow=True
+            {'recipients': str([self.company.id])},
+            follow=True,
         )
 
         self.assertEqual(resp.status_code, 200)
@@ -127,60 +121,13 @@ class CycleEmailTemplateTest(BaseTest):
         resp = self.client.post(
             reverse('notifications:template:trigger',
                     kwargs={'pk': self.cycle_template.pk}),
+            {'recipients': str([self.company.id])},
             follow=True
         )
 
         self.assertIn(self.company, resp.context['companies'])
         self.assertEqual(self.cycle_template, resp.context['template'])
-        self.assertEqual(len(self.persons), len(resp.context['recipients']))
-
-
-class ResendEmailTest(BaseTest):
-    def setUp(self):
-        super(ResendEmailTest, self).setUp()
-        stage = factories.StageFactory(can_edit=True)
-        cycle = factories.CycleFactory(stage=stage)
-        emailtemplate = factories.CycleEmailTemplateFactory.create_email_template()
-        company = factories.CompanyFactory(group=emailtemplate.group)
-        self.company = company
-        self.person = factories.PersonFactory()
-        self.person.company.add(company)
-        self.cycle_email_template = factories.CycleEmailTemplateFactory(
-            emailtemplate=emailtemplate,
-            cycle=cycle
+        self.assertEqual(
+            len(self.persons),
+            resp.context['recipients'].first().users.count()
         )
-
-    def test_resend_email_view(self):
-
-        resp = self.client.get(
-            reverse('notifications:template:resend',
-                    kwargs={
-                        'pk': self.cycle_email_template.pk,
-                        'pk_company': self.company.pk,
-                        'pk_person': self.person.pk,
-                    }),
-            follow=True
-        )
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp.context['object'], self.cycle_email_template)
-        self.assertEqual(resp.context['person'], self.person)
-        self.assertEqual(resp.context['counter'], 0)
-
-    def test_resend_email_trigger(self):
-        resp = self.client.post(
-            reverse('notifications:template:resend',
-                    kwargs={
-                        'pk': self.cycle_email_template.pk,
-                        'pk_company': self.company.pk,
-                        'pk_person': self.person.pk,
-                    }),
-            follow=True
-        )
-        notification = CycleNotification.objects.filter(
-            email=self.person.email,
-            emailtemplate=self.cycle_email_template
-        )
-        self.assertTrue(notification)
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(notification.first().counter, 1)
-        self.assertEqual(len(mail.outbox), 1)

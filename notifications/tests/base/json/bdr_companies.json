@@ -3,12 +3,14 @@
     "userid" : 23,
     "name" : "BDR company 1",
     "vat_number": 43,
-    "country_name": "China"
+    "country_name": "China",
+    "obligation": "cars"
   },
   {
     "userid" : 24,
     "name" : "BDR company 2",
     "vat_number": 43,
-    "country_name": "Ukraine"
+    "country_name": "Ukraine",
+    "obligation": "vans"
   }
 ]

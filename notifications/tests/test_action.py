@@ -24,7 +24,7 @@ class ECRActionTest(BaseTest):
         persons = models.Person.objects.all()
         json_data = open('notifications/tests/base/json/ecr_persons.json')
         persons_data = json.load(json_data)
-        self.assertEqual(len(persons), 1)
+        self.assertEqual(len(persons), 3)
         self.assertEqual(persons.first().username, persons_data[0]['username'])
 
         # Check relation
@@ -43,7 +43,7 @@ class ECRActionTest(BaseTest):
 class BDRActionTest(BaseTest):
     fixtures = ['companiesgroups.json', ]
 
-    def test_fgases(self):
+    def test_bdr(self):
         call_command('fetch_bdr', '--test')
 
         # Check companies

@@ -1,16 +1,9 @@
 [
  {
-   "users": [
-     {
-       "username": "user1",
-       "first_name": "John",
-       "last_name": "Smith",
-       "email": "jhsm@mail.com"
-     }
-   ],
    "vat" : null,
    "company_id": 1234,
    "domain": "FGAS",
+   "status": "VALID",
    "address" : {
      "country" : {
        "code" : "CN",
@@ -18,13 +11,27 @@
        "name" : "China"
      }
    },
-   "name" : "First company"
+   "name" : "First company",
+   "users": [
+     {
+       "username": "test1_user",
+       "first_name": "Test1",
+       "last_name": "Test1",
+       "email": "test1@email.com"
+     },
+     {
+       "username": "test2_user",
+       "first_name": "Test2",
+       "last_name": "Test2",
+       "email": "test2@email.com"
+     }
+   ]
  },
  {
-   "users": [],
    "vat" : null,
    "company_id": 3245,
    "domain": "FGAS",
+   "status": "REVISION",
    "address" : {
      "country" : {
        "code" : "RO",
@@ -32,6 +39,14 @@
        "name" : "Romania"
      }
    },
-   "name" : "Second company"
+   "name" : "Second company",
+   "users": [
+     {
+       "username": "test3_user",
+       "first_name": "Test3",
+       "last_name": "Test3",
+       "email": "test3@email.com"
+     }
+   ]
  }
 ]
