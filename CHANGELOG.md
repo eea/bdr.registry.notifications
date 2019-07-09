@@ -1,6 +1,21 @@
 Changelog
 =========
 
+1.1.32 (2019-07-09)
+------------------
+* Fix security issues (Django)
+  [catalinjitea]
+
+1.1.31 (2019-06-20)
+------------------
+* Split cars and vans groups
+  [catalinjitea]
+
+1.1.30 (2019-05-21)
+------------------
+* Updated entry for fetch in docker-compose
+  [olimpiurob]
+
 1.1.29 (2019-04-15)
 ------------------
 * Allow ECR Revision companies in the application
