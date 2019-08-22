@@ -81,8 +81,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 #custom
                 'notifications.layout.layout_context_processor',
-                'notifications.context.sentry',
                 'notifications.context.debug',
+                'notifications.context.sentry',
+                'notifications.context.use_sidemenu'
             ],
         },
     },
@@ -222,6 +223,16 @@ LOGGING = {
 
 # BDR specific
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': 3000,
+        'OPTIONS' : {
+            'MAX_ENTRIES': 150
+        }
+    }
+}
+
 APP_REVERSE_PROXY = env('APP_REVERSE_PROXY', False)
 
 EMAIL_BACKEND = env('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
@@ -235,10 +246,15 @@ BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
 
 USE_ZOPE_LAYOUT = env('USE_ZOPE_LAYOUT', True)
 
+USE_SIDEMENU = env('USE_SIDEMENU', False)
+BDR_SIDEMENU_URL=env('BDR_SIDEMENU_URL', '')
+BDR_API_USER = env('BDR_API_USER', '')
+BDR_API_PASSWORD = env('BDR_API_PASSWORD', '')
 
 BDRREGISTRY_URL = env('BDR_REGISTRY_URL', '')
 BDRREGISTRY_USERNAME = env('BDR_REGISTRY_USERNAME', '')
 BDRREGISTRY_PASSWORD = env('BDR_REGISTRY_PASSWORD', '')
+
 
 ECRREGISTRY_URL = env('ECR_REGISTRY_URL', '')
 ECR_COMPANY_PATH = env('ECR_COMPANY_PATH', '/undertaking/list')

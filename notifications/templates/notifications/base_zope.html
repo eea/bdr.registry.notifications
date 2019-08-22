@@ -1,121 +1,139 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 {% load i18n static %}
+{% load cache %}
+{% load notifications_extras %}
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>{% block head_title %}{% endblock %}{% trans 'BDR Registry Notifications' %}</title>
+  <script src="https://www.eionet.europa.eu/styles/eionet2007/pageops.js" type="text/javascript"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" media="print" href="https://www.eionet.europa.eu/styles/eionet2007/print.css" />
+  <link rel="stylesheet" href="https://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" title="Eionet 2007 style" />
+  <link rel="stylesheet" href="https://bdr.eionet.europa.eu/styles/eionet2007.css" media="screen" title="Eionet 2007 style" />
+  <link rel="stylesheet" media="handheld" href="https://www.eionet.europa.eu/styles/eionet2007/handheld.css" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
 
-	<title>{% block head_title %}{% endblock %}{% trans 'BDR Registry Notifications' %}</title>
-	<script src="https://www.eionet.europa.eu/styles/eionet2007/pageops.js" type="text/javascript"></script>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script>
-	<link rel="stylesheet" media="print" href="https://www.eionet.europa.eu/styles/eionet2007/print.css" />
-	<link rel="stylesheet" href="https://www.eionet.europa.eu/styles/eionet2007/screen.css" media="screen" title="Eionet 2007 style" />
-	<link rel="stylesheet" href="https://bdr.eionet.europa.eu/styles/eionet2007.css" media="screen" title="Eionet 2007 style" />
-	<link rel="stylesheet" media="handheld" href="https://www.eionet.europa.eu/styles/eionet2007/handheld.css" />
-	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
-	{% block head %}{% endblock %}
-	{% block scripts %}{% endblock %}
+  {% block head %}{% endblock %}
+  {% block scripts %}{% endblock %}
 
-	{% if debug %}
+  {% if debug %}
     <style type="text/css">
-      #pagehead{
-       position: relative;
+      #pagehead {
+        position: relative;
       }
+
       #pagehead a {
-       top: 0;
-       z-index: 1999;
+        top: 0;
+        z-index: 1999;
       }
+
       #pagehead:before {
-       content: "BDR registry playground website";
-       display: block;
-       position: absolute;
-       top: 0;
-       right: 0;
-       bottom: 0;
-       left: 0;
-       background: rgba(255, 234, 0, 0.5);
-       padding: 24px;
-       z-index: 2000;
-       color: #fff;
-       font-weight: bold;
-       font-size: 30px;
-       text-align: center;
+        content: "BDR registry playground website";
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(255, 234, 0, 0.5);
+        padding: 24px;
+        z-index: 2000;
+        color: #fff;
+        font-weight: bold;
+        font-size: 30px;
+        text-align: center;
       }
     </style>
-    {% endif %}
+  {% endif %}
 </head>
-<body>
-	<div id="container">
-		<div id="toolribbon">
-			<div id="lefttools">
-				<a id="eealink" href="http://www.eea.europa.eu/">{% trans "EEA" %}</a>
-				<a id="ewlink" href="http://ew.eea.europa.eu/">{% trans "EnviroWindows" %}</a>
-			</div>
-			<div id="righttools">
-				{% if user.is_anonymous %}
-					<a id="loginlink" href="{% url 'notifications:accounts:login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
-				{% else %}
-					<a id="logoutlink" href="{% url 'notifications:accounts:logout' %}">{% trans "Logout" %} ({{ user.username }})</a>
-				{% endif %}
-				<a id="printlink" title="{% trans 'Print this page' %}" href="javascript:this.print();"><span>{% trans "Print" %}</span></a>
-				<a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="{% trans 'Switch to/from full screen mode' %}"><span>{% trans "Switch to/from full screen mode" %}</span></a>
-			</div>
-		</div>
-		<div id="pagehead">
-			<a href="/" accesskey="1"><img src="https://www.eionet.europa.eu/styles/eionet2007/eea-print-logo.gif" alt="Logo" id="logo" /></a>
-			<div id="networktitle">{% trans 'Eionet' %}</div>
-			<div id="sitetitle">{% trans "Data reporting for business" %}</div>
-			<div id="sitetagline">{% trans "This site is part of the Reportnet" %}</div>
-		</div>
-		<div id="menuribbon"></div>
-		<div class="breadcrumbtrail">
-			<div class="breadcrumbhead">{% trans "You are here:" %}</div>
-			<div class="breadcrumbitem eionetaccronym">
-				<a href="http://www.eionet.europa.eu/">{% trans "Eionet" %}</a>
-			</div>
-			{% for item in view.breadcrumbs %}
-			<div class="breadcrumbitem{% if forloop.last %}last{% endif %}">
-				{% if item.url %}
-					<a href="{{ item.url }}">{{ item.title }}</a>
-				{% else %}
-					{{ item.title }}
-				{% endif %}
-			</div>
-			{% endfor %}
-		</div>
-		<div id="leftcolumn" class="localnav">
-			<h2>Services</h2>
-			<ul>
-				<li><a href="/" title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a></li>
-				<li><a href="/searchdataflow" title="{% trans 'Search' %}">{% trans "Search" %}</a></li>
-				<li><a href="/help/fgases" title="{% trans 'Help F-gases' %}">{% trans "Help F-gases" %}</a></li>
-				<li><a href="/help/ods" title="{% trans 'Help ODS' %}">{% trans "Help ODS" %}</a></li>
-				<li><a href="/help/cars_vans" title="{% trans 'Help Cars and Vans' %}">{% trans "Help Cars and Vans" %}</a></li>
-				<li><a href="/help/dataconfidentiality" title="{% trans 'Confidentiality' %}">{% trans "Confidentiality" %}</a></li>
-			</ul>
-			{% if user.is_staff %}
-				<h2>{% trans 'BDR Registry Notifications' %}</h2>
-				<ul>
-					<li><a href="{% url 'notifications:dashboard' %}">{% trans 'Reporting cycles' %}</a></li>
-					<li><a href="{% url 'notifications:companies' %}">{% trans 'Statistics' %}</a></li>
-					<!-- <li><a href="{% url 'notifications:persons' %}">{% trans 'Persons' %}</a></li> -->
-					{% if user.is_superuser %}
-						<li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
-					{% endif %}
-				</ul>
-			{% endif %}
-		</div>
-		<div id="workarea">
-			{% for message in messages %}
-				<div class="system-msg">{{ message }}</div>
-			{% endfor %}
 
-			{% block content %}{% endblock %}
-		</div>
-	</div>
-	<div id="pagefoot"></div>
+<body>
+  <div id="container">
+    <div id="toolribbon">
+	  <div id="lefttools">
+		<a id="eealink" href="http://www.eea.europa.eu/">{% trans "EEA" %}</a>
+		<a id="ewlink" href="http://ew.eea.europa.eu/">{% trans "EnviroWindows" %}</a>
+	  </div>
+	  <div id="righttools">
+	    {% if user.is_anonymous %}
+	      <a id="loginlink" href="{% url 'notifications:accounts:login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
+	    {% else %}
+	      <a id="logoutlink" href="{% url 'notifications:accounts:logout' %}">{% trans "Logout" %} ({{ user.username }})</a>
+      {% endif %}
+
+	    <a id="printlink" title="{% trans 'Print this page' %}" href="javascript:this.print();"><span>{% trans "Print" %}</span></a>
+	    <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="{% trans 'Switch to/from full screen mode' %}"><span>{% trans "Switch to/from full screen mode" %}</span></a>
+	  </div>
+    </div>
+
+    <div id="pagehead">
+      <a href="/" accesskey="1"><img src="https://www.eionet.europa.eu/styles/eionet2007/eea-print-logo.gif" alt="Logo" id="logo" /></a>
+	  <div id="networktitle">{% trans 'Eionet' %}</div>
+	  <div id="sitetitle">{% trans "Data reporting for business" %}</div>
+	  <div id="sitetagline">{% trans "This site is part of the Reportnet" %}</div>
+    </div>
+
+    <div id="menuribbon"></div>
+    <div class="breadcrumbtrail">
+      <div class="breadcrumbhead">{% trans "You are here:" %}</div>
+      <div class="breadcrumbitem eionetaccronym">
+        <a href="http://www.eionet.europa.eu/">{% trans "Eionet" %}</a>
+      </div>
+
+      {% for item in view.breadcrumbs %}
+        <div class="breadcrumbitem{% if forloop.last %}last{% endif %}">
+	      {% if item.url %}
+	        <a href="{{ item.url }}">{{ item.title }}</a>
+	      {% else %}
+	        {{ item.title }}
+	      {% endif %}
+	    </div>
+      {% endfor %}
+    </div>
+
+    <div id="leftcolumn" class="localnav">
+      {% if USE_SIDEMENU %}
+        {% cache 3000 sidebar request.user %}
+	        {% get_sidebar request.user %}
+        {% endcache %}
+      {% else  %}
+        <h2>Services</h2>
+			  <ul>
+				  <li><a href="/" title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a></li>
+				  <li><a href="/searchdataflow" title="{% trans 'Search' %}">{% trans "Search" %}</a></li>
+				  <li><a href="/help/fgases" title="{% trans 'Help F-gases' %}">{% trans "Help F-gases" %}</a></li>
+				  <li><a href="/help/ods" title="{% trans 'Help ODS' %}">{% trans "Help ODS" %}</a></li>
+				  <li><a href="/help/cars_vans" title="{% trans 'Help Cars and Vans' %}">{% trans "Help Cars and Vans" %}</a></li>
+				  <li><a href="/help/dataconfidentiality" title="{% trans 'Confidentiality' %}">{% trans "Confidentiality" %}</a></li>
+			  </ul>
+        {% if user.is_staff %}
+				  <h2>{% trans 'BDR Registry Notifications' %}</h2>
+				  <ul>
+					  <li><a href="{% url 'notifications:dashboard' %}">{% trans 'Reporting cycles' %}</a></li>
+					  <li><a href="{% url 'notifications:companies' %}">{% trans 'Statistics' %}</a></li>
+					  {% if user.is_superuser %}
+						  <li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
+					  {% endif %}
+				  </ul>
+			  {% endif %}
+      {% endif %}
+    </div>
+
+    <div id="workarea">
+      {% for message in messages %}
+	    <div class="system-msg">{{ message }}</div>
+	  {% endfor %}
+
+	  {% block content %}{% endblock %}
+    </div>
+  </div>
+  <div id="pagefoot"></div>
 </body>
+
 {% block footer_scripts %}
 {% endblock %}
+
 </html>
