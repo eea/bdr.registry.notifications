@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.0 (2019-08-22)
+------------------
+* Grab sidemenu from bdr
+  [dianaboiangiu]
+
 1.1.32 (2019-07-09)
 ------------------
 * Fix security issues (Django)
