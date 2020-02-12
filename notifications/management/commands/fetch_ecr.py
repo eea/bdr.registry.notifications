@@ -69,7 +69,7 @@ class Command(BaseFetchCommand, BaseCommand):
         )
 
     def check_company_is_valid(self, company):
-        if company['status'] in ECR_ACCEPTED_COMPANIES_STATUS:
+        if company['check_passed']:
             return True
         external_id = company['company_id']
         company_obj = Company.objects.really_all().filter(external_id=external_id)
