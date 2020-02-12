@@ -12,7 +12,7 @@ class GetOrNoneManager(models.Manager):
         return QuerySet(self.model).filter(
             Q(group__code='cars')
             | Q(group__code='vans')
-            | Q(status__in=ECR_ACCEPTED_COMPANIES_STATUS)
+            | Q(check_passed=True)
         )
 
     def really_all(self):

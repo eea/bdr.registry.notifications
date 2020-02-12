@@ -56,7 +56,8 @@ class Command(BaseFetchCommand, BaseCommand):
             status=company['status'],
             representative_name=representative_name,
             representative_vat=representative_vat,
-            representative_country_name=representative_country_name
+            representative_country_name=representative_country_name,
+            check_passed=company.get('check_passed'),
         )
 
     def parse_person_data(self, person):

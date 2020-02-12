@@ -84,6 +84,7 @@ class Company(models.Model):
     representative_name = models.CharField(max_length=256, blank=True, null=True)
     representative_vat = models.CharField(max_length=256, blank=True, null=True)
     representative_country_name = models.CharField(max_length=256, blank=True, null=True)
+    check_passed = models.NullBooleanField(default=None, null=True)
 
     objects = GetOrNoneManager()
 
