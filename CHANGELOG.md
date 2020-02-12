@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.2.2 (2020-02-12)
+------------------
+* Add current user to through model person-company 
+  [dianaboiangiu]
+
+1.2.1 (2020-02-12)
+------------------
+* Fix inactive companies from ODS/FGAS
+  [dianaboiangiu]
+
 1.2.0 (2019-08-22)
 ------------------
 * Grab sidemenu from bdr
