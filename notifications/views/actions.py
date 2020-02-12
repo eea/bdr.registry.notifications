@@ -143,7 +143,6 @@ class ActionsECRView(ActionsBaseView):
 
             try:
                 company_obj = self.create_company(**company_data)
-
                 username_list = [user["username"] for user in item["users"]]
                 persons = Person.objects.filter(
                     username__in=username_list

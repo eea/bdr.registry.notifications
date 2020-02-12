@@ -67,7 +67,8 @@ class CycleEmailTemplateTest(BaseTest):
             factories.PersonFactory()
         ]
         for person in self.persons:
-            person.company.add(self.company)
+            factories.PersonCompanyFactory(person=person, company=self.company)
+
 
         resp = self.client.post(
             reverse('notifications:template:test',
@@ -129,5 +130,5 @@ class CycleEmailTemplateTest(BaseTest):
         self.assertEqual(self.cycle_template, resp.context['template'])
         self.assertEqual(
             len(self.persons),
-            resp.context['recipients'].first().users.count()
+            len(resp.context['recipients'].first().active_users)
         )

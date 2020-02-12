@@ -1,5 +1,6 @@
 import csv
 import json
+import random
 
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -135,7 +136,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
     def get_number_of_emails_to_send(self, companies):
         emails_count = 0
         for company in companies:
-            emails_count += company.users.all().count()
+            emails_count += len(company.active_users)
         return emails_count
 
     def get_context_data(self, **kwargs):
@@ -144,11 +145,11 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
         context['template'] = self.object
         context['form'] = CycleEmailTemplateTriggerForm()
         companies = self.get_recipient_companies(company_ids)
-        context['companies'] = companies.prefetch_related('users')
+        context['companies'] = companies
         if self.object.is_triggered:
             context['companies'] = Company.objects.filter(
                 notifications__emailtemplate=self.object
-            ).prefetch_related('users').distinct()
+            )
             context['recipients'] = context['companies']
         else:
             context['recipients'] = context['companies']
@@ -243,7 +244,9 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
             if not company:
                 context["info"] = "The database does not provide any company for this obligation."
                 return context
-            person = company.users.order_by('?').first()
+            length_active_users = len(company.active_users)
+            rand = random.randint(0, length_active_users - 1)
+            person = company.active_users[rand]
         context['company'] = company
         context['person'] = person
 

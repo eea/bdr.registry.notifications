@@ -30,4 +30,5 @@ class BaseTest(TestCase):
             factories.PersonFactory()
         ]
         for person in self.persons:
-            person.company.add(self.company)
+            factories.PersonCompanyFactory(person=person, company=self.company)
+

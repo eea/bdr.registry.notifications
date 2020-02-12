@@ -5,11 +5,11 @@ from django.db import IntegrityError
 
 from notifications import (
     FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, ODS_GROUP_CODE,
-    FGASES_EU, FGASES_NONEU,
+    FGASES_EU, FGASES_NONEU, ECR_GROUP_CODES
 )
 from bdr.settings import ECR_ACCEPTED_COMPANIES_STATUS
 from notifications.management.commands.fetch import BaseFetchCommand
-from notifications.models import CompaniesGroup, Person, Company
+from notifications.models import CompaniesGroup, Person, Company, PersonCompany
 from notifications.registries import EuropeanCacheRegistry
 from notifications.tests.base.registry_mock import EuropeanCacheRegistryMock
 
@@ -30,6 +30,12 @@ class Command(BaseFetchCommand, BaseCommand):
         self.group_eu = CompaniesGroup.objects.get(code=FGASES_EU_GROUP_CODE)
         self.group_noneu = CompaniesGroup.objects.get(code=FGASES_NONEU_GROUP_CODE)
         self.group_ods = CompaniesGroup.objects.get(code=ODS_GROUP_CODE)
+
+    def set_all_persons_to_current_false(self):
+        persons_companies = PersonCompany.objects.filter(
+            company__group__code__in=ECR_GROUP_CODES
+        )
+        persons_companies.update(current=False)
 
     def get_group(self, company):
         if company['domain'] == 'ODS':
@@ -68,6 +74,11 @@ class Command(BaseFetchCommand, BaseCommand):
             name=person_name,
             email=person['email'],
         )
+
+    def set_current_user_true(self, company, persons):
+        for person in persons:
+            person_company, _ = PersonCompany.objects.really_all().get_or_create(company=company, person=person)
+            person_company.current = True
 
     def check_company_is_valid(self, company):
         if company['check_passed']:
@@ -109,7 +120,7 @@ class Command(BaseFetchCommand, BaseCommand):
                     **self.parse_company_data(item))
                 username_list = [user["username"] for user in item["users"]]
                 persons = Person.objects.filter(username__in=username_list)
-                company.users.add(*persons)
+                self.set_current_user_true(company, persons)
                 company_count += 1
             except IntegrityError as e:
                 logger.info('Skipped company: %s (%s)', item['name'], e)
@@ -117,6 +128,7 @@ class Command(BaseFetchCommand, BaseCommand):
         return company_count, errors
 
     def handle(self, *args, **options):
+        self.set_all_persons_to_current_false()
         registry = self.get_registry(options)
         person_count = self.fetch_persons(registry)
         company_count, errors = self.fetch_companies(registry)

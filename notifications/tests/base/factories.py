@@ -50,6 +50,13 @@ class PersonFactory(DjangoModelFactory):
     class Meta:
         model = models.Person
 
+class PersonCompanyFactory(DjangoModelFactory):
+    person = SubFactory(PersonFactory)
+    company =SubFactory(CompanyFactory)
+    current = True
+
+    class Meta:
+        model = models.PersonCompany
 
 class CycleEmailTemplateFactory(DjangoModelFactory):
     subject = 'CycleEmailTemplateTest'

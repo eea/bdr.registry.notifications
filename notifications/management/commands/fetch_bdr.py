@@ -5,7 +5,7 @@ from django.db import IntegrityError
 
 from notifications import BDR_GROUP_CODES
 from notifications.management.commands.fetch import BaseFetchCommand
-from notifications.models import CompaniesGroup, Company
+from notifications.models import CompaniesGroup, Company, Person, PersonCompany
 from notifications.registries import BDRRegistry
 from notifications.tests.base.registry_mock import BDRRegistryMock
 
@@ -23,6 +23,12 @@ class Command(BaseFetchCommand, BaseCommand):
 
     def __init__(self):
         super(Command, self).__init__()
+
+    def set_all_persons_to_current_false(self):
+        persons_companies = PersonCompany.objects.filter(
+            company__group__code__in=BDR_GROUP_CODES
+        )
+        persons_companies.update(current=False)
 
     def get_group(self, company):
         return CompaniesGroup.objects.get(code=company['obligation'])
@@ -48,6 +54,11 @@ class Command(BaseFetchCommand, BaseCommand):
             email=person['contactemail'],
         )
 
+    def set_current_user_true(self, person, companies):
+        for company in companies:
+            person_company, _ = PersonCompany.objects.really_all().get_or_create(company=company,person=person)
+            person_company.current = True
+
     def fetch_persons(self, registry):
         person_count = 0
         errors = []
@@ -58,13 +69,14 @@ class Command(BaseFetchCommand, BaseCommand):
                 companies = Company.objects.filter(
                     name=item['companyname'],
                     country=item['country'])
-                person.company.add(*companies)
+                self.set_current_user_true(person, companies)
             except IntegrityError as e:
                 logger.info('Skipped person: %s (%s)', item['contactemail'], e)
                 errors.append((e, item['contactemail']))
         return person_count, errors
 
     def handle(self, *args, **options):
+        self.set_all_persons_to_current_false()
         registry = self.get_registry(options)
         company_count = self.fetch_companies(registry)
         person_count, errors = self.fetch_persons(registry)

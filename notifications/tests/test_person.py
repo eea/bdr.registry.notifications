@@ -10,7 +10,8 @@ class PersonTest(BaseTest):
         group = factories.CompaniesGroupFactory(code='f-gases-eu')
         company = factories.CompanyFactory(group=group)
         person = factories.PersonFactory()
-        person.company.add(company)
+        factories.PersonCompanyFactory(person=person, company=company)
+
         person.save()
         resp = self.client.get(reverse('notifications:persons'))
         self.assertEqual(resp.status_code, 200)

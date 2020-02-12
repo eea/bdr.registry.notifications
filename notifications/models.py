@@ -71,7 +71,9 @@ class CompaniesGroup(models.Model):
 class Company(models.Model):
     """ Base class for a registry, ECR or BDR, company.
     """
-
+    related_objects = [
+        ('PersonCompany', 'company'),
+    ]
     class Meta:
         verbose_name_plural = 'Companies'
 
@@ -94,14 +96,21 @@ class Company(models.Model):
     def __unicode__(self):
         return '%s' % self.name
 
+    @property
+    def active_users(self):
+        person_companies = PersonCompany.objects.filter(company=self)
+        return [person_company.person for person_company in person_companies]
 
 class Person(models.Model):
     """ Base class for a company user/person/contact.
     """
+    related_objects = [
+        ('PersonCompany', 'person'),
+    ]
     username = models.CharField(max_length=128, db_index=True, unique=True)
     name = models.CharField(max_length=256)
     email = models.CharField(max_length=128, db_index=True)
-    company = models.ManyToManyField(Company, related_name='users')
+    company = models.ManyToManyField(Company, related_name='users', through='PersonCompany')
 
     def __str__(self):
         return '{} ({})'.format(self.name, self.username)
@@ -117,6 +126,25 @@ class Person(models.Model):
         return [notification.emailtemplate.stage for notification in self.notifications.all()]
     admin_company.short_description = 'Company'
 
+
+class PersonCompanyManager(models.Manager):
+    use_for_related_fields = True
+
+    def get_queryset(self):
+        return super(PersonCompanyManager, self).get_queryset().filter(current=True)
+
+    def really_all(self):
+        return super(PersonCompanyManager, self).get_queryset().all()
+
+
+class PersonCompany(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    current = models.NullBooleanField(default=False, null=True)
+    objects = PersonCompanyManager()
+
+    class Meta:
+        db_table = 'notifications_person_company'
 
 class Cycle(models.Model):
     """ Base class for a reporting cycle - this happens once per year.

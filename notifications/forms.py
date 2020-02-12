@@ -57,7 +57,7 @@ def make_messages(companies, emailtemplate):
     emails = []
     notifications = []
     for company in companies:
-        for person in company.users.all():
+        for person in company.active_users:
             subject = format_subject(emailtemplate, person, company)
             email_body = format_body(emailtemplate, person, company)
             recipient_email = [person.email]
