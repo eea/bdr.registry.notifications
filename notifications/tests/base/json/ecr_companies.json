@@ -4,6 +4,7 @@
    "company_id": 1234,
    "domain": "FGAS",
    "status": "VALID",
+   "check_passed": true,
    "address" : {
      "country" : {
        "code" : "CN",
@@ -30,6 +31,7 @@
  {
    "vat" : null,
    "company_id": 3245,
+   "check_passed": true,
    "domain": "FGAS",
    "status": "REVISION",
    "address" : {
