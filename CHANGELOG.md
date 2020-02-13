@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.3 (2020-02-12)
+------------------
+* Fix PersonCompany integrity error on save on fetch_ecr
+  [dianaboiangiu]
+
 1.2.2 (2020-02-12)
 ------------------
 * Add current user to through model person-company 
