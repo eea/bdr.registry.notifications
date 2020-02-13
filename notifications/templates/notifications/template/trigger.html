@@ -91,7 +91,7 @@
       </thead>
       <tbody>
       {% for company in companies %}
-        {% for person in company.users.all %}
+        {% for person in company.active_users %}
           <tr>
             <td>
               {{ company.external_id }}

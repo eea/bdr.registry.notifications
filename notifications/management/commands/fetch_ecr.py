@@ -77,8 +77,12 @@ class Command(BaseFetchCommand, BaseCommand):
 
     def set_current_user_true(self, company, persons):
         for person in persons:
-            person_company, _ = PersonCompany.objects.really_all().get_or_create(company=company, person=person)
-            person_company.current = True
+            try:
+                person_company = PersonCompany.objects.really_all().get(company=company, person=person)
+                person_company.delete()
+                person_company = PersonCompany.objects.create(company=company, person=person, current=True)
+            except PersonCompany.DoesNotExist:
+                person_company = PersonCompany.objects.create(company=company, person=person, current=True)
 
     def check_company_is_valid(self, company):
         if company['check_passed']:
