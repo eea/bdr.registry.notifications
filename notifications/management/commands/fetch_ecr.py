@@ -126,7 +126,7 @@ class Command(BaseFetchCommand, BaseCommand):
                 unique_list.update(user["email"] for user in item["users"])
 
                 people = set()
-                people.update(set(Person.objects.filter(email_in=unique_list)))
+                people.update(set(Person.objects.filter(email__in=unique_list)))
                 people.update(set(Person.objects.filter(username__in=unique_list)))
                 self.set_current_user_true(company, people)
                 company_count += 1
