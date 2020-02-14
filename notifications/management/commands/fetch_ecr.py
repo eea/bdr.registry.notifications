@@ -122,9 +122,13 @@ class Command(BaseFetchCommand, BaseCommand):
                     continue
                 company = self.create_company(
                     **self.parse_company_data(item))
-                username_list = [user["username"] for user in item["users"]]
-                persons = Person.objects.filter(username__in=username_list)
-                self.set_current_user_true(company, persons)
+                unique_list = {user["username"] for user in item["users"]}
+                unique_list.update(user["email"] for user in item["users"])
+
+                people = set()
+                people.update(set(Person.objects.filter(email_in=unique_list)))
+                people.update(set(Person.objects.filter(username__in=unique_list)))
+                self.set_current_user_true(company, people)
                 company_count += 1
             except IntegrityError as e:
                 logger.info('Skipped company: %s (%s)', item['name'], e)

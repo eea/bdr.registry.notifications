@@ -1,5 +1,7 @@
 import logging
 
+from django.db.models import Q
+
 from notifications.models import Person, Company
 
 logger = logging.getLogger(__name__)
@@ -61,24 +63,17 @@ class BaseFetchCommand:
         name = kwargs['name']
         username = kwargs['username']
         email = kwargs['email']
-        email_exists = Person.objects.filter(email=email).exists()
-        username_exists = Person.objects.filter(username=username).exists()
-        if username_exists and email_exists:
-            person = Person.objects.filter(username=username).first()
+
+        # XXX This will not catch duplicates
+        person = Person.objects.filter(
+            Q(email=email) | Q(username=username) | Q(username=email) | Q(email=username)
+        ).first()
+
+        if person:
             person.email = email
             person.name = name
             person.save()
             created = False
-        elif username_exists:
-            person, created = Person.objects.update_or_create(
-                username=username,
-                defaults=kwargs
-            )
-        elif email_exists:
-            person, created = Person.objects.update_or_create(
-                email=email,
-                defaults=kwargs
-            )
         else:
             person, created = Person.objects.update_or_create(
                 username=username,
