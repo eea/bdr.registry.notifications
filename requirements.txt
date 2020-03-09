@@ -1,4 +1,4 @@
-Django==1.11.23
+Django==1.11.28
 psycopg2==2.7.3
 django-ckeditor==5.6.1
 django-braces==1.11.0
