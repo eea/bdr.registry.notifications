@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.4 (2020-03-09)
+------------------
+* Add BCC email address to global template context
+  [dianaboiangiu]
+
 1.2.3 (2020-02-12)
 ------------------
 * Fix PersonCompany integrity error on save on fetch_ecr
