@@ -31,7 +31,7 @@
       Send email notification to all companies reporting under {{ template.group }} obligation
       ({{ template.stage }}, {{ template.stage.cycle }}).
       Please review the list of contacts bellow before sending the emails. All emails will be sent in
-      BCC to <i>bdr.helpdesk@eea.europa.eu</i>.
+      BCC to <i>{{ bcc_email_address }}</i>.
     </p>
 
     <form action="" method="post" id="send-emails">

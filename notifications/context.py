@@ -20,3 +20,8 @@ def debug(request):
     return {
         'debug': env('DEBUG')
     }
+
+def utils(request):
+    return {
+        "bcc_email_address": env('BCC', '')
+    }

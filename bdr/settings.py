@@ -83,7 +83,8 @@ TEMPLATES = [
                 'notifications.layout.layout_context_processor',
                 'notifications.context.debug',
                 'notifications.context.sentry',
-                'notifications.context.use_sidemenu'
+                'notifications.context.use_sidemenu',
+                'notifications.context.utils',
             ],
         },
     },
