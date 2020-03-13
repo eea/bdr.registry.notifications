@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.5 (2020-03-13)
+------------------
+* Fix user uniqueness check
+  [dianaboiangiu]
+
 1.2.4 (2020-03-09)
 ------------------
 * Add BCC email address to global template context
