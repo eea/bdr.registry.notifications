@@ -109,7 +109,7 @@
         "pageLength": 10,
         "serverSide": true,
         "ajax": {
-          "url": "/template/{{ template.id }}/json/",
+          "url": '{% url 'notifications:template:json' template.id %}',
           "type": "POST",
           "data": {
             'csrfmiddlewaretoken': '{{ csrf_token }}',
