@@ -90,24 +90,6 @@
       </tr>
       </thead>
       <tbody>
-      {% for company in companies %}
-        {% for person in company.active_users %}
-          <tr>
-            <td>
-              {{ company.external_id }}
-            </td>
-            <td>
-              {{ company.name }}
-            </td>
-            <td>
-              {{ person.name }}
-            </td>
-            <td>
-              {{ person.email }}
-            </td>
-          </tr>
-        {% endfor %}
-      {% endfor %}
       </tbody>
     </table>
   {% endif %}
@@ -118,13 +100,28 @@
   <script src="{% static 'js/jquery.dataTables.js' %}"></script>
 
   <script>
-	$(document).ready(function () {
-		var table = $("#myTable").DataTable();
+    $(document).ready(function () {
+      var table = $("#myTable").DataTable({
+        "processing": true,
+        "paging": true,
+        "searching": { "regex": true },
+        "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
+        "pageLength": 10,
+        "serverSide": true,
+        "ajax": {
+          "url": "/template/{{ template.id }}/json/",
+          "type": "POST",
+          "data": {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            "filtered_companies": {{ recipient_json }}
+          }
+        }
+      });
 
-		$("#myInputTextField").on("keyup change", function () {
-			table.search($(this).val()).draw();
-		});
-	});
+    $("#myInputTextField").on("keyup change", function () {
+      table.search($(this).val()).draw();
+    });
+  });
   </script>
 
 {% endblock %}
