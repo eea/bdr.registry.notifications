@@ -256,6 +256,7 @@ BDRREGISTRY_URL = env('BDR_REGISTRY_URL', '')
 BDRREGISTRY_USERNAME = env('BDR_REGISTRY_USERNAME', '')
 BDRREGISTRY_PASSWORD = env('BDR_REGISTRY_PASSWORD', '')
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS=1000000
 
 ECRREGISTRY_URL = env('ECR_REGISTRY_URL', '')
 ECR_COMPANY_PATH = env('ECR_COMPANY_PATH', '/undertaking/list')
@@ -297,6 +298,32 @@ if not DEBUG:
     RAVEN_CONFIG = {
         'dsn': env('SENTRY_DSN'),
     }
+
+# uncomment for using debug toolbar
+# if DEBUG:
+#     INSTALLED_APPS = INSTALLED_APPS + [
+#         'debug_toolbar',
+#     ]
+
+#     MIDDLEWARE = MIDDLEWARE + [
+#         'debug_toolbar.middleware.DebugToolbarMiddleware',
+#     ]
+
+#     def show_toolbar(request):
+#         return True
+
+#     DEBUG_TOOLBAR_CONFIG = {
+#         'SHOW_TOOLBAR_CALLBACK': show_toolbar
+#         # Rest of config
+#     }
+
+#     INTERNAL_IPS = [
+#         # ...
+#         '127.0.0.1',
+#         '0.0.0.0'
+#         # ...
+#     ]
+
 
 
 try:

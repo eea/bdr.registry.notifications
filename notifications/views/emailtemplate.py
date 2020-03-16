@@ -2,9 +2,13 @@ import csv
 import json
 import random
 
+from django.contrib.postgres.search import SearchVector
+from django.db.models import Prefetch
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
+from django.views.generic import TemplateView
 from django.views import generic
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
@@ -23,9 +27,32 @@ from notifications.models import (
     Company,
     CompaniesGroup,
     Person,
+    PersonCompany,
 )
 from notifications.views.breadcrumb import NotificationsBaseView, Breadcrumb
 
+class JSONResponseMixin:
+    """
+    A mixin that can be used to render a JSON response.
+    """
+    def render_to_json_response(self, context, **response_kwargs):
+        """
+        Returns a JSON response, transforming 'context' to make the payload.
+        """
+        return JsonResponse(
+            self.get_data(context),
+            **response_kwargs
+        )
+
+    def get_data(self, context):
+        """
+        Returns an object that will be serialized as JSON by json.dumps().
+        """
+        # Note: This is *EXTREMELY* naive; in reality, you'll need
+        # to do much more complex handling to ensure that arbitrary
+        # objects -- such as Django model instances or querysets
+        # -- can be serialized as JSON.
+        return context
 
 class CycleEmailTemplateBase(NotificationsBaseView):
     model = CycleEmailTemplate
@@ -56,7 +83,7 @@ class CycleEmailTemplateBase(NotificationsBaseView):
     def get_recipient_companies(self, company_ids=None):
         qs = Company.objects.filter(
             group=self.object.group
-        ).order_by("name")
+        ).order_by("name").prefetch_related('personcompany_set')
         if company_ids is not None:
             qs = qs.filter(external_id__in=company_ids)
         return qs
@@ -136,7 +163,7 @@ class CycleEmailTemplateTriggerDetail(CycleEmailTemplateBase, generic.TemplateVi
     def get_number_of_emails_to_send(self, companies):
         emails_count = 0
         for company in companies:
-            emails_count += len(company.active_users)
+            emails_count += len(company.personcompany_set.all())
         return emails_count
 
     def get_context_data(self, **kwargs):
@@ -211,6 +238,68 @@ class CycleEmailTemplateTrigger(View):
         else:
             view = CycleEmailTemplateTriggerDetail.as_view()
         return view(request, *args, **kwargs)
+
+
+class CycleEmailTemplateTriggerNotificationsJson(JSONResponseMixin, TemplateView):
+    template_name = 'notifications/template/json.html'
+    http_method_names = ["post",]
+
+    def get_number_of_emails_to_send(self, companies):
+        emails_count = 0
+        for company in companies:
+            emails_count += len(company.personcompany_set.all())
+        return emails_count
+
+    def get_recipient_companies(self, company_ids=None):
+        qs = Company.objects.filter(
+            group=self.object.group
+        ).order_by("name").prefetch_related('personcompany_set')
+        if company_ids is not None:
+            qs = qs.filter(id__in=company_ids)
+        return qs
+
+    def get_sort(self, order, direction):
+        sorting = ['integer_external_id', 'name', 'personcompany__person__name', 'personcompany__person__email']
+        if direction == 'desc':
+            return '-' + sorting[order]
+        return sorting[order]
+
+    def get_data(self, context):
+        order = self.request.POST.get('order[0][column]')
+        direction = self.request.POST.get('order[0][dir]')
+        search_value = self.request.POST.get('search[value]')
+        order = self.get_sort(int(order), direction)
+        self.object = CycleEmailTemplate.objects.get(id=self.kwargs['pk'])
+
+        if self.object.is_triggered:
+            companies = Company.objects.filter(notifications__emailtemplate=self.object).all().prefetch_related('personcompany_set')
+        companies = self.get_recipient_companies(self.request.POST.getlist('filtered_companies[]', None))
+        companies = companies.filter(personcompany__current=True).values_list('external_id', 'name',
+            'personcompany__person__name', 'personcompany__person__email').extra(
+            select={
+                'integer_external_id': 'CAST(external_id AS INTEGER)',
+                'lower_name':'lower(name)',
+                'lower_personcompany__person__name': 'personcompany__person__name',
+                'lower_personcompany__person__email': 'personcompany__person__email'
+            }).order_by(order)
+        if search_value:
+            companies = companies.annotate(search=SearchVector(
+                'external_id', 'name', 'personcompany__person__name', 'personcompany__person__email')).filter(search__contains=search_value).distinct()
+        start = int(self.request.POST.get('start', 0))
+        length = int(self.request.POST.get('length', 10))
+
+        return {
+            "recordsTotal": len(companies),
+            "recordsFiltered": len(companies),
+            "data": list(companies[start:start + length])
+        }
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def render_to_response(self, context, **response_kwargs):
+        return self.render_to_json_response(context, **response_kwargs)
 
 
 class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
