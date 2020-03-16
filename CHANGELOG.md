@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.7 (2020-03-16)
+------------------
+* Fix pagination url for production
+  [dianaboiangiu]
+
 1.2.6 (2020-03-16)
 ------------------
 * Paginate e-mail listing for trigger page for before/after notifications are sent
