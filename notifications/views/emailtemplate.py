@@ -13,6 +13,7 @@ from django.views import generic
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 
+from notifications import BDR_GROUP_CODES, ECR_GROUP_CODES
 from notifications.forms import (
     CycleEmailTemplateEditForm,
     CycleEmailTemplateTestForm,
@@ -264,6 +265,26 @@ class CycleEmailTemplateTriggerNotificationsJson(JSONResponseMixin, TemplateView
             return '-' + sorting[order]
         return sorting[order]
 
+    def get_companies_ecr(self, companies, order):
+        return companies.filter(personcompany__current=True).values_list('external_id', 'name',
+            'personcompany__person__name', 'personcompany__person__email').extra(
+            select={
+                'integer_external_id': 'CAST(external_id AS INTEGER)',
+                'lower_name':'lower(name)',
+                'lower_personcompany__person__name': 'personcompany__person__name',
+                'lower_personcompany__person__email': 'personcompany__person__email'
+            }).order_by(order)
+
+    def get_companies_bdr(self, companies, order):
+        return companies.filter(personcompany__current=True).values_list('external_id', 'name',
+            'personcompany__person__name', 'personcompany__person__email').extra(
+            select={
+                'integer_external_id': 'external_id',
+                'lower_name':'lower(name)',
+                'lower_personcompany__person__name': 'personcompany__person__name',
+                'lower_personcompany__person__email': 'personcompany__person__email'
+            }).order_by(order)
+
     def get_data(self, context):
         order = self.request.POST.get('order[0][column]')
         direction = self.request.POST.get('order[0][dir]')
@@ -274,14 +295,11 @@ class CycleEmailTemplateTriggerNotificationsJson(JSONResponseMixin, TemplateView
         if self.object.is_triggered:
             companies = Company.objects.filter(notifications__emailtemplate=self.object).all().prefetch_related('personcompany_set')
         companies = self.get_recipient_companies(self.request.POST.getlist('filtered_companies[]', None))
-        companies = companies.filter(personcompany__current=True).values_list('external_id', 'name',
-            'personcompany__person__name', 'personcompany__person__email').extra(
-            select={
-                'integer_external_id': 'CAST(external_id AS INTEGER)',
-                'lower_name':'lower(name)',
-                'lower_personcompany__person__name': 'personcompany__person__name',
-                'lower_personcompany__person__email': 'personcompany__person__email'
-            }).order_by(order)
+        if self.object.group.code in BDR_GROUP_CODES:
+            companies = self.get_companies_bdr(companies, order)
+        else:
+            companies = self.get_companies_ecr(companies, order)
+
         if search_value:
             companies = companies.annotate(search=SearchVector(
                 'external_id', 'name', 'personcompany__person__name', 'personcompany__person__email')).filter(search__contains=search_value).distinct()
