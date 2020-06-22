@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.8 (2020-06-22)
+------------------
+* Prepare for vans/cars notifications
+  [dianaboiangiu]
+
 1.2.7 (2020-03-16)
 ------------------
 * Fix pagination url for production
