@@ -1,6 +1,7 @@
 import csv
 import json
 import random
+from urllib.parse import urlencode
 
 from django.contrib.postgres.search import SearchVector
 from django.db.models import Prefetch
@@ -260,7 +261,10 @@ class CycleEmailTemplateTriggerNotificationsJson(JSONResponseMixin, TemplateView
         return qs
 
     def get_sort(self, order, direction):
-        sorting = ['integer_external_id', 'name', 'personcompany__person__name', 'personcompany__person__email']
+        if self.object.group.code in BDR_GROUP_CODES:
+            sorting = ['external_id', 'name', 'personcompany__person__name', 'personcompany__person__email']
+        else:
+            sorting = ['integer_external_id', 'name', 'personcompany__person__name', 'personcompany__person__email']
         if direction == 'desc':
             return '-' + sorting[order]
         return sorting[order]
@@ -289,8 +293,8 @@ class CycleEmailTemplateTriggerNotificationsJson(JSONResponseMixin, TemplateView
         order = self.request.POST.get('order[0][column]')
         direction = self.request.POST.get('order[0][dir]')
         search_value = self.request.POST.get('search[value]')
-        order = self.get_sort(int(order), direction)
         self.object = CycleEmailTemplate.objects.get(id=self.kwargs['pk'])
+        order = self.get_sort(int(order), direction)
 
         if self.object.is_triggered:
             companies = Company.objects.filter(notifications__emailtemplate=self.object).all().prefetch_related('personcompany_set')
@@ -369,12 +373,13 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         return context
 
     def get_success_url(self):
-        query_args = "?company_name={company}&person_name={person}".format(
-            company=self.request.POST['company'],
-            person=self.request.POST['contact']
-        )
+        params = {
+            "company_name": self.request.POST['company'],
+            "person_name": self.request.POST['contact'],
+        }
+        query_string = urlencode(params)
         return reverse('notifications:template:test',
-                       args=[self.object.pk]) + query_args
+                       args=[self.object.pk]) + '?' +  query_string
 
     def breadcrumbs(self):
         self.object = self.get_object()
