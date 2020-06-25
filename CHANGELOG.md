@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.9 (2020-06-25)
+------------------
+* Fix email send test and data table
+  [dianaboiangiu]
+
 1.2.8 (2020-06-22)
 ------------------
 * Prepare for vans/cars notifications
