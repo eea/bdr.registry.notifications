@@ -50,7 +50,7 @@ class Command(BaseFetchCommand, BaseCommand):
             person[key] = person[key]
         return dict(
             username=person['contactemail'],
-            name=person['contactname'],
+            name=person['contactname'].strip('None').strip(),
             email=person['contactemail'],
         )
 
