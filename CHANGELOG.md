@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.10 (2020-06-25)
+-------------------
+* Remove None from contact name
+  [dianaboiangiu]
+
 1.2.9 (2020-06-25)
 ------------------
 * Fix email send test and data table
