@@ -70,65 +70,25 @@ class BDRRegistry(BaseRegistry):
     """
 
     def __init__(self):
-        entrypoint = settings.BDRREGISTRY_URL
-        auth = (
-            settings.BDRREGISTRY_USERNAME,
-            settings.BDRREGISTRY_PASSWORD
-        )
+        entrypoint = settings.BDR_REGISTRY_URL
+        token = settings.BDR_REGISTRY_TOKEN
         super(BDRRegistry, self).__init__('BDRRegistry',
                                           entrypoint=entrypoint,
-                                          auth=auth)
-        self.cookies = None
+                                          token=token)
 
-    def do_login(self):
-        """ Login to registry using the credentials from auth.
-        """
-        url = self.get_url('/accounts/login')
-        cookies = None
-
-        client = requests.session()
-        csrf = None
-        try:
-            csrf = client.get(url).cookies.get('csrftoken')
-        except RequestException as e:
-            logger.warning('Unable to retrieve csrf: {}'.format(e))
-
-        data = {
-            'username': self.auth[0],
-            'password': self.auth[1],
-            'csrfmiddlewaretoken': csrf,
-            'next': '/'
-        }
-        try:
-            response = client.post(url, data=data, headers=dict(Referer=url))
-        except RequestException as e:
-            logger.warning('Unable to login to {} ({})'.format(self.name, e))
-        else:
-            if response.status_code == 200:
-                cookies = {}
-                for cookie in response.request.headers.get('Cookie').split(';'):
-                    cookie = cookie.strip()
-                    session = cookie.split('sessionid=')
-                    if len(session) == 2:
-                        sessionid = session[-1]
-                        cookies = dict(sessionid=sessionid)
-                        break
-        return cookies
 
     def do_request(self, path, method='get', params=None, data=None,
                    headers=None, cookies=None, auth=None):
         """ Handler for BDR API calls - the authorization is done
-            using an user and a password.
+            using a token.
         """
-        if self.cookies is None:
-            self.cookies = self.do_login()
-
+        headers = {'Authorization': self.token}
         return super(BDRRegistry, self).do_request(path,
                                                    method=method,
                                                    params=params,
                                                    data=data,
                                                    headers=headers,
-                                                   cookies=self.cookies,
+                                                   cookies=cookies,
                                                    auth=auth)
 
     def get_companies(self):
@@ -184,8 +144,8 @@ class EuropeanCacheRegistry(BaseRegistry):
     """
 
     def __init__(self):
-        entrypoint = settings.ECRREGISTRY_URL
-        token = settings.ECRREGISTRY_TOKEN
+        entrypoint = settings.ECR_REGISTRY_URL
+        token = settings.ECR_REGISTRY_TOKEN
         super(EuropeanCacheRegistry, self).__init__('EuropeanCacheRegistry',
                                           entrypoint=entrypoint,
                                           token=token)
