@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.11 (2020-08-21)
+-------------------
+* Move BDR API call from auth to token
+  [dianaboiangiu]
+
 1.2.10 (2020-06-25)
 -------------------
 * Remove None from contact name
