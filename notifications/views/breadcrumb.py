@@ -13,6 +13,11 @@ class NotificationsBaseView(braces_views.StaffuserRequiredMixin,
 
     login_url = reverse_lazy('notifications:accounts:login')
 
+    def __init__(self, *args, **kwargs):
+        if settings.USE_ZOPE_LOGIN:
+            self.login_url = "".join([settings.BDR_SERVER_URL,'Login/ldap_login?came_from='])
+        return super(NotificationsBaseView, self).__init__(*args, **kwargs)
+
     def breadcrumbs(self):
         return [
             Breadcrumb(settings.BDR_SERVER_URL, 'BDR'),

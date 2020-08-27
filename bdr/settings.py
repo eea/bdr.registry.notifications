@@ -246,6 +246,7 @@ BDR_PERSONS_PATH = env('BDR_PERSONS_PATH', '/management/persons/export/json/')
 BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
 
 USE_ZOPE_LAYOUT = env('USE_ZOPE_LAYOUT', True)
+USE_ZOPE_LOGIN = env('USE_ZOPE_LOGIN', False)
 
 USE_SIDEMENU = env('USE_SIDEMENU', False)
 BDR_SIDEMENU_URL=env('BDR_SIDEMENU_URL', '')

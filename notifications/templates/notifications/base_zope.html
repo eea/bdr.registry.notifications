@@ -53,27 +53,34 @@
 <body>
   <div id="container">
     <div id="toolribbon">
-	  <div id="lefttools">
-		<a id="eealink" href="http://www.eea.europa.eu/">{% trans "EEA" %}</a>
-		<a id="ewlink" href="http://ew.eea.europa.eu/">{% trans "EnviroWindows" %}</a>
-	  </div>
-	  <div id="righttools">
-	    {% if user.is_anonymous %}
-	      <a id="loginlink" href="{% url 'notifications:accounts:login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
-	    {% else %}
-	      <a id="logoutlink" href="{% url 'notifications:accounts:logout' %}">{% trans "Logout" %} ({{ user.username }})</a>
-      {% endif %}
-
-	    <a id="printlink" title="{% trans 'Print this page' %}" href="javascript:this.print();"><span>{% trans "Print" %}</span></a>
-	    <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="{% trans 'Switch to/from full screen mode' %}"><span>{% trans "Switch to/from full screen mode" %}</span></a>
-	  </div>
+      <div id="lefttools">
+        <a id="eealink" href="http://www.eea.europa.eu/">{% trans "EEA" %}</a>
+        <a id="ewlink" href="http://ew.eea.europa.eu/">{% trans "EnviroWindows" %}</a>
+      </div>
+      <div id="righttools">
+        {% if user.is_anonymous %}
+          {% if USE_ZOPE_LOGIN %}
+            <a id="loginlink" href="{{ BDR_SERVER_URL }}Login/ldap_login?came_from={{ request.get_full_path }}">{% trans "Login" %}</a>
+          {% else %}
+            <a id="loginlink" href="{% url 'notifications:accounts:login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
+          {% endif %}
+        {% else %}
+          {% if USE_ZOPE_LOGIN %}
+            <a id="logoutlink" href="{{ BDR_SERVER_URL }}Login/ldap_logout">{% trans "Logout" %} ({{ user.username }})</a>
+          {% else %}
+            <a id="logoutlink" href="{% url 'notifications:accounts:logout' %}">{% trans "Logout" %} ({{ user.username }})</a>
+          {% endif %}
+        {% endif %}
+        <a id="printlink" title="{% trans 'Print this page' %}" href="javascript:this.print();"><span>{% trans "Print" %}</span></a>
+        <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="{% trans 'Switch to/from full screen mode' %}"><span>{% trans "Switch to/from full screen mode" %}</span></a>
+      </div>
     </div>
 
     <div id="pagehead">
       <a href="/" accesskey="1"><img src="https://www.eionet.europa.eu/styles/eionet2007/eea-print-logo.gif" alt="Logo" id="logo" /></a>
-	  <div id="networktitle">{% trans 'Eionet' %}</div>
-	  <div id="sitetitle">{% trans "Data reporting for business" %}</div>
-	  <div id="sitetagline">{% trans "This site is part of the Reportnet" %}</div>
+      <div id="networktitle">{% trans 'Eionet' %}</div>
+      <div id="sitetitle">{% trans "Data reporting for business" %}</div>
+      <div id="sitetagline">{% trans "This site is part of the Reportnet" %}</div>
     </div>
 
     <div id="menuribbon"></div>
@@ -85,26 +92,26 @@
 
       {% for item in view.breadcrumbs %}
         <div class="breadcrumbitem{% if forloop.last %}last{% endif %}">
-	      {% if item.url %}
-	        <a href="{{ item.url }}">{{ item.title }}</a>
-	      {% else %}
-	        {{ item.title }}
-	      {% endif %}
-	    </div>
+          {% if item.url %}
+            <a href="{{ item.url }}">{{ item.title }}</a>
+          {% else %}
+            {{ item.title }}
+          {% endif %}
+        </div>
       {% endfor %}
     </div>
 
     <div id="leftcolumn" class="localnav">
       {% if USE_SIDEMENU %}
         {% cache 3000 sidebar request.user %}
-	        {% get_sidebar request.user %}
+          {% get_sidebar request.user %}
         {% endcache %}
-      {% else  %}
+      {% else %}
         <h2>Services</h2>
-			  <ul>
-				  <li><a href="/" title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a></li>
-				  <li><a href="/searchdataflow" title="{% trans 'Search' %}">{% trans "Search" %}</a></li>
-				  <li><a href="/help/fgases" title="{% trans 'Help F-gases' %}">{% trans "Help F-gases" %}</a></li>
+        <ul>
+          <li><a href="/" title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a></li>
+          <li><a href="/searchdataflow" title="{% trans 'Search' %}">{% trans "Search" %}</a></li>
+          <li><a href="/help/fgases" title="{% trans 'Help F-gases' %}">{% trans "Help F-gases" %}</a></li>
 				  <li><a href="/help/ods" title="{% trans 'Help ODS' %}">{% trans "Help ODS" %}</a></li>
 				  <li><a href="/help/cars_vans" title="{% trans 'Help Cars and Vans' %}">{% trans "Help Cars and Vans" %}</a></li>
 				  <li><a href="/help/dataconfidentiality" title="{% trans 'Confidentiality' %}">{% trans "Confidentiality" %}</a></li>

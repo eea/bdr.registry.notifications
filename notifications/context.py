@@ -23,5 +23,7 @@ def debug(request):
 
 def utils(request):
     return {
-        "bcc_email_address": env('BCC', '')
+        'bcc_email_address': env('BCC', ''),
+        'USE_ZOPE_LOGIN': env('USE_ZOPE_LOGIN', ''),
+        'BDR_SERVER_URL': env('BDR_SERVER_URL', ''),
     }
