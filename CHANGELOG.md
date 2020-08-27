@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.12 (2020-08-27)
+-------------------
+* Use zope login/logout
+  [dianaboiangiu]
+
 1.2.11 (2020-08-21)
 -------------------
 * Move BDR API call from auth to token
