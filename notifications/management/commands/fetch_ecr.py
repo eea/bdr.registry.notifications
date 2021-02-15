@@ -40,7 +40,7 @@ class Command(BaseFetchCommand, BaseCommand):
     def get_group(self, company):
         if company['domain'] == 'ODS':
             return self.group_ods
-        elif company['address']['country']['type'] == FGASES_EU:
+        elif company['address']['country']['type'] in FGASES_EU:
             return self.group_eu
         elif company['address']['country']['type'] == FGASES_NONEU:
             return self.group_noneu
