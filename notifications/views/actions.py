@@ -126,8 +126,13 @@ class ActionsECRView(ActionsBaseView):
         counter_companies = 0
         errors_companies = []
         for item in registry.get_companies():
-            if item['address']['country']['type'] in FGASES_EU:
+            if item['address']['country']['type'] == FGASES_EU:
                 group = group_eu
+            elif company['address']['country']['type'] == AMBIGUOUS_TYPE:
+                if company['representative']:
+                    return self.group_noneu
+                else:
+                    return self.group_eu
             elif item['address']['country']['type'] == FGASES_NONEU:
                 group = group_noneu
             else:

@@ -5,7 +5,7 @@ from django.db import IntegrityError
 
 from notifications import (
     FGASES_EU_GROUP_CODE, FGASES_NONEU_GROUP_CODE, ODS_GROUP_CODE,
-    FGASES_EU, FGASES_NONEU, ECR_GROUP_CODES
+    FGASES_EU, FGASES_NONEU, ECR_GROUP_CODES, AMBIGUOUS_TYPE
 )
 from bdr.settings import ECR_ACCEPTED_COMPANIES_STATUS
 from notifications.management.commands.fetch import BaseFetchCommand
@@ -40,8 +40,13 @@ class Command(BaseFetchCommand, BaseCommand):
     def get_group(self, company):
         if company['domain'] == 'ODS':
             return self.group_ods
-        elif company['address']['country']['type'] in FGASES_EU:
+        elif company['address']['country']['type'] == FGASES_EU:
             return self.group_eu
+        elif company['address']['country']['type'] == AMBIGUOUS_TYPE:
+            if company['representative']:
+                return self.group_noneu
+            else:
+                return self.group_eu
         elif company['address']['country']['type'] == FGASES_NONEU:
             return self.group_noneu
 
