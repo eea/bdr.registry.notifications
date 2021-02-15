@@ -1,5 +1,11 @@
 Changelog
 =========
+
+1.2.14 (2021-02-15)
+-------------------
+* Fetch GB as EU/NON-EU based on representative existence
+  [dianaboiangiu]
+
 1.2.13 (2021-02-15)
 -------------------
 * Fix GB country type
