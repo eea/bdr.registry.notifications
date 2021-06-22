@@ -86,7 +86,7 @@ class Company(models.Model):
     representative_name = models.CharField(max_length=256, blank=True, null=True)
     representative_vat = models.CharField(max_length=256, blank=True, null=True)
     representative_country_name = models.CharField(max_length=256, blank=True, null=True)
-    check_passed = models.NullBooleanField(default=None, null=True)
+    check_passed = models.BooleanField(default=None, null=True)
 
     objects = GetOrNoneManager()
 
@@ -140,7 +140,7 @@ class PersonCompanyManager(models.Manager):
 class PersonCompany(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    current = models.NullBooleanField(default=False, null=True)
+    current = models.BooleanField(default=False, null=True)
     objects = PersonCompanyManager()
 
     class Meta:

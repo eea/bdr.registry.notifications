@@ -99,6 +99,8 @@ FIXTURE_DIRS = (
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 DATABASES = {
     'default': {
         'ENGINE': env('DATABASES_ENGINE', 'django.db.backends.sqlite3'),
