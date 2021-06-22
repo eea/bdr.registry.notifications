@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0004_remove_unique_email'),
+        ("notifications", "0004_remove_unique_email"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='status',
-            field=models.CharField(default='', max_length=64),
+            model_name="company",
+            name="status",
+            field=models.CharField(default="", max_length=64),
         ),
     ]

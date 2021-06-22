@@ -8,23 +8,23 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0005_add status to company'),
+        ("notifications", "0005_add status to company"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='emailtemplate',
+            name="emailtemplate",
             unique_together=set([]),
         ),
         migrations.RemoveField(
-            model_name='emailtemplate',
-            name='group',
+            model_name="emailtemplate",
+            name="group",
         ),
         migrations.RemoveField(
-            model_name='emailtemplate',
-            name='stage',
+            model_name="emailtemplate",
+            name="stage",
         ),
         migrations.DeleteModel(
-            name='EmailTemplate',
+            name="EmailTemplate",
         ),
     ]

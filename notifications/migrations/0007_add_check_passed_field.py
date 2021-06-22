@@ -8,23 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0006_auto_20190628_1452'),
+        ("notifications", "0006_auto_20190628_1452"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='check_passed',
+            model_name="company",
+            name="check_passed",
             field=models.NullBooleanField(default=None),
         ),
         migrations.AlterField(
-            model_name='cycle',
-            name='year',
+            model_name="cycle",
+            name="year",
             field=models.PositiveSmallIntegerField(default=2020, unique=True),
         ),
         migrations.AlterField(
-            model_name='historicalcycle',
-            name='year',
+            model_name="historicalcycle",
+            name="year",
             field=models.PositiveSmallIntegerField(db_index=True, default=2020),
         ),
     ]

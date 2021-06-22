@@ -9,24 +9,30 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0001_initial'),
+        ("notifications", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cyclenotification',
-            name='company',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, 
-            related_name='notifications', to='notifications.Company'),
+            model_name="cyclenotification",
+            name="company",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="notifications",
+                to="notifications.Company",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='person',
-            name='company',
-            field=models.ManyToManyField(related_name='users', to='notifications.Company'),
+            model_name="person",
+            name="company",
+            field=models.ManyToManyField(
+                related_name="users", to="notifications.Company"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='cyclenotification',
+            name="cyclenotification",
             unique_together=set([]),
         ),
     ]

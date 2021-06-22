@@ -24,70 +24,65 @@ class PaginatedDataViewBase:
 
 class DashboardView(NotificationsBaseView, generic.ListView):
     model = Cycle
-    template_name = 'notifications/dashboard.html'
-    context_object_name = 'items'
+    template_name = "notifications/dashboard.html"
+    context_object_name = "items"
 
     def get_queryset(self):
-        return Cycle.objects.order_by('-year').prefetch_related('stages')
+        return Cycle.objects.order_by("-year").prefetch_related("stages")
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
-        context['model'] = self.model
+        context["model"] = self.model
         return context
 
 
-class CompaniesView(NotificationsBaseView, PaginatedDataViewBase,
-                    generic.TemplateView):
-    template_name = 'notifications/companies.html'
+class CompaniesView(NotificationsBaseView, PaginatedDataViewBase, generic.TemplateView):
+    template_name = "notifications/companies.html"
 
     def breadcrumbs(self):
         breadcrumbs = super(CompaniesView, self).breadcrumbs()
-        breadcrumbs.extend([
-            Breadcrumb(
-                reverse('notifications:companies'),
-                'Statistics'),
-        ])
+        breadcrumbs.extend(
+            [
+                Breadcrumb(reverse("notifications:companies"), "Statistics"),
+            ]
+        )
         return breadcrumbs
 
     def get_groups(self):
-        return CompaniesGroup.objects.values('pk', 'code', 'title')
+        return CompaniesGroup.objects.values("pk", "code", "title")
 
     def get_companies_by_group(self, group):
-        return Company.objects.filter(
-            group__code=group).distinct().order_by("name")
+        return Company.objects.filter(group__code=group).distinct().order_by("name")
 
 
-class PersonsView(NotificationsBaseView, PaginatedDataViewBase,
-                  generic.TemplateView):
-    template_name = 'notifications/persons.html'
+class PersonsView(NotificationsBaseView, PaginatedDataViewBase, generic.TemplateView):
+    template_name = "notifications/persons.html"
 
     def get_bdr(self):
-        page_bdr = self.request.GET.get('page_bdr', 1)
+        page_bdr = self.request.GET.get("page_bdr", 1)
         return self.get_current_page(
-            data=Person.objects
-                 .filter(company__group__code__in=BDR_GROUP_CODES)
-                 .prefetch_related('company')
-                 .order_by('name')
-                 .distinct(),
-            page=page_bdr
+            data=Person.objects.filter(company__group__code__in=BDR_GROUP_CODES)
+            .prefetch_related("company")
+            .order_by("name")
+            .distinct(),
+            page=page_bdr,
         )
 
     def get_ecr(self):
-        page_ecr = self.request.GET.get('page_ecr', 1)
+        page_ecr = self.request.GET.get("page_ecr", 1)
         return self.get_current_page(
-            data=Person.objects
-                .filter(company__group__code__in=ECR_GROUP_CODES)
-                .prefetch_related('company')
-                .order_by('name')
-                .distinct(),
-            page=page_ecr
+            data=Person.objects.filter(company__group__code__in=ECR_GROUP_CODES)
+            .prefetch_related("company")
+            .order_by("name")
+            .distinct(),
+            page=page_ecr,
         )
 
     def breadcrumbs(self):
         breadcrumbs = super(PersonsView, self).breadcrumbs()
-        breadcrumbs.extend([
-            Breadcrumb(
-                reverse('notifications:persons'),
-                'Persons'),
-        ])
+        breadcrumbs.extend(
+            [
+                Breadcrumb(reverse("notifications:persons"), "Persons"),
+            ]
+        )
         return breadcrumbs

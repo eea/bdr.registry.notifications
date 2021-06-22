@@ -15,58 +15,52 @@ class BaseFetchCommand:
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--test',
-            action='store_true',
-            dest='test',
+            "--test",
+            action="store_true",
+            dest="test",
             default=False,
-            help='Fetch test data',
+            help="Fetch test data",
         )
 
     def get_registry(self, options):
-        if options['test']:  # TESTING
+        if options["test"]:  # TESTING
             return self.test_registry()
         return self.registry()
 
     def cleanup(self, code):
-        """ Delete all persons and companies existing
-        """
-        Person.objects.filter(
-            company__group__code=code
-        ).delete()
-        Company.objects.filter(
-            group__code=code
-        ).delete()
+        """Delete all persons and companies existing"""
+        Person.objects.filter(company__group__code=code).delete()
+        Company.objects.filter(group__code=code).delete()
 
     def create_company(self, **kwargs):
-        """ Create or update a company.
-        """
+        """Create or update a company."""
 
-        name = kwargs['name']
-        external_id = kwargs['external_id']
+        name = kwargs["name"]
+        external_id = kwargs["external_id"]
 
         company, created = Company.objects.update_or_create(
-            external_id=external_id,
-            defaults=kwargs
+            external_id=external_id, defaults=kwargs
         )
 
         if created:
-            logger.info('Fetched company %s (%s)', name, external_id)
+            logger.info("Fetched company %s (%s)", name, external_id)
         else:
-            logger.info(
-                'Updated company %s %s (%s)', company.id, name, external_id)
+            logger.info("Updated company %s %s (%s)", company.id, name, external_id)
 
         return company
 
     def create_person(self, **kwargs):
-        """ Create or update a person.
-        """
-        name = kwargs['name']
-        username = kwargs['username']
-        email = kwargs['email']
+        """Create or update a person."""
+        name = kwargs["name"]
+        username = kwargs["username"]
+        email = kwargs["email"]
 
         # XXX This will not catch duplicates
         person = Person.objects.filter(
-            Q(email=email) | Q(username=username) | Q(username=email) | Q(email=username)
+            Q(email=email)
+            | Q(username=username)
+            | Q(username=email)
+            | Q(email=username)
         ).first()
 
         if person:
@@ -76,28 +70,26 @@ class BaseFetchCommand:
             created = False
         else:
             person, created = Person.objects.update_or_create(
-                username=username,
-                email=email,
-                defaults=kwargs
+                username=username, email=email, defaults=kwargs
             )
         if created:
-            logger.info('Fetched person %s (%s)', name, username)
+            logger.info("Fetched person %s (%s)", name, username)
         else:
-            logger.info('Updated person %s %s (%s)', person.id, name, username)
+            logger.info("Updated person %s %s (%s)", person.id, name, username)
 
         return person
 
     def parse_person_data(self, person):
-        """ Custom way of creating a person """
-        raise NotImplemented
+        """Custom way of creating a person"""
+        raise NotImplementedError
 
     def parse_company_data(self, company):
-        """ Custom way of creating a company """
-        raise NotImplemented
+        """Custom way of creating a company"""
+        raise NotImplementedError
 
     def get_group(self, company):
-        """ Custom way of picking a group """
-        raise NotImplemented
+        """Custom way of picking a group"""
+        raise NotImplementedError
 
     def fetch_companies(self, registry):
         company_count = 0
@@ -121,9 +113,9 @@ class BaseFetchCommand:
         person_count, errors = self.fetch_persons(registry)
 
         if errors:
-            msg = 'Registry fetched with errors: {}'
+            msg = "Registry fetched with errors: {}"
             msg = msg.format(errors)
         else:
-            msg = 'Registry fetched successfully: {} companies, {} persons'
+            msg = "Registry fetched successfully: {} companies, {} persons"
             msg = msg.format(company_count, person_count)
         logger.info(msg)

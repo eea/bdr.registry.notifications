@@ -4,7 +4,7 @@ from . import factories
 
 class BaseTest(TestCase):
 
-    BODY_FORMAT = 'Email company {COMPANY} for person {CONTACT}.'
+    BODY_FORMAT = "Email company {COMPANY} for person {CONTACT}."
 
     def setUp(self):
         user = factories.UserFactory(is_staff=True)
@@ -15,20 +15,19 @@ class BaseTest(TestCase):
 
     def prepare_email_testing(self):
         self.stage = factories.StageFactory()
-        self.group = factories.CompaniesGroupFactory(code='vans')
+        self.group = factories.CompaniesGroupFactory(code="vans")
         self.cycle = factories.CycleFactory(year=2005)
         self.cycle_template = factories.CycleEmailTemplateFactory(
-            subject='Cycle email template subject',
+            subject="Cycle email template subject",
             body_html=self.BODY_FORMAT,
             group=self.group,
-            stage=self.stage
+            stage=self.stage,
         )
         self.company = factories.CompanyFactory(group=self.group)
         self.persons = [
             factories.PersonFactory(),
             factories.PersonFactory(),
-            factories.PersonFactory()
+            factories.PersonFactory(),
         ]
         for person in self.persons:
             factories.PersonCompanyFactory(person=person, company=self.company)
-

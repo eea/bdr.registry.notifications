@@ -19,159 +19,351 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CompaniesGroup',
+            name="CompaniesGroup",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=256)),
-                ('code', models.SlugField(max_length=100, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=256)),
+                ("code", models.SlugField(max_length=100, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('external_id', models.CharField(blank=True, db_index=True, max_length=64, null=True, unique=True)),
-                ('name', models.CharField(max_length=256)),
-                ('vat', models.CharField(blank=True, max_length=64, null=True)),
-                ('country', models.CharField(max_length=256)),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.CompaniesGroup')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "external_id",
+                    models.CharField(
+                        blank=True, db_index=True, max_length=64, null=True, unique=True
+                    ),
+                ),
+                ("name", models.CharField(max_length=256)),
+                ("vat", models.CharField(blank=True, max_length=64, null=True)),
+                ("country", models.CharField(max_length=256)),
+                (
+                    "group",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="notifications.CompaniesGroup",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Companies',
+                "verbose_name_plural": "Companies",
             },
         ),
         migrations.CreateModel(
-            name='Cycle',
+            name="Cycle",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.PositiveSmallIntegerField(default=2019, unique=True)),
-                ('closing_date', models.DateField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("year", models.PositiveSmallIntegerField(default=2019, unique=True)),
+                ("closing_date", models.DateField()),
             ],
             options={
-                'verbose_name_plural': '> Cycles',
+                "verbose_name_plural": "> Cycles",
             },
         ),
         migrations.CreateModel(
-            name='CycleEmailTemplate',
+            name="CycleEmailTemplate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=256)),
-                ('body_html', ckeditor.fields.RichTextField(verbose_name='Body')),
-                ('status', models.SmallIntegerField(choices=[(0, 'draft'), (1, 'processing'), (2, 'sent')], default=0)),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='templates', to='notifications.CompaniesGroup')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("subject", models.CharField(max_length=256)),
+                ("body_html", ckeditor.fields.RichTextField(verbose_name="Body")),
+                (
+                    "status",
+                    models.SmallIntegerField(
+                        choices=[(0, "draft"), (1, "processing"), (2, "sent")],
+                        default=0,
+                    ),
+                ),
+                (
+                    "group",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="templates",
+                        to="notifications.CompaniesGroup",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': '> Cycles email templates',
+                "verbose_name_plural": "> Cycles email templates",
             },
         ),
         migrations.CreateModel(
-            name='CycleNotification',
+            name="CycleNotification",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=256)),
-                ('email', models.CharField(db_index=True, max_length=128)),
-                ('body_html', models.TextField()),
-                ('sent_date', models.DateTimeField(db_index=True, default=django.utils.timezone.now)),
-                ('counter', models.IntegerField(default=1)),
-                ('emailtemplate', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='emails', to='notifications.CycleEmailTemplate')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("subject", models.CharField(max_length=256)),
+                ("email", models.CharField(db_index=True, max_length=128)),
+                ("body_html", models.TextField()),
+                (
+                    "sent_date",
+                    models.DateTimeField(
+                        db_index=True, default=django.utils.timezone.now
+                    ),
+                ),
+                ("counter", models.IntegerField(default=1)),
+                (
+                    "emailtemplate",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="emails",
+                        to="notifications.CycleEmailTemplate",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': '> Cycles notifications',
+                "verbose_name_plural": "> Cycles notifications",
             },
         ),
         migrations.CreateModel(
-            name='EmailTemplate',
+            name="EmailTemplate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=256)),
-                ('body_html', ckeditor.fields.RichTextField(verbose_name='Body')),
-                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.CompaniesGroup')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("subject", models.CharField(max_length=256)),
+                ("body_html", ckeditor.fields.RichTextField(verbose_name="Body")),
+                (
+                    "group",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="notifications.CompaniesGroup",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='HistoricalCycle',
+            name="HistoricalCycle",
             fields=[
-                ('id', models.IntegerField(auto_created=True, blank=True, db_index=True, verbose_name='ID')),
-                ('year', models.PositiveSmallIntegerField(db_index=True, default=2019)),
-                ('closing_date', models.DateField()),
-                ('history_id', models.AutoField(primary_key=True, serialize=False)),
-                ('history_date', models.DateTimeField()),
-                ('history_type', models.CharField(choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')], max_length=1)),
-                ('history_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.IntegerField(
+                        auto_created=True, blank=True, db_index=True, verbose_name="ID"
+                    ),
+                ),
+                ("year", models.PositiveSmallIntegerField(db_index=True, default=2019)),
+                ("closing_date", models.DateField()),
+                ("history_id", models.AutoField(primary_key=True, serialize=False)),
+                ("history_date", models.DateTimeField()),
+                (
+                    "history_type",
+                    models.CharField(
+                        choices=[("+", "Created"), ("~", "Changed"), ("-", "Deleted")],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "history_user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'historical cycle',
-                'ordering': ('-history_date', '-history_id'),
-                'get_latest_by': 'history_date',
+                "verbose_name": "historical cycle",
+                "ordering": ("-history_date", "-history_id"),
+                "get_latest_by": "history_date",
             },
         ),
         migrations.CreateModel(
-            name='HistoricalCycleEmailTemplate',
+            name="HistoricalCycleEmailTemplate",
             fields=[
-                ('id', models.IntegerField(auto_created=True, blank=True, db_index=True, verbose_name='ID')),
-                ('subject', models.CharField(max_length=256)),
-                ('body_html', ckeditor.fields.RichTextField(verbose_name='Body')),
-                ('status', models.SmallIntegerField(choices=[(0, 'draft'), (1, 'processing'), (2, 'sent')], default=0)),
-                ('history_id', models.AutoField(primary_key=True, serialize=False)),
-                ('history_date', models.DateTimeField()),
-                ('history_type', models.CharField(choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')], max_length=1)),
-                ('group', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='notifications.CompaniesGroup')),
-                ('history_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.IntegerField(
+                        auto_created=True, blank=True, db_index=True, verbose_name="ID"
+                    ),
+                ),
+                ("subject", models.CharField(max_length=256)),
+                ("body_html", ckeditor.fields.RichTextField(verbose_name="Body")),
+                (
+                    "status",
+                    models.SmallIntegerField(
+                        choices=[(0, "draft"), (1, "processing"), (2, "sent")],
+                        default=0,
+                    ),
+                ),
+                ("history_id", models.AutoField(primary_key=True, serialize=False)),
+                ("history_date", models.DateTimeField()),
+                (
+                    "history_type",
+                    models.CharField(
+                        choices=[("+", "Created"), ("~", "Changed"), ("-", "Deleted")],
+                        max_length=1,
+                    ),
+                ),
+                (
+                    "group",
+                    models.ForeignKey(
+                        blank=True,
+                        db_constraint=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="+",
+                        to="notifications.CompaniesGroup",
+                    ),
+                ),
+                (
+                    "history_user",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="+",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'historical cycle email template',
-                'ordering': ('-history_date', '-history_id'),
-                'get_latest_by': 'history_date',
+                "verbose_name": "historical cycle email template",
+                "ordering": ("-history_date", "-history_id"),
+                "get_latest_by": "history_date",
             },
         ),
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('username', models.CharField(db_index=True, max_length=128, unique=True)),
-                ('name', models.CharField(max_length=256)),
-                ('email', models.CharField(db_index=True, max_length=128, unique=True)),
-                ('company', models.ManyToManyField(related_name='user', to='notifications.Company')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(db_index=True, max_length=128, unique=True),
+                ),
+                ("name", models.CharField(max_length=256)),
+                ("email", models.CharField(db_index=True, max_length=128, unique=True)),
+                (
+                    "company",
+                    models.ManyToManyField(
+                        related_name="user", to="notifications.Company"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Stage',
+            name="Stage",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=64)),
-                ('cycle', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='stages', to='notifications.Cycle')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=64)),
+                (
+                    "cycle",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="stages",
+                        to="notifications.Cycle",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='historicalcycleemailtemplate',
-            name='stage',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='notifications.Stage'),
+            model_name="historicalcycleemailtemplate",
+            name="stage",
+            field=models.ForeignKey(
+                blank=True,
+                db_constraint=False,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="+",
+                to="notifications.Stage",
+            ),
         ),
         migrations.AddField(
-            model_name='emailtemplate',
-            name='stage',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.Stage'),
+            model_name="emailtemplate",
+            name="stage",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="notifications.Stage"
+            ),
         ),
         migrations.AddField(
-            model_name='cyclenotification',
-            name='person',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notifications', to='notifications.Person'),
+            model_name="cyclenotification",
+            name="person",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="notifications",
+                to="notifications.Person",
+            ),
         ),
         migrations.AddField(
-            model_name='cycleemailtemplate',
-            name='stage',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='templates', to='notifications.Stage'),
+            model_name="cycleemailtemplate",
+            name="stage",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="templates",
+                to="notifications.Stage",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='stage',
-            unique_together=set([('title', 'cycle')]),
+            name="stage",
+            unique_together=set([("title", "cycle")]),
         ),
         migrations.AlterUniqueTogether(
-            name='emailtemplate',
-            unique_together=set([('group', 'stage')]),
+            name="emailtemplate",
+            unique_together=set([("group", "stage")]),
         ),
         migrations.AlterUniqueTogether(
-            name='cyclenotification',
-            unique_together=set([('email', 'emailtemplate')]),
+            name="cyclenotification",
+            unique_together=set([("email", "emailtemplate")]),
         ),
     ]

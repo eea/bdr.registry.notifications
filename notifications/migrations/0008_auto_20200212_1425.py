@@ -9,33 +9,54 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0007_add_check_passed_field'),
+        ("notifications", "0007_add_check_passed_field"),
     ]
 
     operations = [
-         migrations.SeparateDatabaseAndState(
-             state_operations=[ 
-            migrations.CreateModel(
-                name='PersonCompany',
-                fields=[
-                    ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                    ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.Company')),
-                ],
-                options={
-                    'db_table': 'notifications_person_company',
-                },
-            ),
-            migrations.AlterField(
-                model_name='person',
-                name='company',
-                field=models.ManyToManyField(related_name='users', through='notifications.PersonCompany', to='notifications.Company'),
-            ),
-            migrations.AddField(
-                model_name='personcompany',
-                name='person',
-                field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='notifications.Person'),
-            ),
-        ],
-        database_operations=[]
-    ),
+        migrations.SeparateDatabaseAndState(
+            state_operations=[
+                migrations.CreateModel(
+                    name="PersonCompany",
+                    fields=[
+                        (
+                            "id",
+                            models.AutoField(
+                                auto_created=True,
+                                primary_key=True,
+                                serialize=False,
+                                verbose_name="ID",
+                            ),
+                        ),
+                        (
+                            "company",
+                            models.ForeignKey(
+                                on_delete=django.db.models.deletion.CASCADE,
+                                to="notifications.Company",
+                            ),
+                        ),
+                    ],
+                    options={
+                        "db_table": "notifications_person_company",
+                    },
+                ),
+                migrations.AlterField(
+                    model_name="person",
+                    name="company",
+                    field=models.ManyToManyField(
+                        related_name="users",
+                        through="notifications.PersonCompany",
+                        to="notifications.Company",
+                    ),
+                ),
+                migrations.AddField(
+                    model_name="personcompany",
+                    name="person",
+                    field=models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="notifications.Person",
+                    ),
+                ),
+            ],
+            database_operations=[],
+        ),
     ]
