@@ -6,7 +6,7 @@ from django.db import transaction
 from django.forms import ModelChoiceField
 from django.utils.html import strip_tags
 
-from django_q.tasks import async
+from django_q.tasks import async_task
 
 from bdr.settings import (
     EMAIL_SENDER,
@@ -182,7 +182,7 @@ class CycleEmailTemplateTestForm(forms.Form):
         if not settings.ASYNC_EMAILS:  # TESTING
             send_emails(EMAIL_SENDER, emailtemplate, is_test=True, data=self.data)
         else:
-            async(send_emails, *(EMAIL_SENDER, emailtemplate, None, True, self.data),
+            async_task(send_emails, *(EMAIL_SENDER, emailtemplate, None, True, self.data),
                   hook='notifications.forms.send_mail_sender')
 
 
@@ -197,7 +197,7 @@ class CycleEmailTemplateTriggerForm(forms.Form):
             emailtemplate.status = emailtemplate.SENT
             emailtemplate.save()
         else:
-            async(send_emails, *(EMAIL_SENDER, emailtemplate, companies),
+            async_task(send_emails, *(EMAIL_SENDER, emailtemplate, companies),
                   hook='notifications.forms.send_mail_sender')
 
 

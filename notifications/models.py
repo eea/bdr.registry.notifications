@@ -81,7 +81,7 @@ class Company(models.Model):
     name = models.CharField(max_length=256)
     vat = models.CharField(max_length=64, blank=True, null=True)
     country = models.CharField(max_length=256)
-    group = models.ForeignKey(CompaniesGroup)
+    group = models.ForeignKey(CompaniesGroup, on_delete=models.PROTECT)
     status = models.CharField(max_length=64, default='')
     representative_name = models.CharField(max_length=256, blank=True, null=True)
     representative_vat = models.CharField(max_length=256, blank=True, null=True)
@@ -243,10 +243,10 @@ class CycleNotification(models.Model):
     body_html = models.TextField()
     sent_date = models.DateTimeField(db_index=True,
                                      default=timezone.now)
-    emailtemplate = models.ForeignKey(CycleEmailTemplate, related_name='emails')
+    emailtemplate = models.ForeignKey(CycleEmailTemplate, on_delete=models.PROTECT, related_name='emails')
     counter = models.IntegerField(default=1)
-    person = models.ForeignKey(Person, related_name='notifications')
-    company = models.ForeignKey(Company, related_name='notifications')
+    person = models.ForeignKey(Person, on_delete=models.DO_NOTHING, related_name='notifications')
+    company = models.ForeignKey(Company, on_delete=models.DO_NOTHING, related_name='notifications')
 
     def __str__(self):
         return '{} for {}'.format(self.emailtemplate, self.email)
