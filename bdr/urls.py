@@ -17,17 +17,17 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 
-handler500 = 'notifications.views.handler500'
+handler500 = "notifications.views.handler500"
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-
-    url(r'^', include('notifications.urls')),
+    url(r"^admin/", admin.site.urls),
+    url(r"^", include("notifications.urls")),
 ]
 
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns = [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
+        url(r"^__debug__/", include(debug_toolbar.urls)),
     ] + urlpatterns

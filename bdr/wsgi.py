@@ -17,10 +17,10 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bdr.settings")
 application = get_wsgi_application()
 
 HEADER_MAP = {
-    'REMOTE_ADDR': 'HTTP_X_FORWARDED_FOR',
-    'SCRIPT_NAME': 'HTTP_X_FORWARDED_SCRIPT_NAME',
-    'HTTP_HOST': 'HTTP_X_FORWARDED_HOST',
-    'wsgi.url_scheme': 'HTTP_X_FORWARDED_SCHEME',
+    "REMOTE_ADDR": "HTTP_X_FORWARDED_FOR",
+    "SCRIPT_NAME": "HTTP_X_FORWARDED_SCRIPT_NAME",
+    "HTTP_HOST": "HTTP_X_FORWARDED_HOST",
+    "wsgi.url_scheme": "HTTP_X_FORWARDED_SCHEME",
 }
 
 
@@ -34,6 +34,7 @@ def proxy_middleware(app):
         return app(environ, start_response)
 
     return proxy_fix
+
 
 if settings.APP_REVERSE_PROXY:
     application = proxy_middleware(application)

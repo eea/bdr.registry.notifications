@@ -8,23 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0002_remove_unique_together_notifications'),
+        ("notifications", "0002_remove_unique_together_notifications"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='representative_country_name',
+            model_name="company",
+            name="representative_country_name",
             field=models.CharField(blank=True, max_length=256, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='representative_name',
+            model_name="company",
+            name="representative_name",
             field=models.CharField(blank=True, max_length=256, null=True),
         ),
         migrations.AddField(
-            model_name='company',
-            name='representative_vat',
+            model_name="company",
+            name="representative_vat",
             field=models.CharField(blank=True, max_length=256, null=True),
         ),
     ]

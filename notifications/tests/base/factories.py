@@ -17,7 +17,7 @@ class CycleFactory(DjangoModelFactory):
 
 class StageFactory(DjangoModelFactory):
 
-    title = 'StageTest'
+    title = "StageTest"
     cycle = SubFactory(CycleFactory)
 
     class Meta:
@@ -26,15 +26,15 @@ class StageFactory(DjangoModelFactory):
 
 class CompaniesGroupFactory(DjangoModelFactory):
 
-    title = 'CompaniesGroupTest'
-    code = Sequence(lambda n: 'code{0}'.format(n))
+    title = "CompaniesGroupTest"
+    code = Sequence(lambda n: "code{0}".format(n))
 
     class Meta:
         model = models.CompaniesGroup
 
 
 class CompanyFactory(DjangoModelFactory):
-    name = 'CompanyName'
+    name = "CompanyName"
     group = SubFactory(CompaniesGroupFactory)
 
     class Meta:
@@ -42,24 +42,26 @@ class CompanyFactory(DjangoModelFactory):
 
 
 class PersonFactory(DjangoModelFactory):
-    username = Sequence(lambda n: 'person{0}'.format(n))
-    name = Sequence(lambda n: 'Person name {0}'.format(n))
-    email = Sequence(lambda n: 'person{0}.test.com'.format(n))
+    username = Sequence(lambda n: "person{0}".format(n))
+    name = Sequence(lambda n: "Person name {0}".format(n))
+    email = Sequence(lambda n: "person{0}.test.com".format(n))
     company = RelatedFactory(CompanyFactory)
 
     class Meta:
         model = models.Person
 
+
 class PersonCompanyFactory(DjangoModelFactory):
     person = SubFactory(PersonFactory)
-    company =SubFactory(CompanyFactory)
+    company = SubFactory(CompanyFactory)
     current = True
 
     class Meta:
         model = models.PersonCompany
 
+
 class CycleEmailTemplateFactory(DjangoModelFactory):
-    subject = 'CycleEmailTemplateTest'
+    subject = "CycleEmailTemplateTest"
     group = SubFactory(CompaniesGroupFactory)
     stage = SubFactory(StageFactory)
 
@@ -68,7 +70,7 @@ class CycleEmailTemplateFactory(DjangoModelFactory):
 
 
 class UserFactory(DjangoModelFactory):
-    username = Sequence(lambda n: 'user{0}'.format(n))
+    username = Sequence(lambda n: "user{0}".format(n))
 
     class Meta:
         model = User

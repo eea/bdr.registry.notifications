@@ -6,7 +6,7 @@ from django.db import transaction
 from django.forms import ModelChoiceField
 from django.utils.html import strip_tags
 
-from django_q.tasks import async
+from django_q.tasks import async_task
 
 from bdr.settings import (
     EMAIL_SENDER,
@@ -47,11 +47,13 @@ def format_subject(emailtemplate, person, company):
     subject = emailtemplate.subject.format(**params)
     return subject
 
+
 def get_email_headers(group):
     if group.code in BDR_GROUP_CODES:
         return CARSVANS_OTRS_EMAIL_HEADERS
     else:
         return INVITATIONS_OTRS_EMAIL_HEADERS
+
 
 def make_messages(companies, emailtemplate):
     emails = []
@@ -65,55 +67,58 @@ def make_messages(companies, emailtemplate):
             emails.append((subject, recipient_email, email_body, headers))
 
             # store sent email
-            notifications.append(CycleNotification(
-                subject=subject,
-                email=person.email,
-                body_html=email_body,
-                emailtemplate=emailtemplate,
-                person=person,
-                company=company
-            ))
+            notifications.append(
+                CycleNotification(
+                    subject=subject,
+                    email=person.email,
+                    body_html=email_body,
+                    emailtemplate=emailtemplate,
+                    person=person,
+                    company=company,
+                )
+            )
 
     CycleNotification.objects.bulk_create(notifications)
     return emails
 
 
 def send_emails(sender, emailtemplate, companies=None, is_test=False, data=None):
-    with transaction.atomic() as atomic:
+    with transaction.atomic():
         bcc = BCC
         if companies:
             sender = EMAIL_SENDER
             emails = make_messages(companies, emailtemplate)
         elif is_test:
-            company = Company.objects.filter(name=data.get('company')).first()
-            person = Person.objects.filter(name=data.get('contact')).first()
+            company = Company.objects.filter(name=data.get("company")).first()
+            person = Person.objects.filter(name=data.get("contact")).first()
             values = set_values_for_parameters(emailtemplate, person, company)
-            email = [data['email'].strip()]
+            email = [data["email"].strip()]
             body_html = emailtemplate.body_html.format(**values)
             subject = emailtemplate.subject.format(**values)
             headers = get_email_headers(company.group)
             emails = [(subject, email, body_html, headers)]
             bcc = None
         else:
-            recipients = Company.objects.filter(
-                group=emailtemplate.group)
+            recipients = Company.objects.filter(group=emailtemplate.group)
             sender = EMAIL_SENDER
             emails = make_messages(recipients, emailtemplate)
 
     connection = get_connection()
     for subject, recipient_email, email_body, headers in emails:
         plain_html = strip_tags(email_body)
-        email_message = send_mail(
-            subject, plain_html, sender, recipient_email,
+        send_mail(
+            subject,
+            plain_html,
+            sender,
+            recipient_email,
             fail_silently=True,
-            bcc=bcc, html_message=email_body, headers=headers,
-            connection=connection
+            bcc=bcc,
+            html_message=email_body,
+            headers=headers,
+            connection=connection,
         )
 
-    try:
-        connection.close()
-    except:
-        pass
+    connection.close()
 
     if not is_test:
         emailtemplate.status = emailtemplate.SENT
@@ -128,8 +133,8 @@ def send_mail_sender(task):
 class CycleAddForm(forms.ModelForm):
     class Meta:
         model = Cycle
-        fields = ['year', 'closing_date']
-        exclude = ('id',)
+        fields = ["year", "closing_date"]
+        exclude = ("id",)
 
 
 class CustomModelChoiceField(ModelChoiceField):
@@ -137,7 +142,7 @@ class CustomModelChoiceField(ModelChoiceField):
 
     def to_python(self, value):
         if isinstance(value, self.queryset.model):
-            value = getattr(value, self.to_field_name or 'pk')
+            value = getattr(value, self.to_field_name or "pk")
         return super().to_python(value)
 
 
@@ -146,17 +151,17 @@ class StageAddForm(forms.ModelForm):
 
     class Meta:
         model = Stage
-        fields = ['cycle', 'title']
+        fields = ["cycle", "title"]
 
     def __init__(self, *args, **kwargs):
         super(StageAddForm, self).__init__(*args, **kwargs)
-        self.fields['title'].label = "Name"
+        self.fields["title"].label = "Name"
 
     def save(self, commit=True, *args, **kwargs):
         """When a new stage is added to a cycle create a template
         for each group.
         """
-        kwargs['commit'] = False
+        kwargs["commit"] = False
         instance = super().save(*args, **kwargs)
         if commit:
             instance.save()
@@ -167,13 +172,14 @@ class StageAddForm(forms.ModelForm):
 class CycleEmailTemplateEditForm(forms.ModelForm):
     class Meta:
         model = CycleEmailTemplate
-        fields = ['subject', 'body_html']
-        exclude = ('id', 'cycle', 'emailtemplate')
+        fields = ["subject", "body_html"]
+        exclude = ("id", "cycle", "emailtemplate")
 
     def __init__(self, *args, **kwargs):
         super(CycleEmailTemplateEditForm, self).__init__(*args, **kwargs)
-        self.fields['subject'].label = "Email subject"
-        self.fields['body_html'].label = "Email body"
+        self.fields["subject"].label = "Email subject"
+        self.fields["body_html"].label = "Email body"
+
 
 class CycleEmailTemplateTestForm(forms.Form):
     email = forms.CharField(validators=[validate_email])
@@ -182,12 +188,14 @@ class CycleEmailTemplateTestForm(forms.Form):
         if not settings.ASYNC_EMAILS:  # TESTING
             send_emails(EMAIL_SENDER, emailtemplate, is_test=True, data=self.data)
         else:
-            async(send_emails, *(EMAIL_SENDER, emailtemplate, None, True, self.data),
-                  hook='notifications.forms.send_mail_sender')
+            async_task(
+                send_emails,
+                *(EMAIL_SENDER, emailtemplate, None, True, self.data),
+                hook="notifications.forms.send_mail_sender"
+            )
 
 
 class CycleEmailTemplateTriggerForm(forms.Form):
-
     def send_emails(self, emailtemplate, companies):
         emailtemplate.status = emailtemplate.PROCESSING
         emailtemplate.save()
@@ -197,11 +205,13 @@ class CycleEmailTemplateTriggerForm(forms.Form):
             emailtemplate.status = emailtemplate.SENT
             emailtemplate.save()
         else:
-            async(send_emails, *(EMAIL_SENDER, emailtemplate, companies),
-                  hook='notifications.forms.send_mail_sender')
+            async_task(
+                send_emails,
+                *(EMAIL_SENDER, emailtemplate, companies),
+                hook="notifications.forms.send_mail_sender"
+            )
 
 
 class ResendEmailForm(forms.Form):
-
     def send_email(self, emailtemplate, person):
         send_emails(EMAIL_SENDER, emailtemplate, [person])

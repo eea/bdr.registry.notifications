@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0003_add_representative_data_to_company'),
+        ("notifications", "0003_add_representative_data_to_company"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='person',
-            name='email',
+            model_name="person",
+            name="email",
             field=models.CharField(db_index=True, max_length=128),
         ),
     ]
