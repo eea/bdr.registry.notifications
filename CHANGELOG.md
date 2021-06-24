@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.3.0 (2021-06-24)
+------------------
+* Upgrade Django to 3.2
+* Upgrade python to 3.8
+* Upgrade all other packages to the latest version
+* Add black and flake8 for formatting
+  [gabrielastrezea]
+
 1.2.14 (2021-02-15)
 -------------------
 * Fetch GB as EU/NON-EU based on representative existence
