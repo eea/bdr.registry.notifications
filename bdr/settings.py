@@ -303,8 +303,8 @@ CARSVANS_OTRS_EMAIL_HEADERS = {
 
 
 Q_CLUSTER = {
-    "timeout": 30,
-    "retry": 90,
+    "timeout": 3000,
+    "retry": 3500,
     "redis": {
         "host": os.environ.get("REDIS_HOST", "redis"),
         "port": int(os.environ.get("REDIS_PORT", 6379)),
