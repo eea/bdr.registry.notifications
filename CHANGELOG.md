@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.3.1 (2022-02-15)
+------------------
+* Set higher django q timeout
+  [dianaboiangiu]
+
 1.3.0 (2021-06-24)
 ------------------
 * Upgrade Django to 3.2
