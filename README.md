@@ -158,6 +158,11 @@ Testing
     $ python manage.py test --settings=bdr.testsettings
     ```
 
+Sending emails issues
+---------------------
+
+For sending a large number of emails (>3000) make sure that the Memory reservation and Memory Limit are set at 2GB
+
 ## Copyright and license
 
 The Initial Owner of the Original Code is European Environment Agency (EEA).
