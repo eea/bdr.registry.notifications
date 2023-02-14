@@ -74,7 +74,7 @@ class Company(models.Model):
         verbose_name_plural = "Companies"
 
     external_id = models.CharField(
-        max_length=64, db_index=True, unique=True, blank=True, null=True
+        max_length=64, db_index=True, blank=True, null=True
     )
     name = models.CharField(max_length=256)
     vat = models.CharField(max_length=64, blank=True, null=True)

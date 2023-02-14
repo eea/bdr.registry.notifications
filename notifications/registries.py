@@ -11,7 +11,7 @@ logger.setLevel(logging.DEBUG)
 class BaseRegistry(object):
     """Base class for both registries."""
 
-    def __init__(self, name, entrypoint, auth=None, token=None, timeout=20):
+    def __init__(self, name, entrypoint, auth=None, token=None, timeout=500):
         self.name = name
         self.entrypoint = entrypoint
         self.auth = auth
