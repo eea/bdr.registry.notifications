@@ -104,7 +104,8 @@ class Command(BaseFetchCommand, BaseCommand):
         if company["check_passed"]:
             return True
         external_id = company["company_id"]
-        company_obj = Company.objects.really_all().filter(external_id=external_id)
+        group = self.get_group(company)
+        company_obj = Company.objects.really_all().filter(external_id=external_id, group=group)
         if company_obj.first():
             company_obj.update(**self.parse_company_data(company))
             logger.info(
@@ -117,8 +118,7 @@ class Command(BaseFetchCommand, BaseCommand):
         """Create or update a company."""
         name = kwargs["name"]
         external_id = kwargs["external_id"]
-
-        company = Company.objects.really_all().filter(external_id=external_id)
+        company = Company.objects.really_all().filter(external_id=external_id, group=kwargs['group'])
         if company.first():
 
             company.update(**kwargs)
