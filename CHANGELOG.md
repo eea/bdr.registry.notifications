@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.3.2 (2023-02-14)
+------------------
+* Fix ODS/FGAS companies have the same ID
+* Fix timeout on fetch ecr
+  [dianaboiangiu]
+
 1.3.1 (2022-02-15)
 ------------------
 * Set higher django q timeout
