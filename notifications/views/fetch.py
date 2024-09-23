@@ -1,8 +1,9 @@
+import json
+
 from django.conf import settings
 from django.core.management import call_command
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseForbidden, HttpResponse
 from django.views import View
-from notifications.views.breadcrumb import NotificationsBaseView
 
 
 class FetchView(View):
@@ -14,9 +15,8 @@ class FetchView(View):
 
         bdr_result = call_command("fetch_bdr")
         ecr_result = call_command("fetch_ecr")
-        return JsonResponse(
-            {
-                "bdr": bdr_result,
-                "ecr": ecr_result,
-            }
-        )
+        data = {
+            "bdr": bdr_result,
+            "ecr": ecr_result,
+        }
+        return HttpResponse(json.dumps(data, indent=2), content_type="application/json")

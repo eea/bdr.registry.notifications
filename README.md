@@ -66,7 +66,23 @@ or in debug mode:
 
     $ python manage.py runserver 0.0.0.0:$APP_HTTP_PORT
 
-## 6 Running tests
+## 6 Fetching data from BDR and ECR:
+
+Fetch information from BDR:
+
+    $ python manage.py fetch_bdr
+
+Fetch information from ECR:
+
+    $ python manage.py fetch_ecr
+
+Fetch information from both sources:
+
+    $ python manage.py fetch_all
+
+There is also a URL "/fetch/" which triggers both scripts.
+
+## 7 Running tests
 
 Run tests:
 
