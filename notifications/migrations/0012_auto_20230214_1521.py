@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('notifications', '0011_auto_20210622_0741'),
+        ("notifications", "0011_auto_20210622_0741"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='external_id',
+            model_name="company",
+            name="external_id",
             field=models.CharField(blank=True, db_index=True, max_length=64, null=True),
         ),
         migrations.AlterField(
-            model_name='cycle',
-            name='year',
+            model_name="cycle",
+            name="year",
             field=models.PositiveSmallIntegerField(default=2023, unique=True),
         ),
         migrations.AlterField(
-            model_name='historicalcycle',
-            name='year',
+            model_name="historicalcycle",
+            name="year",
             field=models.PositiveSmallIntegerField(db_index=True, default=2023),
         ),
     ]

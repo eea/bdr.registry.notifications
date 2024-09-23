@@ -375,7 +375,7 @@ class CycleEmailTemplateTriggerNotificationsJson(JSONResponseMixin, TemplateView
         return {
             "recordsTotal": len(companies),
             "recordsFiltered": len(companies),
-            "data": list(companies[start: start + length]),
+            "data": list(companies[start : start + length]),
         }
 
     def post(self, request, *args, **kwargs):

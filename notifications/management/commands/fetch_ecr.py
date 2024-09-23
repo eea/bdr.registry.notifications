@@ -105,7 +105,9 @@ class Command(BaseFetchCommand, BaseCommand):
             return True
         external_id = company["company_id"]
         group = self.get_group(company)
-        company_obj = Company.objects.really_all().filter(external_id=external_id, group=group)
+        company_obj = Company.objects.really_all().filter(
+            external_id=external_id, group=group
+        )
         if company_obj.first():
             company_obj.update(**self.parse_company_data(company))
             logger.info(
@@ -118,7 +120,9 @@ class Command(BaseFetchCommand, BaseCommand):
         """Create or update a company."""
         name = kwargs["name"]
         external_id = kwargs["external_id"]
-        company = Company.objects.really_all().filter(external_id=external_id, group=kwargs['group'])
+        company = Company.objects.really_all().filter(
+            external_id=external_id, group=kwargs["group"]
+        )
         if company.first():
 
             company.update(**kwargs)
@@ -164,3 +168,4 @@ class Command(BaseFetchCommand, BaseCommand):
             msg = "Registry fetched successfully: {} companies, {} persons"
             msg = msg.format(company_count, person_count)
         logger.info(msg)
+        return msg

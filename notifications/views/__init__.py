@@ -1,6 +1,7 @@
 from .base import *
 from .cycle import *
 from .emailtemplate import *
+from .fetch import *
 from notifications.context import sentry
 
 from django.contrib import messages

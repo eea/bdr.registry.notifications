@@ -46,6 +46,7 @@ urlpatterns = [
         "template/", include((email_template_patterns, app_name), namespace="template")
     ),
     path("", views.DashboardView.as_view(), name="dashboard"),
+    path("fetch/", views.FetchView.as_view(), name="fetch"),
     path("companies/", views.CompaniesView.as_view(), name="companies"),
     path("persons/", views.PersonsView.as_view(), name="persons"),
     path("crashme/", views.Crashme.as_view(), name="crashme"),

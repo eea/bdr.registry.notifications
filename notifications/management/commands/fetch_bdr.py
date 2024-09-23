@@ -97,3 +97,4 @@ class Command(BaseFetchCommand, BaseCommand):
             msg = "Registry fetched successfully: {} companies, {} persons"
             msg = msg.format(company_count, person_count)
         logger.info(msg)
+        return msg
