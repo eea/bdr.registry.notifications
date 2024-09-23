@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.3.3 (2024-09-23)
+------------------
+* Add endpoint for triggering the fetch of BDR and ECR data
+  [dianaboiangiu]
+
 1.3.2 (2023-02-14)
 ------------------
 * Fix ODS/FGAS companies have the same ID
