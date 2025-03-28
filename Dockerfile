@@ -1,4 +1,4 @@
-FROM python:3.8-alpine
+FROM python:3.13-alpine
 
 MAINTAINER "EEA: IDM2 C-TEAM" <eea-edw-c-team-alerts@googlegroups.com>
 
