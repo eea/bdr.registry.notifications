@@ -4,8 +4,8 @@ BDR Registry Notifications
 
 [![Travis](https://travis-ci.org/eea/bdr.registry.notifications.svg?branch=master)](https://travis-ci.org/eea/bdr.registry.notifications)
 [![Coverage](https://coveralls.io/repos/github/eea/bdr.registry.notifications/badge.svg?branch=master)](https://coveralls.io/github/eea/bdr.registry.notifications?branch=master)
-[![Docker](https://img.shields.io/docker/build/eeacms/bdr.registry.notifications)](https://hub.docker.com/r/eeacms/bdr.registry.notifications/builds)
-
+[![Docker build](https://img.shields.io/docker/automated/eeacms/bdr.registry.notifications)](https://hub.docker.com/r/eeacms/bdr.registry.notifications)
+[![Docker latest version](https://img.shields.io/docker/v/eeacms/bdr.registry.notifications)]()
 
 WIP
 ---
