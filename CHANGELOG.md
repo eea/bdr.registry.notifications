@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.0 (2025-04-01)
+------------------
+* Upgraded packages
+  [dianaboiangiu]
+
 1.3.3 (2024-09-23)
 ------------------
 * Add endpoint for triggering the fetch of BDR and ECR data
