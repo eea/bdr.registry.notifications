@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.3.4 (2025-04-07)
+------------------
+* Extend length of notification subject
+  [dianaboiangiu]
+
 1.3.3 (2024-09-23)
 ------------------
 * Add endpoint for triggering the fetch of BDR and ECR data
