@@ -207,7 +207,7 @@ class CycleEmailTemplate(models.Model):
     class Meta:
         verbose_name_plural = "> Cycles email templates"
 
-    subject = models.CharField(max_length=256)
+    subject = models.CharField(max_length=1024)
     body_html = RichTextField(verbose_name="Body")
     stage = models.ForeignKey(Stage, on_delete=models.CASCADE, related_name="templates")
     group = models.ForeignKey(
@@ -240,7 +240,7 @@ class CycleNotification(models.Model):
     class Meta:
         verbose_name_plural = "> Cycles notifications"
 
-    subject = models.CharField(max_length=256)
+    subject = models.CharField(max_length=1024)
     email = models.CharField(max_length=128, db_index=True)
     body_html = models.TextField()
     sent_date = models.DateTimeField(db_index=True, default=timezone.now)

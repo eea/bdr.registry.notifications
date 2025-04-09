@@ -9,6 +9,12 @@ Changelog
 1.4.0 (2025-04-01)
 ------------------
 * Upgraded packages
+* Upgraded python version
+  [dianaboiangiu]
+
+1.3.4 (2025-04-07)
+------------------
+* Extend length of notification subject
   [dianaboiangiu]
 
 1.3.3 (2024-09-23)
