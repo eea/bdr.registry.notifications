@@ -410,9 +410,9 @@ class CycleEmailTemplateTest(CycleEmailTemplateBase, generic.FormView):
         else:
             company = Company.objects.filter(group=template.group).order_by("?").first()
             if not company:
-                context[
-                    "info"
-                ] = "The database does not provide any company for this obligation."
+                context["info"] = (
+                    "The database does not provide any company for this obligation."
+                )
                 return context
             length_active_users = len(company.active_users)
             rand = random.randint(0, length_active_users - 1)
