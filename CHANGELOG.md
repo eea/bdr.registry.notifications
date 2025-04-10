@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.3 (2025-04-10)
+------------------
+* Fix middleware order
+  [dianaboiangiu]
+
 1.4.2 (2025-04-10)
 ------------------
 * Fix debug toolbar
