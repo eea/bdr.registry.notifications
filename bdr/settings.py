@@ -51,6 +51,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "frame.middleware.RequestMiddleware",
+    "frame.middleware.UserMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -58,9 +60,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # custom
-    "frame.middleware.RequestMiddleware",
-    "frame.middleware.UserMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
     "django.contrib.auth.middleware.RemoteUserMiddleware",
 ]
