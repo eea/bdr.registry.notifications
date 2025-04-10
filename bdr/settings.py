@@ -27,7 +27,7 @@ SECRET_KEY = env("SECRET_KEY", "secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", False)
-
+DEBUG_TOOLBAR = env("DEBUG_TOOLBAR", False)
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", ["localhost", "127.0.0.1"])
 ASYNC_EMAILS = True
 ALLOW_EDITING_COMPANIES = False
@@ -322,7 +322,7 @@ if not DEBUG:
     }
 
 # uncomment for using debug toolbar
-# if DEBUG:
+# if DEBUG_TOOLBAR:
 #     INSTALLED_APPS = INSTALLED_APPS + [
 #         'debug_toolbar',
 #     ]

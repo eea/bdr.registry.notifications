@@ -8,7 +8,7 @@ COPY . $WORK_DIR/
 
 RUN apk add --no-cache --update gcc linux-headers postgresql-dev \
                                 pcre-dev musl-dev \
-                                bash postfix postfix-pcre && \
+                                bash postfix postfix-pcre vim && \
     mkdir -p $WORK_DIR && \
     pip install -r "$WORK_DIR/requirements-docker.txt"
 
