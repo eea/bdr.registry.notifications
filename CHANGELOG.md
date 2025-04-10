@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.2 (2025-04-10)
+------------------
+* Fix debug toolbar
+  [dianaboiangiu]
+
 1.4.1 (2025-04-09)
 ------------------
 * Upgrade eea.frame package
