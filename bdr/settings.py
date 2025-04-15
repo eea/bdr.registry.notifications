@@ -312,6 +312,8 @@ Q_CLUSTER = {
     },
 }
 
+SILENCED_SYSTEM_CHECKS = ["ckeditor.W001",] # ignore ckeditor warnings
+
 if not DEBUG:
     INSTALLED_APPS += [
         "raven.contrib.django.raven_compat",
