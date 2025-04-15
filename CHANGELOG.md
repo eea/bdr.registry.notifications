@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.5 (2025-04-15)
+------------------
+* Add blessed package for q_info command
+  [dianaboiangiu]
+
 1.4.4 (2025-04-15)
 ------------------
 * Supress ckeditor warning that causes health-check to fail

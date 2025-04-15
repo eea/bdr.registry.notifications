@@ -1,3 +1,4 @@
+blessed==1.20.0
 Django==5.1.8
 psycopg2-binary==2.9.10
 django-ckeditor==6.7.2
