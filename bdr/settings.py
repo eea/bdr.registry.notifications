@@ -280,7 +280,6 @@ ECR_COMPANY_PATH = env("ECR_COMPANY_PATH", "/undertaking/list")
 ECR_PERSON_PATH = env("ECR_PERSON_PATH", "/misc/user/export/json")
 ECR_REGISTRY_TOKEN = env("ECR_REGISTRY_TOKEN", "")
 ECR_DOMAINS = env("ECR_DOMAINS", "").split(",")
-ECR_ACCEPTED_COMPANIES_STATUS = env("ECR_ACCEPTED_COMPANIES_STATUS", "").split(",")
 
 DOUBLE_CHECK_COMPANIES = ["F-gases EU", "F-gases NONEU", "ODS"]
 EMAIL_SENDER = env("EMAIL_SENDER", "")
