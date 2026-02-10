@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.6 (2026-02-10)
+------------------
+* Remove ECR_ACCEPTED_COMPANIES_STATUS
+  [dianaboiangiu]
+
 1.4.5 (2025-04-15)
 ------------------
 * Add blessed package for q_info command
