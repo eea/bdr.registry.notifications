@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.7 (2026-02-17)
+------------------
+* Switch from alpine to slim
+  [dianaboiangiu]
+
 1.4.6 (2026-02-10)
 ------------------
 * Remove ECR_ACCEPTED_COMPANIES_STATUS
